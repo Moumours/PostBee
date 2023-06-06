@@ -1,0 +1,19 @@
+Rapport 6 Juin :
+
+Statut :
+- Isaac OK frome Maria
+- Alex pb de forma bug Null pointer exception Graphisme et début act oke
+- Zoé fin d’auto forma avait commencé la compression de donnée
+- Maria : Proto de register en cours (livré demain) passe sur la login
+- Rim : envoie comment fait en attente de test auto forma finis demain
+- Ahyan : Auto forma good inscription user ok va faire la réception de 
+validation d’erreur ou succès
+- Marc : BDD créée, méthode inscription avec renvoie de succès ok
+
+Problème :
+- RAS
+
+Ambiance :
+- Oke Isaac à peur que le taff soit mal répartie mais c’est qu’ils ont le 
+premier role avec Maria
+
