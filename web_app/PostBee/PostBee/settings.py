@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-6j82ir*z3z!*&b8_bb3v7x3zz=^6xnp=bbiyek5-1e+4rz8wuo'
+SECRET_KEY = 'django-insecure--(7+47!k2io@g%rd1=ie*gh^o_=i2%u48@+do4mo7c_8prh^&o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -122,3 +122,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'web_postBee.Account'
+
+AUTHENTICATION_BACKENDS = ['web_postBee.backends.EmailBackend']

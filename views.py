@@ -10,9 +10,9 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 
-from .forms import RegisterForm
-from .forms import UserAuthenticationForm
-# from .forms import account_activation_token
+from .web_app.PostBee.web_postBee.forms import RegisterForm
+
+from .web_app.PostBee.web_postBee.tokens import account_activation_token
 
 import json
 
@@ -58,26 +58,26 @@ def activateEmail(request, user):
     else:
         messages.error(request, f'Problem sending confirmation email to marc.proux@uha.fr, check if you typed it correctly.')
 
-# def activate(request, uidb64, token):
-#     User = get_user_model()
-#     try:
-#         uid = force_str(urlsafe_base64_decode(uidb64))
-#         user = User.objects.get(pk=uid)
-#     except(TypeError, ValueError, OverflowError, User.DoesNotExist):
-#         user = None
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
 
-#     if user is not None and account_activation_token.check_token(user, token):
-#         print("I will activate the user account : "+user.username)
-#         user.is_active = True
-#         user.save()
+    if user is not None and account_activation_token.check_token(user, token):
+        print("I will activate the user account : "+user.username)
+        user.is_active = True
+        user.save()
 
-#         print("Thank you for your email confirmation. Now you can login your account.")
-#         messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
-#         return redirect('index')
-#     else:
-#         messages.error(request, 'Activation link is invalid!')
+        print("Thank you for your email confirmation. Now you can login your account.")
+        messages.success(request, 'Thank you for your email confirmation. Now you can login your account.')
+        return redirect('index')
+    else:
+        messages.error(request, 'Activation link is invalid!')
     
-#     return redirect('index')
+    return redirect('index')
 
 def test(request):
     print("I am in test")
@@ -86,17 +86,3 @@ def test(request):
         print(received_json_data)
     return JsonResponse({'redirect':'sucess'})
 
-def login(request):
-    if request.method == 'POST':
-        form = UserAuthenticationForm(request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            print("User = "+user.username)
-            return redirect('index')
-        else:
-            print('Form is not valid')
-            for error in list(form.errors):
-                messages.error(request, error)
-    else:
-        form = UserAuthenticationForm()
-    return render(request, 'web_postBee/login.html', {'form': form})
