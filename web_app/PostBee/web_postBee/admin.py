@@ -1,24 +1,25 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
+from .models import Account, Post, Comment, Image, Video
 
-from .forms import RegisterForm, ChangeUserForm
-from .models import Account
+class AccountAdmin(UserAdmin):
+    list_display = ('email', 'first_name', 'last_name', 'school_group')
 
-class PostUserAdmin(UserAdmin):
-    add_form = RegisterForm
-    form = ChangeUserForm
-    model = Account
-    list_display = ['email', 'is_active', 'first_name', 'last_name', 'ensisaGroup']
+    fieldsets = (
+        ('ID', {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'school_group')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
 
-    def add_view(self, request, form_url='', extra_context=None):
-        self.form = self.add_form
-        return super().add_view(request, form_url=form_url, extra_context=extra_context)
+    add_fieldsets = (
+        ('ID', {'fields': ('email', 'password1', 'password2')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'school_group')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+    )
 
-    def change_view(self, request, object_id, form_url='', extra_context=None):
-        self.form = self.form
-        return super().change_view(request, object_id, form_url=form_url, extra_context=extra_context)
-
-# Register your models here.
-
-admin.site.register(Account, PostUserAdmin)
+admin.site.register(Account, AccountAdmin)
+admin.site.register(Post)
+admin.site.register(Comment)
+admin.site.register(Image)
+admin.site.register(Video)

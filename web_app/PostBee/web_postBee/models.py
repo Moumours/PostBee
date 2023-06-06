@@ -1,94 +1,90 @@
-# from django.db import models
-# from django.contrib.auth.models import AbstractUser
-
-# # Create your models here.
-# class PostUser(AbstractUser):
-#     GROUP_DEF=[
-#         ('0', 'Student'),
-#         ('1', 'Teacher'),
-#         ('2', 'Staff')
-#     ]
-#     email = models.EmailField(unique=True)
-#     ensisaGroup = models.CharField(max_length=1, choices=GROUP_DEF, default='0')
-
-#     def __str__(self):
-#         return self.email
-    
-
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.utils import timezone
 
-#manager for our custom model 
-class MyAccountManager(BaseUserManager):
-    """
-        This is a manager for Account class 
-    """
-    def create_user(self, email, first_name, last_name, school_group, password=None):
+# CustomUserManager using email, password and automatically generated username
+class CustomUserManager(UserManager):
+    def create_user(self, email, password, **extra_fields):
         if not email:
-            raise ValueError("Users must have an Emaill address")
-        if not  first_name:
-            raise ValueError("Users must have a First name")
-        if not last_name:
-            raise ValueError("Users must have a Last name")
-        if not school_group:
-            raise ValueError("Users must have a School group")
-        user  = self.model(
-                email=self.normalize_email(email),
-                first_name=self.first_name,
-                last_name=self.last_name,
-                school_group=self.school_group,
-            )
-
+            raise ValueError('Email must be set')
+        if not password:
+            raise ValueError('Password must be set')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
+        return user
+    
+    def create_superuser(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('Email must be set')
+        if not password:
+            raise ValueError('Password must be set')
+        user = self.model(email=self.normalize_email(email), **extra_fields)
+        user.set_password(password)
+        user.is_staff = True
+        user.is_superuser = True
+        user.save()
         return user
 
-    def create_superuser(self, email, first_name, last_name, school_group, password):
-        user = self.create_user(
-                email=self.normalize_email(email),
-                password=password,
-                first_name=self.first_name,
-                last_name=self.last_name,
-                school_group=self.school_group,
-            )
-        user.is_admin = True
-        user.is_staff=True
-        user.is_superuser=True
-        user.save(using=self._db)
-        return user
 
-class Account(AbstractBaseUser):
-    
-    """
-      Custom user class inheriting AbstractBaseUser class 
-    """
-    
-    GROUP_DEF=[
+class Account(AbstractUser):
+    SCHOOL_GROUP_CHOICES = [
         ('0', 'Student'),
         ('1', 'Teacher'),
-        ('2', 'Staff')
+        ('2', 'Staff'),
     ]
 
-    email                = models.EmailField(verbose_name='email', max_length=60, unique=True)
-    first_name           = models.CharField(max_length=30)
-    last_name            = models.CharField(max_length=30)
-    date_joined          = models.DateTimeField(verbose_name='date joined', auto_now_add=True)
-    last_login           = models.DateTimeField(verbose_name="last login", auto_now=True)
-    school_group         = models.CharField(max_length=1, choices=GROUP_DEF, default='0')
-    is_admin             = models.BooleanField(default=False)
-    is_active            = models.BooleanField(default=False)
-    is_staff             = models.BooleanField(default=False)
-    is_superuser         = models.BooleanField(default=False)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+    school_group = models.CharField(max_length=10, choices=SCHOOL_GROUP_CHOICES, default='0')
+    username = models.CharField(max_length=150, unique=False, blank=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['email', 'first_name', 'last_name', 'school_group']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'school_group']
 
-    objects = MyAccountManager()
+    objects = CustomUserManager()
+
+    def save(self, *args, **kwargs):
+        if not self.username:
+            self.username = f'{self.first_name.lower()}.{self.last_name.lower()}'
+        super().save(*args, **kwargs)
+
+class Post(models.Model):
+    DEF_STATUS = [
+        ('0', 'En attente de validation'),
+        ('1', 'En ligne'),
+        ('2', 'Archivé')
+    ]
+
+    title = models.CharField(max_length=100)
+    author = models.ForeignKey(Account, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    text = models.TextField()
+    status = models.CharField(max_length=1, choices=DEF_STATUS, default='wating')
 
     def __str__(self):
-        return self.email
+        return self.title
+    
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(Account, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+    text = models.CharField(max_length=250)
 
-    def has_perm(self, perm, obj=None):
-        return self.is_admin
-    def has_module_perms(self, app_label ):
-        return True
+    def __str__(self):
+        return self.text
+    
+class Image(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='images/')
+
+    def __str__(self):
+        return self.image.name
+
+class Video(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='videos')
+    video = models.FileField(upload_to='videos/')
+
+    def __str__(self):
+        return self.video.name

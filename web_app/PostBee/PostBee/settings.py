@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure--(7+47!k2io@g%rd1=ie*gh^o_=i2%u48@+do4mo7c_8prh^&o'
+SECRET_KEY = 'django-insecure-91k+7tmzdcj$$z(7r(c^*bo3nop_^ge8qg-jjzp@@f-&-w($vk'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'web_postBee'
+    'web_postBee.apps.WebPostbeeConfig',
 ]
 
 MIDDLEWARE = [
@@ -125,4 +125,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'web_postBee.Account'
 
-AUTHENTICATION_BACKENDS = ['web_postBee.backends.EmailBackend']
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'postbee.ensisa@gmail.com'
+EMAIL_HOST_USER = 'postbee.ensisa@gmail.com'
+EMAIL_HOST_PASSWORD = 'hgwvesvzezmebhwf'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PASSWORD_RESET_TIMEOUT = 14400

@@ -1,5 +1,5 @@
 """
-WSGI config for PostBee project.
+WSGI config for test_PostBee project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
