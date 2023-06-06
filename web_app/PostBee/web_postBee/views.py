@@ -19,9 +19,33 @@ import json
 def index(request):
     return render(request, 'web_postBee/index.html', {'message': messages.get_messages(request)})
 
+# def register(request):
+#     if request.method == 'POST':
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             user = form.save(commit=False)
+#             user.is_active = False
+#             user.save()
+#             for field in user._meta.fields:
+#                 field_name = field.name
+#                 field_value = getattr(user, field_name)
+#                 print(f"{field_name}: {field_value}")
+#             activateEmail(request, user)
+#             return redirect('index')
+        
+#         else:
+#             for error in list(form.errors):
+#                 messages.error(request, error)
+#     else :
+#         form = RegisterForm()
+    
+#     return render(request, 'web_postBee/register.html', {'form': form})
+
 def register(request):
     if request.method == 'POST':
-        form = RegisterForm(request.POST)
+        json_data = json.loads(request.body)
+        print(f"Received JSON data: {json_data}")
+        form = RegisterForm(json_data)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -31,15 +55,23 @@ def register(request):
                 field_value = getattr(user, field_name)
                 print(f"{field_name}: {field_value}")
             activateEmail(request, user)
-            return redirect('index')
-        
+            response_data = {
+                'success': True,
+                'message': 'User registration successful.'
+            }
         else:
-            for error in list(form.errors):
-                messages.error(request, error)
+            errors = {field: errors[0] for field, errors in form.errors.items()}
+            response_data = {
+                'success': False,
+                'errors': errors
+            }
+        return JsonResponse(response_data)
     else :
-        form = RegisterForm()
-    
-    return render(request, 'web_postBee/register.html', {'form': form})
+        response_data = {
+            'success': False,
+            'errors': 'Invalid request method.'
+        }
+        return JsonResponse(response_data)
 
 def activateEmail(request, user):
     mail_subject = 'Activate your user account.'
