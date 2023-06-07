@@ -18,5 +18,12 @@ public class User {
     private String password1;
     private String password2;
 
+    public String getFirst_name() {
+        return first_name;
+    }
+
+    public int getEnsisaGroup() {
+        return ensisaGroup;
+    }
 }
 
