@@ -61,7 +61,7 @@
     <RadioGroup
         android:id="@+id/main_edittext_statusRadioGroup"
         android:layout_width="match_parent"
-        android:layout_height="231dp"
+        android:layout_height="173dp"
 
         >
 
@@ -91,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:text="S'inscrire"
-        android:backgroundTint="#00AFFF"
+        android:backgroundTint="#87DEFF"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </LinearLayout>

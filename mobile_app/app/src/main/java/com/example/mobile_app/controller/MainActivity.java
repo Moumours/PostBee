@@ -1,5 +1,6 @@
 package com.example.mobile_app.controller;
 
+import android.content.Intent;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
                     Toast.makeText(MainActivity.this, "Les mots de passe ne correspondent pas!", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
