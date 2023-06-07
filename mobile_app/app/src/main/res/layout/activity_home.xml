@@ -1,21 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#338888">
+    android:background="#338888"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+
+    <!--<TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:text="Home Activity"
+        android:gravity="center"
         android:textSize="40sp"
         android:textStyle="bold"
         android:textColor="#DDD"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_weight="8" />-->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/home_recyclerview_posts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:padding="4dp"
+        android:background="@color/white"
+    >
+        <Button
+            android:id="@+id/home_menu_button_addpost"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            app:cornerRadius="12dp"
+            android:text="Add Post"/>
+
+        <Button
+            android:id="@+id/home_menu_button_profile"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            app:cornerRadius="12dp"
+            android:text="Profil"/>
+
+        <Button
+            android:id="@+id/home_menu_button_moderation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            app:cornerRadius="12dp"
+            android:text="Modération"/>
+
+        <Button
+            android:id="@+id/home_menu_button_parameters"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="4dp"
+            app:cornerRadius="12dp"
+            android:text="Paramètres"/>
+    </LinearLayout>
+
+</LinearLayout>

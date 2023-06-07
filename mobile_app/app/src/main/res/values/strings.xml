@@ -1,3 +1,23 @@
 <resources>
-    <string name="app_name">mobile_app</string>
+    <string name="app_name">PostBee</string>
+
+    <string name="ui_comments">Commentaires</string>
+
+
+    <string name="placeholder_title">Titre un petit peu plus long</string>
+    <string name="placeholder_content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a dapibus urna. Suspendisse potenti. Quisque congue eleifend enim vitae varius. Donec elit sapien, sodales bibendum varius ac, congue ac est. Nam feugiat finibus purus at lacinia. Phasellus efficitur risus id accumsan vestibulum. Maecenas pellentesque gravida sapien in consectetur. Nunc justo purus, molestie vitae erat ac, blandit cursus enim. Maecenas nec tristique ipsum. Aenean eget mi auctor, accumsan magna at, hendrerit enim. Praesent nec quam augue. Nulla nec porta orci, nec aliquam mauris. Integer in turpis id nibh mattis semper at non augue. Pellentesque nec diam sit amet quam lobortis efficitur. Pellentesque gravida neque odio, non tincidunt massa maximus in.
+
+        Ut eget accumsan odio. Maecenas condimentum sit amet tortor id egestas. Maecenas ac condimentum felis. Nullam non magna pulvinar, scelerisque ipsum sed, pellentesque ante. Suspendisse potenti. Donec ultrices tincidunt cursus. Pellentesque enim ante, dapibus sagittis quam facilisis, placerat ultrices metus. Maecenas id tincidunt metus. Phasellus semper sapien vitae mauris ultricies aliquet. In in condimentum elit, eu tempor nisi.
+
+        Nunc eget massa diam. Nulla eu pharetra ex. Ut a pellentesque odio. Cras commodo nulla diam, sit amet dictum sapien varius quis. Vivamus venenatis elit sed orci hendrerit eleifend. Nam eu pulvinar dolor. Praesent a orci sodales, mollis orci vel, maximus quam. Praesent ornare semper massa, eget volutpat dui rhoncus et. Etiam vitae molestie velit. Sed lobortis augue a magna suscipit, quis eleifend eros pellentesque. Sed cursus tristique justo auctor suscipit. Quisque a porttitor lacus. Etiam maximus tellus justo, eu accumsan nulla molestie vel. Morbi ut erat nec neque vestibulum imperdiet. Duis a viverra orci.
+
+        Etiam porttitor elit lectus, at feugiat est efficitur at. Integer ac tortor massa. Etiam ut semper nulla. Aliquam eu nunc sed massa faucibus consectetur. Suspendisse fermentum blandit ante sed interdum. Fusce porta fermentum pellentesque. Nunc eleifend sed sem vel commodo. In hac habitasse platea dictumst. Suspendisse risus justo, finibus non est eu, venenatis accumsan felis.
+
+        Proin nec viverra massa. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Proin sit amet hendrerit urna, vel ornare orci. Vestibulum at aliquam odio. Praesent sapien dolor, finibus ut mollis non, dapibus pretium augue. Etiam sed neque vitae nunc egestas lobortis. Cras a tempus est, a dapibus nulla. Cras et varius nulla. Fusce auctor mi sed odio sollicitudin, mollis semper sapien pellentesque. Aliquam sed placerat est. Quisque tempus metus augue, vel volutpat elit vulputate quis. Maecenas ornare nulla est, non convallis felis molestie quis. Ut at consequat eros, vitae hendrerit libero. Nulla eu quam arcu. Praesent eu venenatis massa. Suspendisse sit amet lectus sed nunc condimentum suscipit viverra a orci.
+    </string>
+    <string name="placeholder_username">Alain Génieur</string>
+    <string name="placeholder_date">01/01/2000</string>
+    <string name="placeholder_comment">Sample comment</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
