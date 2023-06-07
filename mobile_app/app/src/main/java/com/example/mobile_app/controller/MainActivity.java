@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText nom, prenom, email, password, confirmPassword;
     private RadioGroup statusRadioGroup;
     private Button inscriptionButton;
-    private int var = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
