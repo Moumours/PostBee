@@ -3,7 +3,7 @@ Rapport 6 Juin :
 Statut :
 - Isaac OK frome Maria
 - Alex pb de forma bug Null pointer exception Graphisme et début act oke
-- Zoé fin d’auto forma avait commencé la compression de donnée
+- Pierre fin d’auto forma avait commencé la compression de donnée
 - Maria : Proto de register en cours (livré demain) passe sur la login
 - Rim : envoie comment fait en attente de test auto forma finis demain
 - Ahyan : Auto forma good inscription user ok va faire la réception de 
@@ -17,3 +17,18 @@ Ambiance :
 - Oke Isaac à peur que le taff soit mal répartie mais c’est qu’ils ont le 
 premier role avec Maria
 
+
+Rapport du 7 Juin :
+
+Statut :
+- Ahyan : Register complet, a avancer sur la modération, travail sur la récupération de la liste des postes pas de difficultés
+- Alex : Travaille Ayhan, complication de commit sur github, différent type de post pour l'éco conception
+- Isaac : Page d'accueil de l'appli avec listes des postes (gros squelettes de l'appli), va s'attaquer aux commentaires par la suite
+- Pierre : Travail sur la compression d'image (ex: tous mettre en jpeg, la res, etc...), a commencé celles des vidéos
+- Rim : Interface des com presques terminée, fait du debbuggage
+
+Problèmes : 
+- Gros conflit de gitHub (merci Alex de l'avoir reglé)
+
+Ambiance :
+- Bonn ambiance, tous le monde est content
