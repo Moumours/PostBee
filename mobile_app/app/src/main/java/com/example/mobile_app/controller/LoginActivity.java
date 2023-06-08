@@ -52,7 +52,6 @@ public class LoginActivity extends AppCompatActivity {
         buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ajoutez votre logique de mot de passe oublié ici
                 Toast.makeText(LoginActivity.this, "Mot de passe oublié", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, MdpActivity.class);
                 startActivity(intent);
@@ -76,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://votre_url/login");
+                    URL url = new URL("http://postbee.alwaysdata.net/login");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -91,8 +90,13 @@ public class LoginActivity extends AppCompatActivity {
                     DataOutputStream os = new DataOutputStream(conn.getOutputStream());
                     os.writeBytes(gson.toJson(params));
 
+                    Log.d("LoginData", "Login JSON sent to the server: " + gson.toJson(params)); // Add this line
+
                     os.flush();
                     os.close();
+
+                    Log.d("LoginData", "HTTP response code: " + conn.getResponseCode()); // Add this line
+
 
                     conn.disconnect();
                 } catch (Exception e) {
@@ -101,8 +105,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-
-
 
 }

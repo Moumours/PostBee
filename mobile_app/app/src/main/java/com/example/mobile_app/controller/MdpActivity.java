@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.example.mobile_app.R;
 import com.google.gson.Gson;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,8 +60,12 @@ public class MdpActivity extends AppCompatActivity {
                     DataOutputStream os = new DataOutputStream(conn.getOutputStream());
                     os.writeBytes(gson.toJson(params));
 
+                    Log.d("ResetPassword", "Email JSON sent to the server: " + gson.toJson(params)); // Add this line
+
                     os.flush();
                     os.close();
+
+                    Log.d("ResetPassword", "HTTP response code: " + conn.getResponseCode()); // Add this line
 
                     conn.disconnect();
                 } catch (Exception e) {

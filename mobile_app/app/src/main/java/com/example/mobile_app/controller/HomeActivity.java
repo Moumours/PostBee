@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                 startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
             }
         });
+        receiveHomePage();
     }
 
     @Override
@@ -92,10 +93,13 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     List<ItemPost> receivePostes = gson.fromJson(rawPostData, type);
 
+                    posts = receivePostes;
+                    /*
                     for (ItemPost poste : receivePostes) {
                         ItemPost newPost = new ItemPost(poste.getId(),poste.getTitle(),poste.getAuthor(), poste.getDate());
                         posts.add(newPost);
                     }
+                    */
 
                     django.disconnect();
                 } catch (Exception e) {
