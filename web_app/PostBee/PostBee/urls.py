@@ -1,7 +1,7 @@
 """PostBee URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
+    https://docs.djangoproject.com/en/3.2/topics/http/urls/
 Examples:
 Function views
     1. Add an import:  from my_app import views
@@ -15,8 +15,21 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
+from rest_framework import routers
+
+from api_postBee.views import *
+
+postListRouter = routers.SimpleRouter()
+postListRouter.register('posts', PostList, basename='post')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('web_postBee.urls')),
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('login', LoginView.as_view(), name='login'),
+    path('register', RegisterView.as_view(), name='register'),
+    path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
+    path('', IndexView.as_view(), name='index'),
+    path('', include(postListRouter.urls)),
 ]
