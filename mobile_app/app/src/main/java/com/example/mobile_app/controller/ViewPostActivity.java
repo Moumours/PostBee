@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.ViewPost;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -24,9 +25,16 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
+        //Récupère ViewPost
+        ViewPost viewpost = new ViewPost(getIntent().getIntExtra("ID",0),getIntent().getIntExtra("STATUS",0));
+
         mTextTitle.setText(getIntent().getStringExtra("TITLE"));
         mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
-        mTextDate.setText(getIntent().getStringExtra("DATE"));
-        mTextContent.setText("L'ID du post est : " + getIntent().getIntExtra("ID", -1));
+        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getStringExtra("ID"));
+        mTextContent.setText(viewpost.getContent());
+
+        // ViewPost a aussi les documents et les commentaires
+        // ViewPost.getListdocument()
+        // ViewPost.getListcomment()
     }
 }

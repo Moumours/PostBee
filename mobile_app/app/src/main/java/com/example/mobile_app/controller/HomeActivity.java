@@ -30,6 +30,7 @@ import java.util.List;
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
+    private int mPostStatus = 0;
 
     private Button mAddPostButton;
 
@@ -61,6 +62,8 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
+        homeActivityIntent.putExtra("STATUS", mPostStatus);
+
         startActivity(homeActivityIntent);
     }
 
