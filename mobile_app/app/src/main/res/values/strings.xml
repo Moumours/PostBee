@@ -2,6 +2,10 @@
     <string name="app_name">PostBee</string>
 
     <string name="ui_comments">Commentaires</string>
+    <string name="ui_target">Public ciblé</string>
+
+    <string name="hint_title">Titre</string>
+    <string name="hint_content">Ecrivez votre post ici...</string>
 
 
     <string name="placeholder_title">Titre un petit peu plus long</string>
