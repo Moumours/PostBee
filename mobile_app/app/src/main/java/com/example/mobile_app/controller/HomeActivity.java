@@ -15,7 +15,14 @@ import com.example.mobile_app.R;
 import com.example.mobile_app.model.ItemPost;
 import com.example.mobile_app.model.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,23 +40,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
 
-        posts.add(new ItemPost(0,"Titre d'article 1", "Jean Sériens", "01/01/2000"));
-        posts.add(new ItemPost(1,"Titre d'article 2", "Jean Neymar", "02/02/2002"));
-        posts.add(new ItemPost(2,"Titre d'article 3", "Martine", "03/03/2003"));
-        posts.add(new ItemPost(3,"Titre d'article 4", ":D", "12/10/2015"));
-        posts.add(new ItemPost(4,"Titre d'article 5", "Jean Sériens", "01/01/2000"));
-        posts.add(new ItemPost(5,"Titre d'article 6", "Jean Neymar", "02/02/2002"));
-        posts.add(new ItemPost(6,"Titre d'article 7", "Martine", "03/03/2003"));
-        posts.add(new ItemPost(7,"Titre d'article 8", ":D", "12/10/2015"));
-        posts.add(new ItemPost(8,"Titre d'article 9", "Jean Sériens", "01/01/2000"));
-        posts.add(new ItemPost(9,"Titre d'article 10", "Jean Neymar", "02/02/2002"));
-        posts.add(new ItemPost(10,"Titre d'article 11", "Martine", "03/03/2003"));
-        posts.add(new ItemPost(11,"Titre d'article 12", ":D", "12/10/2015"));
-        posts.add(new ItemPost(12,"Titre d'article 13", "Jean Sériens", "01/01/2000"));
-        posts.add(new ItemPost(13,"Titre d'article 14", "Jean Neymar", "02/02/2002"));
-        posts.add(new ItemPost(14,"Titre d'article 15", "Martine", "03/03/2003"));
-        posts.add(new ItemPost(15,"Titre d'article 16", ":D", "12/10/2015"));
-        posts.add(new ItemPost(16,"ABCDEF", "def", "abc"));
+
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
@@ -70,5 +61,43 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         startActivity(homeActivityIntent);
+    }
+
+    public void receiveHomePage() {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    URL url = new URL("http://10.39.251.162:8000/test");
+                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
+
+                    django.setRequestMethod("GET");
+                    django.setRequestProperty("Accept","application/json");
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    String rawPostData = response.toString();
+
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<List<ItemPost>>(){}.getType();
+                    List<ItemPost> receivePostes = gson.fromJson(rawPostData, type);
+
+                    for (ItemPost poste : receivePostes) {
+                        ItemPost newPost = new ItemPost(poste.getId(),poste.getTitle(),poste.getAuthor(), poste.getDate());
+                        posts.add(newPost);
+                    }
+
+                    django.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
