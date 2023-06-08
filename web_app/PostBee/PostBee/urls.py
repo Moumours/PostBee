@@ -20,8 +20,9 @@ from rest_framework import routers
 
 from api_postBee.views import *
 
-postListRouter = routers.SimpleRouter()
-postListRouter.register('posts', PostList, basename='post')
+postRouter = routers.SimpleRouter()
+postRouter.register('posts', PostList, basename='post')
+postRouter.register('post', PostDetail, basename='postDetail')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,6 @@ urlpatterns = [
     path('register', RegisterView.as_view(), name='register'),
     path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
     path('', IndexView.as_view(), name='index'),
-    path('', include(postListRouter.urls)),
+    path('', include(postRouter.urls)),
     # path('test', TestView.as_view(), name='test'),
 ]

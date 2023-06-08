@@ -3,6 +3,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 import json
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -16,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated
 from api_postBee.forms import RegisterForm
 from api_postBee.tokens import account_activation_token
 from api_postBee.models import *
-from api_postBee.serializers import PostSerializer
+from api_postBee.serializers import PostListSerializer, PostDetailSerializer
 
 
 class IndexView(APIView):
@@ -121,7 +122,7 @@ class ActivateAccount(APIView):
 # Endpoint view that return all posts as JSON with Response only if authenticated
 
 class PostList(ReadOnlyModelViewSet):
-    serializer_class = PostSerializer
+    serializer_class = PostListSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
@@ -151,6 +152,25 @@ class PostList(ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
+class PostDetail(ReadOnlyModelViewSet):
+    serializer_class = PostDetailSerializer
+    permission_classes = [IsAuthenticated]
+    print('PostDetail viewset')
+
+    def get_queryset(self):
+        id = self.request.query_params.get('id')
+        if id is None:
+            return Response({'error': 'Post ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+        queryset = Post.objects.filter(id=id, status='1')
+        if not queryset.exists():
+            print('Post not found')
+            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+        return queryset
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset.first())
+        return Response(serializer.data)
 
 # # Test view that give me the user id of the current user from the token
 # class TestView(APIView):
