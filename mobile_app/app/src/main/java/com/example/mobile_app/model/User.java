@@ -1,4 +1,4 @@
-package com.example.mobile_app.controller;
+package com.example.mobile_app.model;
 
 public class User {
 

@@ -2,6 +2,7 @@ package com.example.mobile_app.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -53,6 +54,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                 startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
             }
         });
+        receiveHomePage();
     }
 
     @Override
@@ -66,11 +68,12 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
 
         startActivity(homeActivityIntent);
     }
-
     public void receiveHomePage() {
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    Log.d("HomeActivity", "Début de la méthode receiveHomePage");
+
                     URL url = new URL("http://10.39.251.162:8000/test");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
@@ -87,21 +90,22 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     in.close();
 
                     String rawPostData = response.toString();
+                    Log.d("HomeActivity", "Données brutes reçues : " + rawPostData);
 
                     Gson gson = new Gson();
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     List<ItemPost> receivePostes = gson.fromJson(rawPostData, type);
 
-                    for (ItemPost poste : receivePostes) {
-                        ItemPost newPost = new ItemPost(poste.getId(),poste.getTitle(),poste.getAuthor(), poste.getDate());
-                        posts.add(newPost);
-                    }
+                    posts = receivePostes;
+
+                    Log.d("HomeActivity", "Nombre de posts reçus : " + posts.size());
 
                     django.disconnect();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
                 }
             }
         }).start();
     }
+
 }
