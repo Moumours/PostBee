@@ -1,97 +1,101 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="30dp">
-
-    <EditText
-        android:id="@+id/main_edittext_nom"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nom"
-        android:textSize="20sp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="30dp">
 
-    <EditText
-        android:id="@+id/main_edittext_prenom"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Prénom"
-        android:textSize="20sp" />
-
-    <EditText
-        android:id="@+id/main_edittext_email"
-        android:layout_width="242dp"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:textSize="20sp" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:text='@UHA.fr'
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/main_edittext_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mot de passe"
-        android:inputType="textPassword"
-        android:textSize="20sp" />
-
-
-    <EditText
-        android:id="@+id/main_edittext_confirmPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Confirmer le mot de passe"
-        android:inputType="textPassword"
-        android:textSize="20sp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="83dp"
-        android:text="Votre statut:"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <RadioGroup
-        android:id="@+id/main_edittext_statusRadioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="173dp"
-
-        >
-
-
-        <RadioButton
-            android:id="@+id/main_edittext_etudiantRadioButton"
-            android:layout_width="200dp"
+        <EditText
+            android:id="@+id/main_edittext_nom"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Étudiant" />
+            android:hint="Nom"
+            android:textSize="20sp" />
 
-        <RadioButton
-            android:id="@+id/main_edittext_profRadioButton"
+        <EditText
+            android:id="@+id/main_edittext_prenom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Prénom"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/main_edittext_email"
+            android:layout_width="242dp"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:textSize="20sp" />
+
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Professeur" />
+            android:layout_height="60dp"
+            android:text='@UHA.fr'
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/main_edittext_autreRadioButton"
+        <EditText
+            android:id="@+id/main_edittext_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mot de passe"
+            android:inputType="textPassword"
+            android:textSize="20sp" />
+
+
+        <EditText
+            android:id="@+id/main_edittext_confirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirmer le mot de passe"
+            android:inputType="textPassword"
+            android:textSize="20sp" />
+
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Autre" />
+            android:layout_height="83dp"
+            android:text="Votre statut:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    </RadioGroup>
+        <RadioGroup
+            android:id="@+id/main_edittext_statusRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="173dp"
 
-    <Button
-        android:id="@+id/main_edittext_inscriptionButton"
-        android:layout_width="match_parent"
-        android:layout_height="61dp"
-        android:text="S'inscrire"
-        android:backgroundTint="#87DEFF"
-        app:layout_constraintBottom_toBottomOf="parent" />
+            >
 
-</LinearLayout>
+
+            <RadioButton
+                android:id="@+id/main_edittext_etudiantRadioButton"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="Étudiant" />
+
+            <RadioButton
+                android:id="@+id/main_edittext_profRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Professeur" />
+
+            <RadioButton
+                android:id="@+id/main_edittext_autreRadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Autre" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/main_edittext_inscriptionButton"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:text="S'inscrire"
+            android:backgroundTint="#87DEFF"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </LinearLayout>
+</ScrollView>
