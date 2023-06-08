@@ -2,6 +2,7 @@ package com.example.mobile_app.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -22,12 +23,15 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
 
+    private Button mAddPostButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        mRecyclerView = (RecyclerView)findViewById(R.id.home_recyclerview_posts);
+        mRecyclerView = findViewById(R.id.home_recyclerview_posts);
+        mAddPostButton = findViewById(R.id.home_menu_button_addpost);
 
         posts.add(new ItemPost(0,"Titre d'article 1", "Jean Sériens", "01/01/2000"));
         posts.add(new ItemPost(1,"Titre d'article 2", "Jean Neymar", "02/02/2002"));
@@ -45,9 +49,17 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         posts.add(new ItemPost(13,"Titre d'article 14", "Jean Neymar", "02/02/2002"));
         posts.add(new ItemPost(14,"Titre d'article 15", "Martine", "03/03/2003"));
         posts.add(new ItemPost(15,"Titre d'article 16", ":D", "12/10/2015"));
+        posts.add(new ItemPost(16,"ABCDEF", "def", "abc"));
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
+
+        mAddPostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
+            }
+        });
     }
 
     @Override
