@@ -1,82 +1,87 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".controller.LoginActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".controller.LoginActivity">
+    android:layout_height="match_parent">
 
-
-    <ImageView
-        android:id="@+id/imageViewLogo"
-        android:layout_width="216dp"
-        android:layout_height="136dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/logodeux" />
-
-    <TextView
-        android:id="@+id/textViewWelcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bienvenue à PosteBee"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_below="@id/imageViewLogo"
-        android:layout_marginTop="30dp"
-        android:layout_centerHorizontal="true" />
-
-    <EditText
-        android:id="@+id/editTextEmail"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Email"
-        android:layout_below="@id/textViewWelcome"
-        android:layout_marginTop="50dp"
-        android:padding="10dp"
-        android:minHeight="48dp"
-        />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Mot de passe"
-        android:inputType="textPassword"
-        android:layout_below="@id/editTextEmail"
-        android:padding="10dp"
-        android:minHeight="48dp"
-        />
 
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Connexion"
-        android:layout_below="@id/editTextPassword"
-        android:layout_marginTop="30dp"
-        android:backgroundTint="#87DEFF"
-        android:padding="10dp" />
+        <ImageView
+            android:id="@+id/imageViewLogo"
+            android:layout_width="216dp"
+            android:layout_height="136dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/logodeux" />
 
-    <Button
-        android:id="@+id/buttonForgotPassword"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/buttonLogin"
-        android:background="@android:color/transparent"
-        android:padding="10dp"
-        android:text="Mot de passe oublié"
-        android:onClick="openSecondActivity"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/textViewWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bienvenue à PosteBee"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_below="@id/imageViewLogo"
+            android:layout_marginTop="30dp"
+            android:layout_centerHorizontal="true" />
 
-    <Button
-        android:id="@+id/buttonRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="S'inscrire"
-        android:layout_below="@id/buttonForgotPassword"
-        android:layout_marginTop="30dp"
-        android:padding="10dp"
-        android:backgroundTint="#87DEFF"
-        />
+        <EditText
+            android:id="@+id/editTextEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:layout_below="@id/textViewWelcome"
+            android:layout_marginTop="50dp"
+            android:padding="10dp"
+            android:minHeight="48dp"
+            />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mot de passe"
+            android:inputType="textPassword"
+            android:layout_below="@id/editTextEmail"
+            android:padding="10dp"
+            android:minHeight="48dp"
+            />
+
+        <Button
+            android:id="@+id/buttonLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Connexion"
+            android:layout_below="@id/editTextPassword"
+            android:layout_marginTop="30dp"
+            android:backgroundTint="#87DEFF"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/buttonForgotPassword"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/buttonLogin"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:text="Mot de passe oublié"
+            android:onClick="openSecondActivity"
+            android:textColor="@android:color/black" />
+
+        <Button
+            android:id="@+id/buttonRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="S'inscrire"
+            android:layout_below="@id/buttonForgotPassword"
+            android:layout_marginTop="30dp"
+            android:padding="10dp"
+            android:backgroundTint="#87DEFF"
+            />
+
+    </RelativeLayout>
+</ScrollView>
