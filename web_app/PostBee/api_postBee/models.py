@@ -61,7 +61,7 @@ class Post(models.Model):
     author = models.ForeignKey(Account, on_delete=models.CASCADE)
     date = models.DateTimeField(default=timezone.now)
     text = models.TextField()
-    status = models.CharField(max_length=1, choices=DEF_STATUS, default='wating')
+    status = models.CharField(max_length=1, choices=DEF_STATUS, default='O')
 
     def __str__(self):
         return self.title

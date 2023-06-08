@@ -32,3 +32,21 @@ Problèmes :
 
 Ambiance :
 - Bonn ambiance, tous le monde est content
+
+
+Rapport du 8 Juin :
+
+Statut :
+- Ayhan : Méthode de requête pour login, mdr oublié, et liste des postes
+- Isaac : Interface ajout de poste, travaille maintenant sur la modération et la liste des users. Lui reste la page de profil et les menus
+- Rim : Commentaire terminé 
+- Alex : A travaillé avec Ayhan sur les requêtes test prévu demain matin. Commentaire avec Rim
+- Marc : API crée, requête register, login, liste des postes et modération terminé.
+- Maria : interface graphique terminé, reste a finaliser les couleurs et le logo
+
+Problèmes :
+Maria n'arrive pas à télécharger éco code 
+
+Ambiance :
+- Rim est devenue membre de la team aigri (en rigolant bien sur 😂)
+- Excellente ambiance

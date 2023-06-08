@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 import json
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
@@ -120,12 +120,42 @@ class ActivateAccount(APIView):
 
 # Endpoint view that return all posts as JSON with Response only if authenticated
 
-class PostList(ModelViewSet):
+class PostList(ReadOnlyModelViewSet):
     serializer_class = PostSerializer
-    queryset = Post.objects.filter(status='1')
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Post.objects.all()
+        moderate = self.request.query_params.get('moderate')
+        amount = self.request.query_params.get('amount', 10)
+        print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
+        print("User is staff : " + str(self.request.user.is_staff))
+        print("Moderate : " + str(moderate))
+        print("Amount : " + str(amount))
+        # get amount of posts to return or default to 10
+
+        # User is staff status and filter moderate is true
+        if moderate == 'True' and self.request.user.is_staff:
+            print('Moderate is true and user is staff')
+            queryset = queryset.filter(status='0')[:int(amount)]
+
+        # all user if moderate is false
+        else:
+            print('Moderate is false')
+            queryset = queryset.filter(status='1')[:int(amount)]
+        
+        return queryset
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+# # Test view that give me the user id of the current user from the token
+# class TestView(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def get(self, request, format=None):
+#         print(request.user.email)
+#         return Response({'message': 'Hello, world!'}, status=status.HTTP_200_OK)
