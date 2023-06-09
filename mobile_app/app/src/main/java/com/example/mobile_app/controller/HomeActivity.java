@@ -3,18 +3,15 @@ package com.example.mobile_app.controller;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
-import com.example.mobile_app.model.ItemPost;
-import com.example.mobile_app.model.ItemPostAdapter;
+import com.example.mobile_app.model.item_post.ItemPost;
+import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
 
 import java.util.ArrayList;
@@ -25,6 +22,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private List<ItemPost> posts = new ArrayList<ItemPost>();
 
     private Button mAddPostButton;
+    private Button mProfileButton;
+    private Button mModerationButton;
+    private Button mSettingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +33,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
 
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
+        mProfileButton = findViewById(R.id.home_menu_button_profile);
+        mModerationButton = findViewById(R.id.home_menu_button_moderation);
+        mSettingsButton = findViewById(R.id.home_menu_button_settings);
 
         posts.add(new ItemPost(0,"Titre d'article 1", "Jean Sériens", "01/01/2000"));
         posts.add(new ItemPost(1,"Titre d'article 2", "Jean Neymar", "02/02/2002"));
@@ -59,6 +62,27 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
+            }
+        });
+
+        mProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+            }
+        });
+
+        mModerationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, ModerationActivity.class));
+            }
+        });
+
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
             }
         });
     }

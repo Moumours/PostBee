@@ -26,47 +26,31 @@
         android:layout_weight="1"
         android:padding="8dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:padding="4dp"
-        android:background="@color/white"
-    >
-        <Button
-            android:id="@+id/home_menu_button_addpost"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="4dp"
-            app:cornerRadius="12dp"
-            android:text="Add Post"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:background="@color/white"
+        >
+            <Button style="@style/HomeNavbarButton"
+                android:id="@+id/home_menu_button_addpost"
+                android:drawableTop="@drawable/baseline_add_circle_outline_24"
+                android:text="Add Post"/>
 
-        <Button
-            android:id="@+id/home_menu_button_profile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="4dp"
-            app:cornerRadius="12dp"
-            android:text="Profil"/>
+            <Button style="@style/HomeNavbarButton"
+                android:id="@+id/home_menu_button_profile"
+                android:drawableTop="@drawable/round_person_24"
+                android:text="Profil"/>
 
-        <Button
-            android:id="@+id/home_menu_button_moderation"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="4dp"
-            app:cornerRadius="12dp"
-            android:text="Modération"/>
+            <Button style="@style/HomeNavbarButton"
+                android:id="@+id/home_menu_button_moderation"
+                android:drawableTop="@drawable/round_preview_24"
+                android:text="Modération"/>
 
-        <Button
-            android:id="@+id/home_menu_button_parameters"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_margin="4dp"
-            app:cornerRadius="12dp"
-            android:text="Paramètres"/>
-    </LinearLayout>
+            <Button style="@style/HomeNavbarButton"
+                android:id="@+id/home_menu_button_settings"
+                android:drawableTop="@drawable/round_settings_24"
+                android:text="Paramètres"/>
+        </LinearLayout>
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.example.mobile_app.model;
+package com.example.mobile_app.model.item_post;
 
 public class ItemPost {
     private int id;
