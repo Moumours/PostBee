@@ -1,5 +1,6 @@
 package com.example.mobile_app.model;
 
+import com.example.mobile_app.model.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ViewPost {
     private String content;
     private List<Document> listdocument;
-    private List<Comment> listcomment;
+    private List<com.example.postbee.Comment> listcomment;
 
     public ViewPost(int id, int status) {
         new Thread(new Runnable() {
@@ -55,7 +56,7 @@ public class ViewPost {
         return listdocument;
     }
 
-    public List<Comment> getListcomment() {
+    public List<com.example.postbee.Comment> getListcomment() {
         return listcomment;
     }
 }

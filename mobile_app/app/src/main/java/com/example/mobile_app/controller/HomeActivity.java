@@ -62,19 +62,20 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         Intent homeActivityIntent = new Intent(HomeActivity.this, ViewPostActivity.class);
         homeActivityIntent.putExtra("ID", posts.get(position).getId());
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
-        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor());
+        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         homeActivityIntent.putExtra("STATUS", mPostStatus);
 
         startActivity(homeActivityIntent);
     }
+
     public void receiveHomePage() {
         new Thread(new Runnable() {
             public void run() {
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
 
-                    URL url = new URL("http://10.39.251.162:8000/test");
+                    URL url = new URL("http://10.117.21.10:8000/posts");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -94,9 +95,16 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
 
                     Gson gson = new Gson();
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    List<ItemPost> receivePostes = gson.fromJson(rawPostData, type);
+                    final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
 
-                    posts = receivePostes;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            posts.clear();
+                            posts.addAll(receivedPosts);
+                            mRecyclerView.getAdapter().notifyDataSetChanged(); // Notify the adapter about the new data
+                        }
+                    });
 
                     Log.d("HomeActivity", "Nombre de posts reçus : " + posts.size());
 
@@ -107,5 +115,6 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }).start();
     }
+
 
 }

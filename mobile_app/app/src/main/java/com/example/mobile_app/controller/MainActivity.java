@@ -48,20 +48,21 @@ public class MainActivity extends AppCompatActivity {
                 String passwordText = password.getText().toString();
                 String confirmPasswordText = confirmPassword.getText().toString();
 
-                int ensisaGroup = 0;
+                char ensisaGroup = '0';
                 int selectedId = statusRadioGroup.getCheckedRadioButtonId();
                 RadioButton selectedRadioButton = findViewById(selectedId);
                 String statut = selectedRadioButton.getText().toString();
 
 
                 if (statut.equals("Etudiant")) {
-                    ensisaGroup = 0;
+                    ensisaGroup = '0';
                 } else if (statut.equals("Professeur")) {
-                    ensisaGroup = 1;
+                    ensisaGroup = '1';
                 } else {
-                    ensisaGroup = 2;
+                    ensisaGroup = '2';
                 }
 
+                Log.d("MainActivity", "ensisaGroup : " + ensisaGroup);
                 String emailComplete = emailText + "@uha.fr";
 
                 if (passwordText.equals(confirmPasswordText)) {
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://postbee.alwaysdata.net/register");
+                    URL url = new URL("http://10.117.21.10:8000/register");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("POST");

@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://postbee.alwaysdata.net/login");
+                    URL url = new URL("http://10.117.21.10:8000/login");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
                     conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
@@ -95,6 +95,10 @@ public class LoginActivity extends AppCompatActivity {
                     os.flush();
                     os.close();
 
+                    if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
+                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                        startActivity(i);
+                    }
                     Log.d("LoginData", "HTTP response code: " + conn.getResponseCode()); // Add this line
 
 
