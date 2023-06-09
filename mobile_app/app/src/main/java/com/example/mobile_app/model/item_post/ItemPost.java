@@ -1,5 +1,7 @@
 package com.example.mobile_app.model.item_post;
 
+import com.example.mobile_app.model.Author;
+
 public class ItemPost {
     private int id;
     private String title;
