@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+# import des éléments pour mettre la langue en français et le fuseau horaire en Europe/Paris
+from django.utils.translation import gettext_lazy as _
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-(0zbq4k)39704kw+if%l#p7j+@t7zjxi+arhr@rt64_r1t^gt='
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -113,9 +116,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# Mise de la langue et de la time zone en français et Europe/Paris
 
-TIME_ZONE = 'UTC'
+LANGUAGE = ('fr', _('French'))
+
+LANGUAGE_CODE = 'fr'
+
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -136,3 +143,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_postBee.Account'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_FROM = 'postbee.ensisa@gmail.com'
+EMAIL_HOST_USER = 'postbee.ensisa@gmail.com'
+EMAIL_HOST_PASSWORD = 'lqoorckvhyklnlnu'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+PASSWORD_RESET_TIMEOUT = 14400

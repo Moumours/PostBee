@@ -57,7 +57,7 @@ from api_postBee.models import Account, Post
 #         self.user = Account.objects.create_user(
 #             email='test@example.com',
 #             password='testpassword',
-#             school_group=0,
+#             ensisaGroup=0,
 #         )
 
 #         # Create some posts fields = ('author_id', 'content', 'title')
@@ -97,7 +97,7 @@ from api_postBee.models import Account, Post
 #         self.user = Account.objects.create_user(
 #             email='test@example.com',
 #             password='testpassword',
-#             school_group=0,
+#             ensisaGroup=1,
 #             is_staff=False,
 #             first_name='John',
 #             last_name='Doe',
@@ -112,6 +112,8 @@ from api_postBee.models import Account, Post
 #         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
 #         self.assertEqual(response.status_code, 200)
 #         self.access_token = response.data.get('access')
+#         print(self.user.first_name+ " " + self.user.last_name+" is logged in")
+#         print("School group : " + str(self.user.ensisaGroup))
     
 #     def test_no_modo_normal_access(self):
 #         print("Test no modo noraml access")
@@ -149,6 +151,7 @@ from api_postBee.models import Account, Post
 #             print(f"Title: {post['title']}")
 #             print(f"Date: {post['date']}")
 #             print(f"Status: {post['status']}")
+#             print(f"Modo: {post['author']}")
 #             print()
 
 
@@ -158,7 +161,7 @@ from api_postBee.models import Account, Post
 #         self.user = Account.objects.create_user(
 #             email='test@example.com',
 #             password='testpassword',
-#             school_group=0,
+#             ensisaGroup='1',
 #             is_staff=True,
 #             first_name='John',
 #             last_name='Doe',
@@ -220,7 +223,7 @@ from api_postBee.models import Account, Post
 #         self.user = Account.objects.create_user(
 #             email='test@example.com',
 #             password='testpassword',
-#             school_group=0,
+#             ensisaGroup=0,
 #             is_staff=True,
 #             first_name='John',
 #             last_name='Doe',

@@ -37,11 +37,12 @@ class Account(AbstractUser):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
-    school_group = models.CharField(max_length=10, choices=SCHOOL_GROUP_CHOICES, default='0')
+    ensisaGroup = models.CharField(max_length=10, choices=SCHOOL_GROUP_CHOICES, default='0')
     username = models.CharField(max_length=150, unique=False, blank=True)
+    profile_picture = models.IntegerField(default=0)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'school_group']
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'ensisaGroup']
 
     objects = CustomUserManager()
 
