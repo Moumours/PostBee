@@ -74,7 +74,13 @@ public class ViewPostActivity extends AppCompatActivity {
 
                     Gson gson = new Gson();
                     mViewPost = gson.fromJson(rawPostData, ViewPost.class);
-                    mTextContent.setText(mViewPost.getText());
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextContent.setText(mViewPost.getText());
+                        }
+                    });
 
                     Log.d("ViewPostActivity","Voici le contenu : " + mViewPost.getText());
 
@@ -85,6 +91,7 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         }).start();
     }
+
 
 }
 
