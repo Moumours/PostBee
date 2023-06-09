@@ -3,7 +3,6 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 import json
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
@@ -50,16 +49,18 @@ class LoginView(APIView):
 class RegisterView(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
+            print("Register")
             json_data = json.loads(request.body)
+            print(json_data)
             form = RegisterForm(json_data)
             if form.is_valid():
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
-                # for field in user._meta.fields:
-                #     field_name = field.name
-                #     field_value = getattr(user, field_name)
-                #     print(f"{field_name}: {field_value}")
+                for field in user._meta.fields:
+                    field_name = field.name
+                    field_value = getattr(user, field_name)
+                    print(f"{field_name}: {field_value}")
                 self.activate_email(request, user)
                 response_data = {
                     'success': True,
@@ -123,27 +124,27 @@ class ActivateAccount(APIView):
 
 class PostList(ReadOnlyModelViewSet):
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Post.objects.all()
         moderate = self.request.query_params.get('moderate')
         amount = self.request.query_params.get('amount', 10)
-        print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
-        print("User is staff : " + str(self.request.user.is_staff))
+        # print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
+        # print("User is staff : " + str(self.request.user.is_staff))
         print("Moderate : " + str(moderate))
         print("Amount : " + str(amount))
         # get amount of posts to return or default to 10
 
         # User is staff status and filter moderate is true
-        if moderate == 'True' and self.request.user.is_staff:
+        if moderate == 'True':# and self.request.user.is_staff:
             print('Moderate is true and user is staff')
-            queryset = queryset.filter(status='0')[:int(amount)]
+            queryset = queryset.filter(status='0').order_by('-date')[:int(amount)]
 
         # all user if moderate is false
         else:
             print('Moderate is false')
-            queryset = queryset.filter(status='1')[:int(amount)]
+            queryset = queryset.filter(status='1').order_by('-date')[:int(amount)]
         
         return queryset
 
@@ -154,7 +155,7 @@ class PostList(ReadOnlyModelViewSet):
 
 class PostDetail(ReadOnlyModelViewSet):
     serializer_class = PostDetailSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     print('PostDetail viewset')
 
     def get_queryset(self):
@@ -179,3 +180,8 @@ class PostDetail(ReadOnlyModelViewSet):
 #     def get(self, request, format=None):
 #         print(request.user.email)
 #         return Response({'message': 'Hello, world!'}, status=status.HTTP_200_OK)
+
+# Endpoint view that allws user to create a post
+
+class PostCreate(APIView):
+    pass
