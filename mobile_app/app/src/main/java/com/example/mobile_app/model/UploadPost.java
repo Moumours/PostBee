@@ -26,7 +26,7 @@ public class UploadPost {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://10.39.251.162:8000/test");
+                    URL url = new URL("http://postbee.alwaysdata.net/test");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("POST");

@@ -24,6 +24,7 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView mTextContent;
     TextView mTextAuthor;
     TextView mTextDate;
+    ViewPost mViewPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,13 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
         int postId = getIntent().getIntExtra("ID",0);
+        downloadViewPost(postId);
 
-        getPostDetails(postId);
+        mTextTitle.setText(getIntent().getStringExtra("TITLE"));
+        mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
+        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getStringExtra("ID"));
+
+
         Log.d("ViewPostActivity","Voici l'id : " + postId);
 
         // ViewPost a aussi les documents et les commentaires
@@ -45,11 +51,11 @@ public class ViewPostActivity extends AppCompatActivity {
         // ViewPost.getListcomment()
     }
 
-    public void getPostDetails(int postId) {
+    public void downloadViewPost(int postId) {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://10.117.21.10:8000/post/?id=" + postId);
+                    URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -67,19 +73,10 @@ public class ViewPostActivity extends AppCompatActivity {
                     String rawPostData = response.toString();
 
                     Gson gson = new Gson();
-                    ViewPost viewpost = gson.fromJson(rawPostData, ViewPost.class);
+                    mViewPost = gson.fromJson(rawPostData, ViewPost.class);
+                    mTextContent.setText(mViewPost.getText());
 
-                    Log.d("ViewPostActivity","Voici le contenu : " + viewpost.getText());
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mTextTitle.setText(getIntent().getStringExtra("TITLE"));
-                            mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
-                            mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getStringExtra("ID"));
-                            mTextContent.setText(viewpost.getText());
-                        }
-                    });
+                    Log.d("ViewPostActivity","Voici le contenu : " + mViewPost.getText());
 
                     django.disconnect();
                 } catch (Exception e) {

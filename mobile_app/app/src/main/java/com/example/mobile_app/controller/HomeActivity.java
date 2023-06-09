@@ -75,7 +75,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
 
-                    URL url = new URL("http://10.117.21.10:8000/posts");
+                    URL url = new URL("http://postbee.alwaysdata.net/posts");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
