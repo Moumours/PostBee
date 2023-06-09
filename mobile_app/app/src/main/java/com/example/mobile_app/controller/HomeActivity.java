@@ -5,10 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.item_post.ItemPost;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
     private int mPostStatus = 0;
@@ -40,6 +43,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mSwipeRefreshLayout = findViewById(R.id.home_swiperefreshlayout_s2r);
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
         mProfileButton = findViewById(R.id.home_menu_button_profile);
@@ -79,6 +83,14 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
         receiveHomePage();
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                receiveHomePage();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -139,6 +151,4 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }).start();
     }
-
-
 }
