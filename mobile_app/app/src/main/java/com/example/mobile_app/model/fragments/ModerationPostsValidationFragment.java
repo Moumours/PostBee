@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,41 +21,90 @@ import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.item_post.ItemPostValidationAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModerationPostsValidationFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemPost> posts = new ArrayList<ItemPost>();
+    private RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_moderation_posts_validation, container, false);
-        RecyclerView recyclerView = rootView.findViewById(R.id.modposts_recyclerview_posts);
-
-        posts.add(new ItemPost(0,"Titre d'article 1", new Author("Jean", "Sériens"), "01/01/2000"));
-        posts.add(new ItemPost(1,"Titre d'article 2", new Author("Jean", "Neymar"), "02/02/2002"));
-        posts.add(new ItemPost(2,"Titre d'article 3", new Author("Martine", ""), "03/03/2003"));
-        posts.add(new ItemPost(3,"Titre d'article 4", new Author(":D", ""), "12/10/2015"));
-        posts.add(new ItemPost(4,"Titre d'article 5", new Author("Jean", "Sériens"), "01/01/2000"));
-        posts.add(new ItemPost(5,"Titre d'article 6", new Author("Jean", "Neymar"), "02/02/2002"));
-        posts.add(new ItemPost(6,"Titre d'article 7", new Author("Martine", ""), "03/03/2003"));
-        posts.add(new ItemPost(7,"Titre d'article 8", new Author(":D", ""), "12/10/2015"));
+        recyclerView = rootView.findViewById(R.id.modposts_recyclerview_posts);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new ItemPostValidationAdapter(posts, getActivity().getApplicationContext(), this));
 
+        receiveModaratePage();
         return rootView;
     }
 
     @Override
     public void onItemClick(int position) {
-        Intent homeActivityIntent = new Intent(getActivity(), ViewPostActivity.class);
-        homeActivityIntent.putExtra("ID", posts.get(position).getId());
-        homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
-        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
-        homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        startActivity(homeActivityIntent);
+        Intent ModerationPostValidation = new Intent(getActivity(), ViewPostActivity.class);
+        ModerationPostValidation.putExtra("ID", posts.get(position).getId());
+        ModerationPostValidation.putExtra("TITLE", posts.get(position).getTitle());
+        ModerationPostValidation.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
+        ModerationPostValidation.putExtra("DATE", posts.get(position).getDate());
+        startActivity(ModerationPostValidation);
     }
+
+    public void receiveModaratePage() {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Log.d("HomeActivity", "Début de la méthode receiveHomePage");
+
+                    URL url = new URL("http://postbee.alwaysdata.net/posts/?moderate=True&amount=10");
+                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
+
+                    django.setRequestMethod("GET");
+                    django.setRequestProperty("Accept","application/json");
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    String rawPostData = response.toString();
+                    Log.d("ModerationPostsValidationFragment", "Données brutes reçues : " + rawPostData);
+
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<List<ItemPost>>(){}.getType();
+                    final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            posts.clear();
+                            posts.addAll(receivedPosts);
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
+                    });
+
+                    Log.d("ModerationPostsValidationFragment", "Nombre de posts reçus : " + posts.size());
+
+                    django.disconnect();
+                } catch (Exception e) {
+                    Log.e("ModerationPostsValidationFragment", "Erreur dans receiveHomePage", e);
+                }
+            }
+        }).start();
+    }
+
 }

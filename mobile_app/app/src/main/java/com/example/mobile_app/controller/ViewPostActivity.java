@@ -41,7 +41,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
         mTextTitle.setText(getIntent().getStringExtra("TITLE"));
         mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
-        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getStringExtra("ID"));
+        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
 
 
         Log.d("ViewPostActivity","Voici l'id : " + postId);
