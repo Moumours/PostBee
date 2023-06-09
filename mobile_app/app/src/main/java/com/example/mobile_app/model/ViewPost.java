@@ -13,7 +13,7 @@ import java.util.List;
 public class ViewPost {
     private String content;
     private List<Document> listdocument;
-    private List<com.example.postbee.Comment> listcomment;
+    private List<com.example.mobile_app.model.Comment> listcomment;
 
     public ViewPost(int id, int status) {
         new Thread(new Runnable() {
@@ -56,7 +56,7 @@ public class ViewPost {
         return listdocument;
     }
 
-    public List<com.example.postbee.Comment> getListcomment() {
+    public List<com.example.mobile_app.model.Comment> getListcomment() {
         return listcomment;
     }
 }
