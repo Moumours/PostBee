@@ -1,15 +1,28 @@
-package com.example.mobile_app.controller;
+package com.example.mobile_app.model;
+
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import com.google.gson.Gson;
+import java.util.List;
 
-public class Verification {
+public class UploadPost {
+    private String title;
+    private String author;
+    private String contenu;
+    private List<Document> listedocument;
 
-    public void verifPost (Poste poste) {
+    public UploadPost(String title, String author, String contenu, List<Document> listedocument) {
+        this.title = title;
+        this.author = author;
+        this.contenu = contenu;
+        this.listedocument = listedocument;
+    }
+
+    public void sendtoserver(){
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -23,12 +36,12 @@ public class Verification {
                     django.setDoInput(true);
 
                     Gson gson = new Gson();
-                    String jsonPoste = gson.toJson(poste);
+                    String jsonUploadPost = gson.toJson(this);
 
-                    System.out.println(jsonPoste);
+                    System.out.println(jsonUploadPost);
 
                     try(OutputStreamWriter os = new OutputStreamWriter(django.getOutputStream(), "UTF-8")) {
-                        os.write(jsonPoste);
+                        os.write(jsonUploadPost);
                         os.flush();
                     }
 
@@ -54,14 +67,35 @@ public class Verification {
         }).start();
     }
 
-    public void receivePost(String rawPostData) {
-        // Convertir la réponse JSON en un objet Poste
-        Gson gson = new Gson();
-        Poste poste = gson.fromJson(rawPostData, Poste.class);
-
-        System.out.println("Title: " + poste.getTitle());
-        System.out.println("Content: " + poste.getText());
-        System.out.println("Status: " + poste.getStatus());
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getContenu() {
+        return contenu;
+    }
+
+    public void setContenu(String contenu) {
+        this.contenu = contenu;
+    }
+
+    public List<Document> getListedocument() {
+        return listedocument;
+    }
+
+    public void setListedocument(List<Document> listedocument) {
+        this.listedocument = listedocument;
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.mobile_app.controller;
 
-import android.content.Intent;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +8,8 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.example.mobile_app.model.User;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -47,20 +48,21 @@ public class MainActivity extends AppCompatActivity {
                 String passwordText = password.getText().toString();
                 String confirmPasswordText = confirmPassword.getText().toString();
 
-                int ensisaGroup = 0;
+                char ensisaGroup = '0';
                 int selectedId = statusRadioGroup.getCheckedRadioButtonId();
                 RadioButton selectedRadioButton = findViewById(selectedId);
                 String statut = selectedRadioButton.getText().toString();
 
 
                 if (statut.equals("Etudiant")) {
-                    ensisaGroup = 0;
+                    ensisaGroup = '0';
                 } else if (statut.equals("Professeur")) {
-                    ensisaGroup = 1;
+                    ensisaGroup = '1';
                 } else {
-                    ensisaGroup = 2;
+                    ensisaGroup = '2';
                 }
 
+                Log.d("MainActivity", "ensisaGroup : " + ensisaGroup);
                 String emailComplete = emailText + "@uha.fr";
 
                 if (passwordText.equals(confirmPasswordText)) {
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://10.117.21.10:8000/register");
+                    URL url = new URL("https://postbee.alwaysdata.net/register");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("POST");

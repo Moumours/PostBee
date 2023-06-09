@@ -2,10 +2,21 @@ package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.ViewPost;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 
 public class ViewPostActivity extends AppCompatActivity {
 
@@ -13,6 +24,7 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView mTextContent;
     TextView mTextAuthor;
     TextView mTextDate;
+    ViewPost mViewPost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +36,62 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
+        int postId = getIntent().getIntExtra("ID",0);
+        downloadViewPost(postId);
+
         mTextTitle.setText(getIntent().getStringExtra("TITLE"));
         mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
-        mTextDate.setText(getIntent().getStringExtra("DATE"));
-        mTextContent.setText("L'ID du post est : " + getIntent().getIntExtra("ID", -1));
+        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getStringExtra("ID"));
+
+
+        Log.d("ViewPostActivity","Voici l'id : " + postId);
+
+        // ViewPost a aussi les documents et les commentaires
+        // ViewPost.getListdocument()
+        // ViewPost.getListcomment()
     }
+
+    public void downloadViewPost(int postId) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
+                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
+
+                    django.setRequestMethod("GET");
+                    django.setRequestProperty("Accept","application/json");
+
+                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+
+                    String rawPostData = response.toString();
+
+                    Gson gson = new Gson();
+                    mViewPost = gson.fromJson(rawPostData, ViewPost.class);
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mTextContent.setText(mViewPost.getText());
+                        }
+                    });
+
+                    Log.d("ViewPostActivity","Voici le contenu : " + mViewPost.getText());
+
+                    django.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+
 }
+
