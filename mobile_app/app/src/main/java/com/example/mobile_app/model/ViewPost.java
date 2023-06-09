@@ -1,5 +1,8 @@
 package com.example.mobile_app.model;
 
+import android.util.Log;
+import android.view.View;
+
 import com.example.mobile_app.model.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +14,7 @@ import java.net.URL;
 import java.util.List;
 
 public class ViewPost {
-    private String content;
+    private String text;
     private List<Document> listdocument;
     private List<com.example.postbee.Comment> listcomment;
 
@@ -19,7 +22,7 @@ public class ViewPost {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://10.39.251.162:8000/test");
+                    URL url = new URL("http://10.117.21.10:8000/post/?id=\" + id");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -48,8 +51,8 @@ public class ViewPost {
         }).start();
     }
 
-    public String getContent() {
-        return content;
+    public String getText() {
+        return text;
     }
 
     public List<Document> getListdocument() {

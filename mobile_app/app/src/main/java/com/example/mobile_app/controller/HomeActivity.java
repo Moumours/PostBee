@@ -102,7 +102,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                         public void run() {
                             posts.clear();
                             posts.addAll(receivedPosts);
-                            mRecyclerView.getAdapter().notifyDataSetChanged(); // Notify the adapter about the new data
+                            mRecyclerView.getAdapter().notifyDataSetChanged();
                         }
                     });
 
