@@ -434,7 +434,8 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post :\n")
 #         url = reverse('approvePost-approve', kwargs={'id': 1})
-#         response = self.client.get(url, {'approve': 'True'})
+#         print("url: " + str(url))
+#         response = self.client.get('/approve/1/approve/?approve=True')
 #         print("response" + str(response))
 
 #         print("\nPost list :\n")

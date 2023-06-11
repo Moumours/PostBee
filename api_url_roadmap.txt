@@ -1,0 +1,25 @@
+Register :
+	postbee.alwaysdata.net/register
+
+Login :
+	postbee.alwaysdata.net/login
+
+Liste des postes :
+	postbee.alwaysdata.net/posts/?amount=x&modo=True
+	amount correspond aux nombres de postes demandé
+	le champ modo=True est à mettre que sur l'écran de liste des postes à publier (modérateur), dans ce cas, la
+	liste renvoyée est celle à approuver
+
+Détail d'un poste :
+	postbee.alwaysdata.net/post/?id=x
+	id correspond à l'id du poste à afficher
+
+Publier un post :
+	postbee.alwaysdata.net/publish
+
+Publier un commentaire :
+	postbee.alwaysdata.net//comment
+
+Approuver un post :
+	postbee.alwaysdata.net/approve/1/approve/?approve={'True', 'False'}
+	approve correspond au choix de l'admin, True pour approuver, False pour refuser
