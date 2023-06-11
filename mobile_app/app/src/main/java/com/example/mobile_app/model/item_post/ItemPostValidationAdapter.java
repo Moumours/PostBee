@@ -35,9 +35,11 @@ public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostVali
 
     @Override
     public void onBindViewHolder(@NonNull ItemPostValidationViewHolder holder, int position) {
+        ItemPost post = posts.get(position);
         holder.text_title.setText(posts.get(position).getTitle());
         holder.text_author.setText(posts.get(position).getAuthor().getFullname());
         holder.text_date.setText(posts.get(position).getDate());
+        holder.postId = post.getId();
     }
 
     @Override
