@@ -23,6 +23,7 @@ from api_postBee.views import *
 postRouter = routers.SimpleRouter()
 postRouter.register('posts', PostList, basename='post')
 postRouter.register('post', PostDetail, basename='postDetail')
+postRouter.register('approve', ApprovePost, basename='approvePost')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,5 +34,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
     path('', IndexView.as_view(), name='index'),
     path('', include(postRouter.urls)),
+    path('publish', PublishPost.as_view(), name='publish'),
+    path('comment', PublishComment.as_view(), name='comment'),
     # path('test', TestView.as_view(), name='test'),
 ]
