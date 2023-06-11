@@ -75,3 +75,6 @@ Supprimer un commentaire :
 
 Obtenir les informations d'un utilisateur :
 	postbee.alwaysdata.net/user_info
+
+Mise à jour du token :
+	postbee.alwaysdata.net/refresh_token

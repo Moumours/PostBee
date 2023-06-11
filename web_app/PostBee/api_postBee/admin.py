@@ -47,6 +47,12 @@ class AccountAdmin(UserAdmin):
 class PostAdmin(admin.ModelAdmin):
     list_display = ('title', 'author', 'date', 'status')
 
+    fieldsets = (
+        ('ID', {'fields': ('title', 'author', 'date')}),
+        ('Content', {'fields': ('text',)}),
+        ('Status', {'fields': ('status',)}),
+    )
+
     inlines = [
         ImageInline,
         VideoInline,

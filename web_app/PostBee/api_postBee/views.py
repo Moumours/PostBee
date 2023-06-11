@@ -163,15 +163,16 @@ class PostDetail(ReadOnlyModelViewSet):
         id = self.request.query_params.get('id')
         if id is None:
             return Response({'error': 'Post ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-        queryset = Post.objects.filter(id=id)
-        if not queryset.exists():# or (not queryset.status == '0' and not self.request.user.is_staff):
-            # print('Post not found')
-            return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+        queryset = get_object_or_404(Post.objects.all(), id=id)
+        print("Post status : " + queryset.status)
+        # if not queryset.status == '1' and not self.request.user.is_staff:
+        #     print('Post not found')
+        #     return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
         return queryset
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset.first())
+        serializer = self.get_serializer(queryset)
         return Response(serializer.data)
         
 class PublishPost(APIView):
@@ -343,17 +344,16 @@ class AddModo(APIView):
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class DeleteComment(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         if request.method == 'POST':
             serializers = DeleteCommentSerializer(data=request.data)
-            if not self.request.user.is_staff:
-                return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            # if not self.request.user.is_staff:
+            #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             if serializers.is_valid():
                 print(request.data)
                 id = request.data.get('id')
-                print("id = " + str(id))
                 if id is None:
                     return Response({'error': 'Comment ID is required'}, status=status.HTTP_400_BAD_REQUEST)
                 comment = get_object_or_404(Comment, id=id)
@@ -376,6 +376,21 @@ class UserView(APIView):
             user = self.request.user
             serializer = UserSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+class TokenRefresh(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        if request.method == 'GET':
+            user = self.request.user
+            token = RefreshToken.for_user(user)
+            return Response({'refresh': str(token), 'access': str(token.access_token)}, status=status.HTTP_200_OK)
         else:
             response_data = {
                 'success': False,

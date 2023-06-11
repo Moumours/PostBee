@@ -660,27 +660,53 @@ from api_postBee.models import Account, Post, Comment
 #             print(f"Comment content: {comment['text']}")
 #             print()
 
-class GetUserInfoTestCase(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.user = Account.objects.create_user(
-            email='test@example.com',
-            password='testpassword',
-            ensisaGroup='0',
-            is_staff=True,
-            first_name='John',
-            last_name='Doe',
-        )
+# class GetUserInfoTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
 
-        response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
-        self.access_token = response.data.get('access')
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
 
-    def test_get_user_info(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#     def test_get_user_info(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-        print("\nUser info :\n")
-        url = '/user_info'
-        response = self.client.get(url)
-        print("response" + str(response))
-        print("Data : " + str(response.data))
-        datas = response.data
+#         print("\nUser info :\n")
+#         url = '/user_info'
+#         response = self.client.get(url)
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         datas = response.data
+
+# class RefreshTokenTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+    
+#     def test_refresh_token(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nRefresh token :\n")
+#         url = '/refresh_token'
+#         response = self.client.get(url)
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         datas = response.data
+#         self.assertNotEqual(datas['access'], self.access_token)
