@@ -1,8 +1,25 @@
 <resources>
     <string name="app_name">PostBee</string>
 
+    <string name="ui_users">Utilisateurs</string>
+    <string name="ui_moderation">Modération</string>
+    <string name="ui_postToValidate">Posts à valider</string>
     <string name="ui_comments">Commentaires</string>
     <string name="ui_target">Public ciblé</string>
+    <string name="ui_loading">Chargement...</string>
+
+    <string name="ui_role0">Etudiant</string>
+    <string name="ui_role1">Enseignant</string>
+    <string name="ui_role2">Autre</string>
+
+    <string name="ui_warning">Attention !</string>
+    <string name="ui_delete">Supprimer</string>
+    <string name="ui_cancel">Annuler</string>
+
+    <string name="ui_deleteAccountWarning">
+        Êtes-vous sûr de vouloir supprimer votre compte ?\n
+        Vos posts seront concervés mais anonymisés. </string>
+    <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
 
     <string name="hint_title">Titre</string>
     <string name="hint_content">Ecrivez votre post ici...</string>
@@ -22,6 +39,9 @@
     <string name="placeholder_username">Alain Génieur</string>
     <string name="placeholder_date">01/01/2000</string>
     <string name="placeholder_comment">Sample comment</string>
+    <string name="placeholder_email">my.cool@email.com</string>
+    <string name="placeholder_role">The role</string>
+    <string name="placeholder_setting">Sample setting</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

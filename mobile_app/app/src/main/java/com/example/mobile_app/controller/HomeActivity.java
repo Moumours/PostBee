@@ -4,18 +4,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
-import com.example.mobile_app.model.ItemPost;
-import com.example.mobile_app.model.ItemPostAdapter;
+import com.example.mobile_app.model.item_post.ItemPost;
+import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,19 +28,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
+    private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
     private int mPostStatus = 0;
 
     private Button mAddPostButton;
+    private Button mProfileButton;
+    private Button mModerationButton;
+    private Button mSettingsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        mSwipeRefreshLayout = findViewById(R.id.home_swiperefreshlayout_s2r);
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
+        mProfileButton = findViewById(R.id.home_menu_button_profile);
+        mModerationButton = findViewById(R.id.home_menu_button_moderation);
+        mSettingsButton = findViewById(R.id.home_menu_button_settings);
 
 
 
@@ -54,7 +61,36 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                 startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
             }
         });
+
+        mProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+            }
+        });
+
+        mModerationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, ModerationActivity.class));
+            }
+        });
+
+        mSettingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+            }
+        });
         receiveHomePage();
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                receiveHomePage();
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -75,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
 
-                    URL url = new URL("http://10.117.21.10:8000/posts");
+                    URL url = new URL("http://postbee.alwaysdata.net/posts");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -115,6 +151,4 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }).start();
     }
-
-
 }

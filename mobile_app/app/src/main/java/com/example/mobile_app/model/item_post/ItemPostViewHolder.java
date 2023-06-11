@@ -1,4 +1,4 @@
-package com.example.mobile_app.model;
+package com.example.mobile_app.model.item_post;
 
 import android.view.View;
 import android.widget.TextView;
@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.RecyclerViewInterface;
 
 public class ItemPostViewHolder extends RecyclerView.ViewHolder {
     TextView text_title, text_author, text_date;

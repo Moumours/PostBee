@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:background="@color/bg_blue"
+    app:cornerRadius="40dp"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemuser_textview_fullname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/placeholder_username"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/itemuser_textview_email"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:text="@string/placeholder_email" />
+
+            <TextView
+                android:id="@+id/itemuser_textview_role"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:text="@string/placeholder_role"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/itemuser_button_remove"
+        android:layout_marginStart="20dp"
+        android:layout_width="56dp"
+        android:layout_height="match_parent"
+        android:text="P"/>
+
+</LinearLayout>

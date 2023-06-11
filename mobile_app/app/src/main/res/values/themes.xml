@@ -1,9 +1,33 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.Mobile_app" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.Mobile_app" parent="Theme.Material3.Dark.NoActionBar">
     </style>
 
     <style name="Theme.Mobile_app" parent="Base.Theme.Mobile_app" />
+
+    <style name="HomeNavbarButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">0dp</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:background">#0000</item>
+    </style>
+
+    <style name="DefaultListItemButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">#0000</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:textSize">16dp</item>
+        <item name="paddingStart">24dp</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
+
 </resources>

@@ -18,37 +18,10 @@ public class ViewPost {
     private List<Document> listdocument;
     private List<com.example.mobile_app.model.Comment> listcomment;
 
-    public ViewPost(int id, int status) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    URL url = new URL("http://10.117.21.10:8000/post/?id=\" + id");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("GET");
-                    django.setRequestProperty("Accept","application/json");
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    String rawPostData = response.toString();
-
-                    Gson gson = new Gson();
-                    Type type = new TypeToken<ViewPost>(){}.getType();
-                    ViewPost viewpost = gson.fromJson(rawPostData, type);
-
-                    django.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+    public ViewPost(String text, List<Document> listdocument, List<Comment> listcomment) {
+        this.text = text;
+        this.listdocument = listdocument;
+        this.listcomment = listcomment;
     }
 
     public String getText() {
@@ -59,7 +32,7 @@ public class ViewPost {
         return listdocument;
     }
 
-    public List<com.example.mobile_app.model.Comment> getListcomment() {
+    public List<Comment> getListcomment() {
         return listcomment;
     }
 }

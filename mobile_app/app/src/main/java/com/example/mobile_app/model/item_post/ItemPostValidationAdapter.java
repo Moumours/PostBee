@@ -1,4 +1,4 @@
-package com.example.mobile_app.model;
+package com.example.mobile_app.model.item_post;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,16 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.RecyclerViewInterface;
 
 import java.util.List;
 
-public class ItemPostAdapter extends RecyclerView.Adapter<ItemPostViewHolder> {
+public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostValidationViewHolder> {
     private final RecyclerViewInterface recyclerViewInterface;
 
     Context mContext;
     List<ItemPost> posts;
 
-    public ItemPostAdapter(List<ItemPost> posts, Context context, RecyclerViewInterface recyclerViewInterface) {
+    public ItemPostValidationAdapter(List<ItemPost> posts, Context context, RecyclerViewInterface recyclerViewInterface) {
         this.posts = posts;
         this.mContext = context;
         this.recyclerViewInterface = recyclerViewInterface;
@@ -25,17 +26,17 @@ public class ItemPostAdapter extends RecyclerView.Adapter<ItemPostViewHolder> {
 
     @NonNull
     @Override
-    public ItemPostViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ItemPostViewHolder(
-                LayoutInflater.from(mContext).inflate(R.layout.item_post, parent, false),
+    public ItemPostValidationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ItemPostValidationViewHolder(
+                LayoutInflater.from(mContext).inflate(R.layout.item_post_validation, parent, false),
                 recyclerViewInterface
         );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemPostViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ItemPostValidationViewHolder holder, int position) {
         holder.text_title.setText(posts.get(position).getTitle());
-        holder.text_author.setText(posts.get(position).getAuthor().getFirstname());
+        holder.text_author.setText(posts.get(position).getAuthor().getFullname());
         holder.text_date.setText(posts.get(position).getDate());
     }
 
