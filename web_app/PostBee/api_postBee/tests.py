@@ -408,7 +408,7 @@ from api_postBee.models import Account, Post, Comment
 #         )
 #         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
 #         self.access_token = response.data.get('access')
-#         post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
+#         post1 = Post.objects.create(author=self.user, text='test content 1', title='test title 1', status='0')
 #         post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='0')
 #         post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='1')
 #         post4 = Post.objects.create(author=self.user, text='test content 4', title='test title 4', status='1')
@@ -433,10 +433,11 @@ from api_postBee.models import Account, Post, Comment
 
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post :\n")
-#         url = reverse('approvePost-approve', kwargs={'id': 1})
-#         print("url: " + str(url))
-#         response = self.client.get('/approve/1/approve/?approve=True')
+#         url = '/approve'
+#         data = {'postId': 1, 'response': 'True'}
+#         response = self.client.post(url, data=data)
 #         print("response" + str(response))
+#         print("Data : " + str(response.data))
 
 #         print("\nPost list :\n")
 #         # Set the access token in the Authorization header
@@ -455,8 +456,9 @@ from api_postBee.models import Account, Post, Comment
 
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\Refusing post :\n")
-#         url = reverse('approvePost-approve', kwargs={'id': 2})
-#         response = self.client.get(url, {'approve': 'False'})
+#         url = '/approve'
+#         data = {'postId': 2, 'response': 'False'}
+#         response = self.client.post(url, data=data)
 #         print("response" + str(response))
 
 #         print("\nPost list :\n")
@@ -476,8 +478,9 @@ from api_postBee.models import Account, Post, Comment
         
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post already approved :\n")
-#         url = reverse('approvePost-approve', kwargs={'id': 4})
-#         response = self.client.get(url, {'approve': 'True'})
+#         url = '/approve'
+#         data = {'postId': 3, 'response': 'True'}
+#         response = self.client.post(url, data=data)
 #         print("response" + str(response))
 
 #         print("\nStatus conclusion :\n")
@@ -489,3 +492,195 @@ from api_postBee.models import Account, Post, Comment
 #             print(f"Date: {post.date}")
 #             print(f"Status: {post.status}")
 #             print()
+
+
+# class DeleteUserTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         userAdmin = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         user1 = Account.objects.create_user(
+#             email='delete@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Mike',
+#             last_name='Anderson',
+#         )
+
+#         response = self.client.post(reverse('login'), data={'email': userAdmin.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+
+#     def test_delete_user(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nUser list :\n")
+#         users = Account.objects.all()
+#         for user in users:
+#             print(f"User ID: {user.id}")
+#             print(f"Email: {user.email}")
+#             print(f"First name: {user.first_name}")
+#             print(f"Last name: {user.last_name}")
+#             print(f"Is staff: {user.is_staff}")
+#             print()
+        
+#         print("\nDeleting user :\n")
+#         url = '/delete_user'
+#         data = {'userId': 2}
+#         response = self.client.post(url, data=data)
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         print("\nUser list :\n")
+#         users = Account.objects.all()
+#         for user in users:
+#             print(f"User ID: {user.id}")
+#             print(f"Email: {user.email}")
+#             print(f"First name: {user.first_name}")
+#             print(f"Last name: {user.last_name}")
+#             print(f"Is staff: {user.is_staff}")
+#             print()
+
+# class AddModoTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         userAdmin = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         user1 = Account.objects.create_user(
+#             email='delete@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Mike',
+#             last_name='Anderson',
+#         )
+
+#         response = self.client.post(reverse('login'), data={'email': userAdmin.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+
+#     def test_delete_user(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nUser list :\n")
+#         users = Account.objects.all()
+#         for user in users:
+#             print(f"User ID: {user.id}")
+#             print(f"Email: {user.email}")
+#             print(f"First name: {user.first_name}")
+#             print(f"Last name: {user.last_name}")
+#             print(f"Is staff: {user.is_staff}")
+#             print()
+        
+#         print("\nAdding Modo :\n")
+#         url = '/add_modo'
+#         data = {'userId': 2}
+#         response = self.client.post(url, data=data)
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         print("\nUser list :\n")
+#         users = Account.objects.all()
+#         for user in users:
+#             print(f"User ID: {user.id}")
+#             print(f"Email: {user.email}")
+#             print(f"First name: {user.first_name}")
+#             print(f"Last name: {user.last_name}")
+#             print(f"Is staff: {user.is_staff}")
+#             print()
+
+# class DeleteCommentTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+#         post1 = Post.objects.create(author=self.user, text='test content 1', title='test title 1', status='0')
+#         comment1 = Comment.objects.create(author=self.user, text='test comment 1', post=post1)
+#         comment2 = Comment.objects.create(author=self.user, text='test comment 2', post=post1)
+#         comment3 = Comment.objects.create(author=self.user, text='test comment 3', post=post1)
+
+#     def test_delete_comment(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("Post details :\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/post/?id=1')
+#         print("response" + str(response))
+#         print("response.data" + str(response.data))
+
+#         post = response.data
+#         print(f"Post content: {post['text']}")
+#         comments = post['comments']
+#         for comment in comments:
+#             print(f"Comment Author: {comment['author']['full_name']}")
+#             print(f"Comment content: {comment['text']}")
+#             print()
+        
+#         print("\nDeleting comment :\n")
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#         url = '/delete_comment'
+#         data = {'id': 2}
+#         response = self.client.post(url, data=data)
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         print("\nPost details :\n")
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#         response = self.client.get('/post/?id=1')
+#         print("response" + str(response))
+#         print("response.data" + str(response.data))
+
+#         post = response.data
+#         print(f"Post content: {post['text']}")
+#         comments = post['comments']
+#         for comment in comments:
+#             print(f"Comment Author: {comment['author']['full_name']}")
+#             print(f"Comment content: {comment['text']}")
+#             print()
+
+class GetUserInfoTestCase(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = Account.objects.create_user(
+            email='test@example.com',
+            password='testpassword',
+            ensisaGroup='0',
+            is_staff=True,
+            first_name='John',
+            last_name='Doe',
+        )
+
+        response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+        self.access_token = response.data.get('access')
+
+    def test_get_user_info(self):
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        print("\nUser info :\n")
+        url = '/user_info'
+        response = self.client.get(url)
+        print("response" + str(response))
+        print("Data : " + str(response.data))
+        datas = response.data

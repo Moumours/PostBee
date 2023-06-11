@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer, SerializerMethodField, PrimaryKeyRelatedField
 from api_postBee.models import *
+from rest_framework import serializers
 
 class AuthorSerializer(ModelSerializer):
     full_name = SerializerMethodField()
@@ -51,6 +52,23 @@ class CommentPublishSerializer(ModelSerializer):
         fields = ['text', 'post']
 
 class ApprovePostSerializer(ModelSerializer):
+    response = serializers.BooleanField()
+    postId = serializers.IntegerField()
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ['postId', 'response']
+
+class DeleteAndModoUserSerializer(ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['id']
+
+class DeleteCommentSerializer(ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = ['id']
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'email', 'ensisaGroup', 'profile_picture', 'is_staff']

@@ -23,7 +23,6 @@ from api_postBee.views import *
 postRouter = routers.SimpleRouter()
 postRouter.register('posts', PostList, basename='post')
 postRouter.register('post', PostDetail, basename='postDetail')
-postRouter.register('approve', ApprovePost, basename='approvePost')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,5 +35,9 @@ urlpatterns = [
     path('', include(postRouter.urls)),
     path('publish', PublishPost.as_view(), name='publish'),
     path('comment', PublishComment.as_view(), name='comment'),
-    # path('test', TestView.as_view(), name='test'),
+    path('approve', ApprovePost.as_view(), name='approve'),
+    path('delete_user', DeleteUser.as_view(), name='delete_user'),
+    path('add_modo', AddModo.as_view(), name='add_modo'),
+    path('delete_comment', DeleteComment.as_view(), name='delete_comment'),
+    path('user_info', UserView.as_view(), name='get_user'),
 ]

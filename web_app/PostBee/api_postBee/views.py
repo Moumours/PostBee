@@ -245,25 +245,140 @@ class PublishComment(APIView):
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-class ApprovePost(ModelViewSet):
+
+class ApprovePost(APIView):
     # permission_classes = [IsAuthenticated]
-    queryset = Post.objects.all()
-    serializer_class = ApprovePostSerializer
-    lookup_field = 'id'
 
-    @action(detail=True, methods=['get'])
-    def approve(self, request, id=None):
-        # if not self.request.user.is_staff:
-        #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
-        post = get_object_or_404(Post, id=id, status='0')
-        approve_status = request.query_params.get('approve')
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializer = ApprovePostSerializer(data=request.data)
+            # if not self.request.user.is_staff:
+            #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            if serializer.is_valid():
+                id = request.data.get('postId')
+                approve_status = request.data.get('response')
+                if id is None or approve_status is None:
+                    return Response({'error': 'Post ID and approve status are required'}, status=status.HTTP_400_BAD_REQUEST)
+                post = get_object_or_404(Post, id=id, status='0')
 
-        if approve_status == 'True':
-            post.status = '1'  # Approve the post
-            post.date = timezone.now()  # Set the date to now
+                if approve_status == 'True':
+                    post.status = '1'  # Approve the post
+                    post.date = timezone.now()  # Set the date to now
+                else:
+                    post.status = '2'
+                post.save()
+                return Response({'success': True, 'message': 'Post status updated successfully.'}, status=200)
+            else:
+                response_data = {
+                    'success': False,
+                    'errors': serializer.errors
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
         else:
-            post.status = '2'  # Set the post as archived
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+class DeleteUser(APIView):
+    # permission_classes = [IsAuthenticated]
 
-        post.save()
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializers = DeleteAndModoUserSerializer(data=request.data)
+            # if not self.request.user.is_staff:
+            #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            
+            if serializers.is_valid():
+                id = request.data.get('userId')
+                if id is None:
+                    return Response({'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+                user = get_object_or_404(Account, id=id)
+                user.delete()
+                return Response({'success': True, 'message': 'User deleted successfully.'}, status=200)
+            else:
+                response_data = {
+                    'success': False,
+                    'errors': serializers.errors
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-        return Response({'success': True, 'message': 'Post status updated successfully.'}, status=200)
+class AddModo(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializers = DeleteAndModoUserSerializer(data=request.data)
+            # if not self.request.user.is_staff:
+            #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            
+            if serializers.is_valid():
+                print(request.data)
+                id = request.data.get('userId')
+                print("id = " + str(id))
+                if id is None:
+                    return Response({'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+                user = get_object_or_404(Account, id=id)
+                user.is_staff = True
+                user.save()
+                return Response({'success': True, 'message': 'User added as moderator successfully.'}, status=200)
+            else:
+                response_data = {
+                    'success': False,
+                    'errors': serializers.errors
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class DeleteComment(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializers = DeleteCommentSerializer(data=request.data)
+            if not self.request.user.is_staff:
+                return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            if serializers.is_valid():
+                print(request.data)
+                id = request.data.get('id')
+                print("id = " + str(id))
+                if id is None:
+                    return Response({'error': 'Comment ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+                comment = get_object_or_404(Comment, id=id)
+                comment.delete()
+                return Response({'success': True, 'message': 'Comment deleted successfully.'}, status=200)
+            else:
+                response_data = {
+                    'success': False,
+                    'errors': serializers.errors
+                }
+                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+
+# View that return the info of the user that is logged in
+
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        if request.method == 'GET':
+            user = self.request.user
+            serializer = UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)

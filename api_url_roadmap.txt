@@ -1,8 +1,22 @@
 Register :
 	postbee.alwaysdata.net/register
+	json requis :
+	{
+		"first_name": "string",
+		"last_name": "string",
+		"email": "string",
+		"ensisaGroup": "int",
+		"password1": "string",
+		"password2": "string"
+	}
 
 Login :
 	postbee.alwaysdata.net/login
+	json requis :
+	{
+		"email": "string",
+		"password": "string"
+	}
 
 Liste des postes :
 	postbee.alwaysdata.net/posts/?amount=x&modo=True
@@ -16,10 +30,48 @@ Détail d'un poste :
 
 Publier un post :
 	postbee.alwaysdata.net/publish
+	json requis :
+	{
+		"title": "string",
+		"text": "string"
+	}
 
 Publier un commentaire :
 	postbee.alwaysdata.net//comment
+	json requis :
+	{
+		"text": "string",
+		"post": "int"
+	}
 
 Approuver un post :
-	postbee.alwaysdata.net/approve/1/approve/?approve={'True', 'False'}
-	approve correspond au choix de l'admin, True pour approuver, False pour refuser
+	postbee.alwaysdata.net/approve
+	json requis :
+	{
+		"postId": "int",
+		"response": "boolean"
+	}
+
+Supprimer un utilisateur :
+	postbee.alwaysdata.net/delete_user
+	json requis :
+	{
+		"id": "int"
+	}
+
+Faire d'un utilisateur un modérateur :
+	postbee.alwaysdata.net/add_modo
+	json requis :
+	{
+		"id": "int"
+	}
+
+Supprimer un commentaire :
+	postbee.alwaysdata.net/delete_comment
+	json requis :
+	{
+		"id": "int"
+	}
+
+Obtenir les informations d'un utilisateur :
+	postbee.alwaysdata.net/user_info
