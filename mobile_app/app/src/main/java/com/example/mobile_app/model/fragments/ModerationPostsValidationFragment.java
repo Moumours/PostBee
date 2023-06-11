@@ -52,19 +52,20 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
 
     @Override
     public void onItemClick(int position) {
-        Intent ModerationPostValidation = new Intent(getActivity(), ViewPostActivity.class);
-        ModerationPostValidation.putExtra("ID", posts.get(position).getId());
-        ModerationPostValidation.putExtra("TITLE", posts.get(position).getTitle());
-        ModerationPostValidation.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
-        ModerationPostValidation.putExtra("DATE", posts.get(position).getDate());
-        startActivity(ModerationPostValidation);
+        Intent ModerationPostValidationFragment = new Intent(getActivity(), ViewPostActivity.class);
+        ModerationPostValidationFragment.putExtra("ID", posts.get(position).getId());
+        ModerationPostValidationFragment.putExtra("TITLE", posts.get(position).getTitle());
+        ModerationPostValidationFragment.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
+        ModerationPostValidationFragment.putExtra("DATE", posts.get(position).getDate());
+
+        startActivity(ModerationPostValidationFragment);
     }
 
     public void receiveModaratePage() {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Log.d("HomeActivity", "Début de la méthode receiveHomePage");
+                    Log.d("HomeActivity", "Début de la méthode receiveModaratePage");
 
                     URL url = new URL("http://postbee.alwaysdata.net/posts/?moderate=True&amount=10");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
