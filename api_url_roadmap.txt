@@ -78,6 +78,10 @@ Obtenir les informations d'un utilisateur :
 
 Mise à jour du token :
 	postbee.alwaysdata.net/refresh_token
+	json requis :
+	{
+		"refresh_token": "string"
+	}
 
 Déconnextion :
 	postbee.alwaysdata.net/logout
@@ -87,4 +91,12 @@ Mot de passe oublié :
 	json requis :
 	{
 		"email": "string"
+	}
+
+Changer de mot de passe :
+	postbee.alwaysdata.net/change_password
+	json requis :
+	{
+		"old_password": "string",
+		"new_password": "string"
 	}
