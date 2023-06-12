@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
@@ -31,15 +32,19 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
-    private int mPostStatus = 0;
 
     private Button mAddPostButton;
     private Button mProfileButton;
     private Button mModerationButton;
     private Button mSettingsButton;
 
+    private String mToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent i = getIntent();
+        mToken = getIntent().getStringExtra("TOKEN");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
@@ -58,28 +63,36 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mAddPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
+                Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
+                i.putExtra("TOKEN",mToken);
+                startActivity(i);
             }
         });
 
         mProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
+                Intent i = new Intent(HomeActivity.this, ProfileActivity.class);
+                i.putExtra("TOKEN",mToken);
+                startActivity(i);
             }
         });
 
         mModerationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, ModerationActivity.class));
+                Intent i = new Intent(HomeActivity.this, ModerationActivity.class);
+                i.putExtra("TOKEN",mToken);
+                startActivity(i);
             }
         });
 
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
+                Intent i = new Intent(HomeActivity.this, SettingsActivity.class);
+                i.putExtra("TOKEN",mToken);
+                startActivity(i);
             }
         });
         receiveHomePage();
@@ -100,7 +113,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        homeActivityIntent.putExtra("STATUS", mPostStatus);
+        homeActivityIntent.putExtra("TOKEN", mToken);
 
         startActivity(homeActivityIntent);
     }
@@ -113,9 +126,13 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
 
                     URL url = new URL("http://postbee.alwaysdata.net/posts");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
+                    Log.d("HomeActivity","Token : "+mToken);
+                    django.setRequestProperty("Authorization", "Bearer " + mToken);
                     django.setRequestMethod("GET");
                     django.setRequestProperty("Accept","application/json");
+
+                    int responseCode = django.getResponseCode();
+                    Log.d("HomeActivity","Code de réponse : "+responseCode);
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
                     String inputLine;

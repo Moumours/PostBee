@@ -1,6 +1,8 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,9 +23,13 @@ public class EditPostActivity extends AppCompatActivity {
     private EditText mEditTextTitle;
     private EditText mEditTextContent;
     private Button mButtonSubmit;
+    private String mToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent i = getIntent();
+        mToken = getIntent().getStringExtra("TOKEN");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
 
@@ -54,6 +60,8 @@ public class EditPostActivity extends AppCompatActivity {
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                             connection.setRequestMethod("POST");
+                            String tokenCredentials = "Bearer " + mToken;
+                            connection.setRequestProperty("Authorization", tokenCredentials);
                             connection.setRequestProperty("Content-Type", "application/json");
                             connection.setDoOutput(true);
 
