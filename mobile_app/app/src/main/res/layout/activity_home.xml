@@ -6,17 +6,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_ensisa" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_line_small" />
+    </LinearLayout>
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/home_swiperefreshlayout_s2r"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="8dp">
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/home_recyclerview_posts"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
@@ -25,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="4dp"
-        android:background="@color/white"
+        android:background="@color/ensisa_blue_dark"
     >
         <Button style="@style/HomeNavbarButton"
             android:id="@+id/home_menu_button_addpost"

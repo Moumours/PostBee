@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
@@ -48,6 +49,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //posts.add(new ItemPost(0, "Premier test", new Author("Jean-Michel", "II"), "03/03/2003"));
+        //posts.add(new ItemPost(1, "Deuxième test (mon préféré :) )", new Author("Moi", ""), "01/01/2000"));
+        //posts.add(new ItemPost(2, "abc", new Author("Bernard", "Rouge"), "12/06/2023"));
+
         mSwipeRefreshLayout = findViewById(R.id.home_swiperefreshlayout_s2r);
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
@@ -55,7 +60,8 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mModerationButton = findViewById(R.id.home_menu_button_moderation);
         mSettingsButton = findViewById(R.id.home_menu_button_settings);
 
-
+        //TODO: change this generic condition
+        // mModerationButton.setVisibility(thisUser.isModerator ? View.VISIBLE : View.GONE);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));

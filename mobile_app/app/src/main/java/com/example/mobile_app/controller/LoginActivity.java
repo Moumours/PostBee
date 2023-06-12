@@ -44,11 +44,11 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        editTextEmail = findViewById(R.id.editTextEmail);
-        editTextPassword = findViewById(R.id.editTextPassword);
-        buttonLogin = findViewById(R.id.buttonLogin);
-        buttonForgotPassword = findViewById(R.id.buttonForgotPassword);
-        buttonRegister = findViewById(R.id.buttonRegister);
+        editTextEmail = findViewById(R.id.login_edittext_email);
+        editTextPassword = findViewById(R.id.login_edittext_password);
+        buttonLogin = findViewById(R.id.login_button_login);
+        buttonForgotPassword = findViewById(R.id.login_button_forgotPassword);
+        buttonRegister = findViewById(R.id.login_button_register);
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
         buttonForgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Mot de passe oublié", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LoginActivity.this, "Mot de passe oublié", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this, MdpActivity.class);
                 startActivity(intent);
             }
@@ -73,8 +73,8 @@ public class LoginActivity extends AppCompatActivity {
         buttonRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Inscription", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                //Toast.makeText(LoginActivity.this, "Inscription", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
 
             }

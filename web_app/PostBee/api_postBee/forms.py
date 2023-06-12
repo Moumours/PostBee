@@ -42,16 +42,16 @@ class CommentForm(forms.Form):
 class PublishPost(forms.Form):
     #Publish form asking for the post content
     title = forms.CharField(max_length=100, required=True, help_text='Required.')
-    author_id = forms.IntegerField(required=True, help_text='Required.')
+    # author_id = forms.IntegerField(required=True, help_text='Required.')
     content = forms.CharField(max_length=1000, required=True, help_text='Required.')
 
     class Meta:
         model = Post
-        fields = ('author_id', 'content', 'title')
+        fields = ('content', 'title')
     
     def save(self, commit=True):
         post = super(PublishPost, self).save(commit=False)
-        post.author_id = self.cleaned_data['author_id']
+        # post.author_id = self.cleaned_data['author_id']
         post.content = self.cleaned_data['content']
         post.title = self.cleaned_data['title']
         if commit:

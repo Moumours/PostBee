@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:clickable="true"
     android:orientation="horizontal"
-    android:background="@color/bg_blue"
+    android:background="@color/ensisa_blue"
     app:cornerRadius="40dp"
     android:padding="16dp">
 

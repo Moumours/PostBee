@@ -50,3 +50,29 @@ Maria n'arrive pas à télécharger éco code
 Ambiance :
 - Rim est devenue membre de la team aigri (en rigolant bien sur 😂)
 - Excellente ambiance
+
+
+Rapport du 9 Juin :
+
+Aplli funct ok :
+ - S'inscrire
+ - Se connecter
+ - Recevoir liste des postes
+ - Visualiser un poste
+
+!!!!! Bien penser à push et pull régulièrement !!!!!!!!
+
+Statut :
+ - Ayhan : en train de faire la page de modération
+ - Alex : 
+ - Isaac : Interface modération terminé ainsi que interface settings (retour login quand log out et supression)
+           ébauche de thème sombre, refonte de la navbar avec icone, ajout swipe to resfresh
+ - Maria : Terminé installation et config de sonar cube et eco code, première étude sur le code push ce jour. Eco ok et 
+           début rapport
+ - Zoé : Compression image et vidéo en cours va installer les librairies nécessaires (au cas où version en zip)
+
+Problèmes :
+ problème de merge mais réglé
+
+Ambiance :
+ RAS toujours cool

@@ -33,5 +33,12 @@ urlpatterns = [
     path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
     path('', IndexView.as_view(), name='index'),
     path('', include(postRouter.urls)),
-    # path('test', TestView.as_view(), name='test'),
+    path('publish', PublishPost.as_view(), name='publish'),
+    path('comment', PublishComment.as_view(), name='comment'),
+    path('approve', ApprovePost.as_view(), name='approve'),
+    path('delete_user', DeleteUser.as_view(), name='delete_user'),
+    path('add_modo', AddModo.as_view(), name='add_modo'),
+    path('delete_comment', DeleteComment.as_view(), name='delete_comment'),
+    path('user_info', UserView.as_view(), name='get_user'),
+    path('refresh_token', TokenRefresh.as_view(), name='refresh_token'),
 ]

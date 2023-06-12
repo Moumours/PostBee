@@ -1,0 +1,80 @@
+Register :
+	postbee.alwaysdata.net/register
+	json requis :
+	{
+		"first_name": "string",
+		"last_name": "string",
+		"email": "string",
+		"ensisaGroup": "int",
+		"password1": "string",
+		"password2": "string"
+	}
+
+Login :
+	postbee.alwaysdata.net/login
+	json requis :
+	{
+		"email": "string",
+		"password": "string"
+	}
+
+Liste des postes :
+	postbee.alwaysdata.net/posts/?amount=x&modo=True
+	amount correspond aux nombres de postes demandé
+	le champ modo=True est à mettre que sur l'écran de liste des postes à publier (modérateur), dans ce cas, la
+	liste renvoyée est celle à approuver
+
+Détail d'un poste :
+	postbee.alwaysdata.net/post/?id=x
+	id correspond à l'id du poste à afficher
+
+Publier un post :
+	postbee.alwaysdata.net/publish
+	json requis :
+	{
+		"title": "string",
+		"text": "string"
+	}
+
+Publier un commentaire :
+	postbee.alwaysdata.net//comment
+	json requis :
+	{
+		"text": "string",
+		"post": "int"
+	}
+
+Approuver un post :
+	postbee.alwaysdata.net/approve
+	json requis :
+	{
+		"postId": "int",
+		"response": "boolean"
+	}
+
+Supprimer un utilisateur :
+	postbee.alwaysdata.net/delete_user
+	json requis :
+	{
+		"id": "int"
+	}
+
+Faire d'un utilisateur un modérateur :
+	postbee.alwaysdata.net/add_modo
+	json requis :
+	{
+		"id": "int"
+	}
+
+Supprimer un commentaire :
+	postbee.alwaysdata.net/delete_comment
+	json requis :
+	{
+		"id": "int"
+	}
+
+Obtenir les informations d'un utilisateur :
+	postbee.alwaysdata.net/user_info
+
+Mise à jour du token :
+	postbee.alwaysdata.net/refresh_token
