@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
-                sendLoginDataToServer (email,password);
+                sendLoginDataToServer(email,password);
 
                 Toast.makeText(LoginActivity.this, "Connexion : " + email + ", " + password, Toast.LENGTH_SHORT).show();
             }
@@ -84,9 +84,36 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void sendLoginDataToServer(String email, String password) {
+
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("email", email);
+                    params.put("password", password);
+                    mToken = (Token.class).cast(Token.connectToServer("login","POST",null,params,params.getClass(), Token.class));
+                    if(mToken != null){
+                        Log.d("LoginActivity","Connexion successful");
+                        //Stocke les infos du token de manière sécurisée
+                        Token.storeToken(LoginActivity.this,mToken);
+                        //Connexion réussie --> On passe à HomeActivity
+                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                        i.putExtra("TOKEN", mToken.getAccess());
+                        startActivity(i);
+                    }
+                    else{
+                        Log.d("LoginActivity","Connexion failed");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+}
+
+
+/*
                     URL url = new URL("http://postbee.alwaysdata.net/login");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");
@@ -135,10 +162,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
                     conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-}
+
+                     */
+

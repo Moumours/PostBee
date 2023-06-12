@@ -16,9 +16,11 @@ import com.example.mobile_app.model.Token;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 
 public class TokenActivity extends AppCompatActivity {
@@ -28,40 +30,20 @@ public class TokenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPreferences = Token.getEncryptedSharedPreferences(TokenActivity.this);
         mToken.setAccess(sharedPreferences.getString("token_access", "null or does not exist"));
-        Log.d("Token démarrage appli",mToken.getAccess());
+        mToken.setRefresh(sharedPreferences.getString("token_refresh", "null or does not exist"));
+        Log.d("TokenActivity","Token access démarrage appli : "+mToken.getAccess());
+        Log.d("TokenActivity","Token refresh démarrage appli : "+mToken.getRefresh());
         if (!(mToken.getAccess().equals("null or does not exist"))){
-            // Le token existe --> on le refresh voir s'il n'est pas périmé
+            Log.d("TokenActivity","Token found, updating token...");
             new Thread(new Runnable() {
                 public void run() {
                     try {
-                        URL url = new URL("http://postbee.alwaysdata.net/refresh_token");
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setRequestProperty("Authorization", "Bearer " + mToken.getAccess());
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("refresh", mToken.getRefresh());
+                        mToken = (Token.class).cast(Token.connectToServer("refresh_token","POST",mToken.getAccess(),params,params.getClass(), Token.class));
 
-                        int responseCode = conn.getResponseCode();
-                        Log.d("TokenActivity","Code de réponse : "+responseCode);
-
-
-                        if (conn.getResponseCode()==200) { // Token ok
-                            Log.d("TokenActivity","Token approuvé");
-                            StringBuffer rep = new StringBuffer();
-                            System.out.println(rep.toString());
-
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                            StringBuilder response = new StringBuilder();
-                            String line;
-                            while ((line = reader.readLine()) != null) {
-                                response.append(line);
-                            }
-                            reader.close();
-
-                            String rawPostData = response.toString();
-                            Log.d("TokenActivity","rawPostData : "+rawPostData);
-
-                            Gson gsonreceiving = new Gson();
-                            mToken = gsonreceiving.fromJson(rawPostData, Token.class);
-
+                        if (mToken != null){
+                            Log.d("TokenActivity","Token update successful");
                             //Stocke les infos du token de manière sécurisée
                             Token.storeToken(TokenActivity.this,mToken);
 
@@ -71,10 +53,9 @@ public class TokenActivity extends AppCompatActivity {
                             startActivity(i);
                         }
                         else {
-                            Log.d("TokenActivity","Token expiré");
+                            Log.d("TokenActivity","Token update failed ");
                             startActivity(new Intent(TokenActivity.this, LoginActivity.class));
                         }
-                        conn.disconnect();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -82,6 +63,7 @@ public class TokenActivity extends AppCompatActivity {
             }).start();
         }
         else{
+            Log.d("TokenActivity","Token not found, going to login/register page...");
             startActivity(new Intent(TokenActivity.this, LoginActivity.class));
         }
         super.onCreate(savedInstanceState);

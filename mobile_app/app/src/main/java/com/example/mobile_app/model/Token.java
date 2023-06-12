@@ -1,7 +1,6 @@
 package com.example.mobile_app.model;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
@@ -10,9 +9,6 @@ import android.util.Log;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
-import com.example.mobile_app.controller.HomeActivity;
-import com.example.mobile_app.controller.LoginActivity;
-import com.example.mobile_app.controller.TokenActivity;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -114,6 +110,61 @@ public class Token implements Serializable {
         editor.putString("token_refresh", t.getRefresh());
         editor.apply();
         editor.commit();
+    }
+
+    public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive){;
+        Object objToReceive = null;
+        try {
+            URL url = new URL("http://postbee.alwaysdata.net/"+endURL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod(requestMethod);
+            conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            conn.setRequestProperty("Accept","application/json");
+            if(token != null){
+                conn.setRequestProperty("Authorization", "Bearer " + token);
+            }
+            if(requestMethod.equals("POST")) {
+                conn.setDoOutput(true);
+                conn.setDoInput(true);
+            }
+            Log.d("connectToServer", "Connecting to "+"http://postbee.alwaysdata.net/"+endURL+" with method \"" + requestMethod + "\"");
+
+            //Send data to the server
+            if (objToSend != null) {
+                Gson gson = new Gson();
+                DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                os.writeBytes(gson.toJson((classToSend).cast(objToSend)));
+
+                Log.d("connectToServer", "JSON sent to the server: " + gson.toJson((classToSend).cast(objToSend)));
+
+                os.flush();
+                os.close();
+            }
+
+            int respCode = conn.getResponseCode();
+            Log.d("connectToServer", "Response code from the server : " + respCode);
+            Log.d("connectToServer", "Response message from the server : " + conn.getResponseMessage());
+            if(respCode == HttpURLConnection.HTTP_OK){
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                String rawPostData = response.toString();
+
+                Gson gsonreceiving = new Gson();
+                objToReceive = gsonreceiving.fromJson(rawPostData, classToReceive);
+                Log.d("connectToServer", "Object received");
+            }
+            conn.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return objToReceive;
     }
 }
 

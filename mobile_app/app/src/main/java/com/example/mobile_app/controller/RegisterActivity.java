@@ -1,5 +1,6 @@
 package com.example.mobile_app.controller;
 
+import android.content.Intent;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.example.mobile_app.model.ResponseData;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.User;
 import com.google.gson.Gson;
 import java.io.BufferedReader;
@@ -16,6 +19,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -68,9 +72,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if (passwordText.equals(confirmPasswordText)) {
                     User user = new User(nomText, prenomText, emailComplete, passwordText, confirmPasswordText, ensisaGroup);
                     registerUser(user);
-                    Toast.makeText(RegisterActivity.this, "Inscription réussie !", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(RegisterActivity.this, String.valueOf(user.getEnsisaGroup()), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(RegisterActivity.this, user.getFirst_name(), Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(RegisterActivity.this, "Les mots de passe ne correspondent pas !", Toast.LENGTH_SHORT).show();
                 }
@@ -82,49 +83,21 @@ public class RegisterActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("https://postbee.alwaysdata.net/register");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("POST");
-                    django.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    django.setRequestProperty("Accept","application/json");
-                    django.setDoOutput(true);
-                    django.setDoInput(true);
-
-                    Gson gson = new Gson();
-                    String jsonUser = gson.toJson(user);
-
-                    System.out.println(jsonUser);
-
-                    Log.d("RegisterActivity", "Envoi de la requête d'inscription");
-
-                    try (OutputStreamWriter os = new OutputStreamWriter(django.getOutputStream(), "UTF-8")) {
-                        os.write(jsonUser);
-                        os.flush();
-                        Log.d("RegisterActivity", "Requête envoyée avec succès");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("RegisterActivity", "Erreur lors de l'envoi de la requête : " + e.getMessage());
+                    ResponseData response;
+                    Log.d("RegisterActivity","Attempt to register...");
+                    //connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive)
+                    response = (ResponseData) Token.connectToServer("register", "POST", null, user, user.getClass(), ResponseData.class);
+                    if(response != null) {
+                        Log.d("RegisterActivity","Response : Success :"+ response.getSuccess() + " | " + "Message :" + response.getMessage());
+                        if (response.getSuccess().equals("True")) {
+                            Toast.makeText(RegisterActivity.this, "Inscription réussie, activez votre compte en cliquant sur le lien reçu par mail", Toast.LENGTH_LONG).show();
+                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                            startActivity(i);
+                        }
+                        else {
+                            Log.d("RegisterActivity","Error : no server response");
+                        }
                     }
-
-                    int responseCode = django.getResponseCode();
-                    Log.d("RegisterActivity", "Code de réponse : " + responseCode);
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    Log.d("RegisterActivity", "Réponse du serveur : " + response.toString());
-
-
-                    System.out.println(response.toString());
-
-                    django.disconnect();
                 } catch (Exception e) {
                     e.printStackTrace();}
             }
