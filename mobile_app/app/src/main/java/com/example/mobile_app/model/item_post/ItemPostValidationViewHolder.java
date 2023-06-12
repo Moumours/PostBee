@@ -40,7 +40,7 @@ public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 postDecision.setPostId(postId);
-                postDecision.setResponse("accepted");
+                postDecision.setResponse("true");
                 sendPostDecision(postDecision);
                 Toast.makeText(itemView.getContext(), "Accepted", Toast.LENGTH_SHORT).show();
                 Toast.makeText(itemView.getContext(), "Decision : " + postDecision.getResponse(), Toast.LENGTH_SHORT).show();
@@ -52,7 +52,7 @@ public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 postDecision.setPostId(postId);
-                postDecision.setResponse("denied");
+                postDecision.setResponse("false");
                 sendPostDecision(postDecision);
                 Toast.makeText(itemView.getContext(), "Denied", Toast.LENGTH_SHORT).show();
                 Toast.makeText(itemView.getContext(), "Decision : " + postDecision.getResponse(), Toast.LENGTH_SHORT).show();
@@ -75,8 +75,7 @@ public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("https://postbee.alwaysdata.net/register");
-                    //TODO:Mettre la bonn URL (Pour envoiyer les décision des admin au serveur)
+                    URL url = new URL("http://postbee.alwaysdata.net/approve");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("POST");
