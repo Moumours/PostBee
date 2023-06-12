@@ -17,6 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.exceptions import TokenError
 from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
@@ -25,6 +26,8 @@ from api_postBee.tokens import account_activation_token, password_reset_token
 from api_postBee.models import *
 from api_postBee.serializers import *
 
+from django.db.models import F
+
 
 class IndexView(APIView):
     def get(self, request, format=None):
@@ -32,6 +35,7 @@ class IndexView(APIView):
 
 class LoginView(APIView):
     def post(self, request, format=None):
+        print("Data :"+str(request.data))
         email = request.data.get('email')
         password = request.data.get('password')
 
@@ -129,26 +133,28 @@ class ActivateAccount(APIView):
 
 class PostList(ReadOnlyModelViewSet):
     serializer_class = PostListSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Post.objects.all()
-        moderate = self.request.query_params.get('moderate')
+        type = self.request.query_params.get('type', None)
         amount = self.request.query_params.get('amount', 10)
         # print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
         # print("User is staff : " + str(self.request.user.is_staff))
         # print("Moderate : " + str(moderate))
         # print("Amount : " + str(amount))
-        # get amount of posts to return or default to 10
 
         # User is staff status and filter moderate is true
-        if moderate == 'True':# and self.request.user.is_staff:
+        if type == 'moderate' and self.request.user.is_staff:
             print('Moderate is true and user is staff')
             queryset = queryset.filter(status='0').order_by('-date')[:int(amount)]
 
         # all user if moderate is false
-        else:
+        elif type == 'own':
             # print('Moderate is false')
+            queryset = queryset.filter(author=self.request.user).order_by('-date')[:int(amount)]
+        
+        else:
             queryset = queryset.filter(status='1').order_by('-date')[:int(amount)]
         
         return queryset
@@ -373,8 +379,6 @@ class DeleteComment(APIView):
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-# View that return the info of the user that is logged in
-
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -389,22 +393,6 @@ class UserView(APIView):
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-        
-class TokenRefresh(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, format=None):
-        print("Methode : " + request.method)
-        if request.method == 'GET':
-            user = self.request.user
-            token = RefreshToken.for_user(user)
-            return Response({'refresh': str(token), 'access': str(token.access_token)}, status=status.HTTP_200_OK)
-        else:
-            response_data = {
-                'success': False,
-                'errors': 'Invalid request method.'
-            }
-            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 class LogoutView(APIView):
     permission_classes = (IsAuthenticated,)
@@ -412,7 +400,6 @@ class LogoutView(APIView):
     def post(self, request, *args, **kwargs):
         if self.request.data.get('all'):
             token = RefreshToken.for_user(request.user)
-            print("token = " + str(token))
             for token in OutstandingToken.objects.filter(user=request.user):
                 _, _ = BlacklistedToken.objects.get_or_create(token=token)
             return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
@@ -433,9 +420,7 @@ class ResetPassword(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
             serializer = self.serializer_class(data=request.data)
-            print("serializer = " + str(serializer))
             if serializer.is_valid():
-                print("Serializer is valid")
                 email = serializer.data.get('email')
                 user = Account.objects.get(email=email)
                 if user:
@@ -456,9 +441,7 @@ class ResetPassword(APIView):
                 else:
                     return Response({'success': False, 'errors': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                print("Serializer is not valid")
                 return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-            
 
 
 class ResetPasswordConfirm(APIView):
@@ -488,20 +471,54 @@ class ResetPasswordConfirm(APIView):
             user = None
         
         if user is not None and password_reset_token.check_token(user, token):
-            print("user is not none")
             password = request.data.get('new_password')
             confirm_password = request.data.get('confirm_password')
-            print("password = " + str(password))
-            print("confirm_password = " + str(confirm_password))
             if password == confirm_password:
-                print("password == confirm_password")
                 user.set_password(password)
                 user.save()
                 return Response({'success': True, 'message': 'Password reset successfully.'}, status=status.HTTP_200_OK)
             else:
-                print("password != confirm_password")
                 return Response({'success': False, 'errors': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            print("user is none")
             return Response({'success': False, 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
             
+
+class UsersLists(ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = Account.objects.all()
+        amount = self.request.query_params.get('amount', 10)
+        return queryset.order_by(F('last_name').asc(nulls_last=True))[:amount]
+    
+    def list(self, request, *args, **kwargs):
+        print("list")
+        if not self.request.user.is_staff:
+            return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ChangePassword(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializer = ChangePasswordSerializer(data=request.data)
+            if serializer.is_valid():
+                user = self.request.user
+                if user.check_password(serializer.data.get('old_password')):
+                    user.set_password(serializer.data.get('new_password'))
+                    user.save()
+                    return Response({'success': True, 'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'success': False, 'errors': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            response_data = {
+                'success': False,
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
