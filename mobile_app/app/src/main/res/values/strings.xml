@@ -15,6 +15,7 @@
     <string name="ui_warning">Attention !</string>
     <string name="ui_delete">Supprimer</string>
     <string name="ui_cancel">Annuler</string>
+    <string name="ui_sendPost">Publier le post</string>
 
     <string name="ui_deleteAccountWarning">
         Êtes-vous sûr de vouloir supprimer votre compte ?\n
@@ -34,6 +35,7 @@
     <string name="ui_connect">Se connecter</string>
     <string name="ui_register">S\'inscrire</string>
     <string name="ui_registration">Inscription</string>
+    <string name="ui_settings">Paramètres</string>
 
     <string name="hint_title">Titre</string>
     <string name="hint_content">Ecrivez votre post ici...</string>

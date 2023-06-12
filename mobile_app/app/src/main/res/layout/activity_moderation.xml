@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,27 +8,47 @@
     tools:context=".controller.ModerationActivity"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp">
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_ensisa" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_line_small" />
+    </LinearLayout>
+
+    <TextView style="@style/TextAppearance.Material3.TitleLarge"
+        android:id="@+id/settings_textview_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20dp"
         android:textStyle="bold"
-        android:layout_margin="12dp"
+        android:layout_marginHorizontal="@dimen/gap_part"
+        android:layout_marginVertical="@dimen/gap_item"
+        android:gravity="start"
         android:text="@string/ui_moderation" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/moderation_tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <com.google.android.material.tabs.TabLayout style="@style/DefaultTab"
+        android:id="@+id/moderation_tablayout">
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.google.android.material.tabs.TabItem style="@style/DefaultTab"
             android:text="@string/ui_postToValidate" />
 
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+        <com.google.android.material.tabs.TabItem style="@style/DefaultTab"
             android:text="@string/ui_users" />
 
     </com.google.android.material.tabs.TabLayout>

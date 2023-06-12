@@ -46,7 +46,7 @@
             android:name=".controller.EditPostActivity"
             android:exported="false" />
         <activity
-            android:name=".controller.MainActivity"
+            android:name=".controller.RegisterActivity"
             android:exported="false" />
     </application>
 

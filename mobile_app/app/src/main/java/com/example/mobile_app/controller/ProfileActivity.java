@@ -31,7 +31,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
-        mImageView.setImageDrawable(getDrawable(R.drawable.logo));
+        mImageView.setImageDrawable(getDrawable(R.drawable.round_person_24));
 
         Author me = new Author("Jean", "Sériens");
         posts.add(new ItemPost(0,"Mon 1er article", me, "01/01/2000"));
