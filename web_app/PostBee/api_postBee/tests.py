@@ -158,67 +158,99 @@ from api_postBee.models import Account, Post, Comment
 #             print()
 
 
-# class GetPostListModo(TestCase):
-#     def setUp(self):
-#         self.client = APIClient()
-#         self.user = Account.objects.create_user(
-#             email='test@example.com',
-#             password='testpassword',
-#             ensisaGroup='1',
-#             is_staff=True,
-#             first_name='John',
-#             last_name='Doe',
-#         )
+class GetPostListModo(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = Account.objects.create_user(
+            email='test@example.com',
+            password='testpassword',
+            ensisaGroup='1',
+            is_staff=True,
+            first_name='John',
+            last_name='Doe',
+        )
+        self.user2 = Account.objects.create_user(
+            email="david.anderson@gmail.com",
+            password="testpassword",
+            ensisaGroup='1',
+            is_staff=False,
+            first_name="David",
+            last_name="Anderson",
+        )
 
-#         # Create some posts fields = ('author_id', 'content', 'title')
-#         post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
-#         post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
-#         post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='1')
+        # Create some posts fields = ('author_id', 'content', 'title')
+        post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
+        post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
+        post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='2')
+        post4 = Post.objects.create(author=self.user2, text='test content 4', title='test title 4', status='0')
+        post5 = Post.objects.create(author=self.user2, text='test content 5', title='test title 5', status='1')
+        post6 = Post.objects.create(author=self.user2, text='test content 6', title='test title 6', status='1')
 
-#         # Create a user and retrieve the access token
-#         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
-#         self.assertEqual(response.status_code, 200)
-#         self.access_token = response.data.get('access')
+        # Create a user and retrieve the access token
+        response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
+        self.assertEqual(response.status_code, 200)
+        self.access_token = response.data.get('access')
     
-#     def test_modo_normal_access(self):
-#         print("Test no modo noramle access")
-#         # Set the access token in the Authorization header
-#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+    def test_modo_normal_access(self):
+        print("Test normal access\n")
+        # Set the access token in the Authorization header
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-#         # Make a GET request to retrieve the list of posts
-#         response = self.client.get('/posts/?amount=3')
-#         print("response" + str(response))
-#         print("response.data" + str(response.data))
+        # Make a GET request to retrieve the list of posts
+        response = self.client.get('/posts/')
+        print("response" + str(response))
+        print()
+        # print("response.data" + str(response.data))
 
-#         posts = response.data
-#         for post in posts:
-#             print(f"Post ID: {post['id']}")
-#             print(f"Title: {post['title']}")
-#             print(f"Date: {post['date']}")
-#             print(f"Status: {post['status']}")
-#             print()  # Print an empty line between posts
-#         # Check the response status code
-#         self.assertEqual(response.status_code, 200)
+        posts = response.data
+        for post in posts:
+            print(f"Post ID: {post['id']}")
+            print(f"Title: {post['title']}")
+            print(f"Date: {post['date']}")
+            print(f"Status: {post['status']}")
+            print()  # Print an empty line between posts
+        # Check the response status code
+        self.assertEqual(response.status_code, 200)
 
-#     def test_no_modo_modo_access(self):
-#         print("Test no modo modo access")
-#         # Set the access token in the Authorization header
-#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+    def test_no_modo_modo_access(self):
+        print("Test modo access\n")
+        # Set the access token in the Authorization header
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-#         # Make a GET request to retrieve the list of posts
-#         response = self.client.get('/posts/?moderate=True&amount=3')
-#         print("response" + str(response))
-#         print("response.data" + str(response.data))
+        # Make a GET request to retrieve the list of posts
+        response = self.client.get('/posts/?type=moderate')
+        print("response" + str(response))
+        print()
+        # print("response.data" + str(response.data))
 
-#         posts = response.data
-#         for post in posts:
-#             print(f"Post ID: {post['id']}")
-#             print(f"Title: {post['title']}")
-#             print(f"Author: {post['author']}")
-#             print(f"Date: {post['date']}")
-#             print(f"Status: {post['status']}")
-#             print()
+        posts = response.data
+        for post in posts:
+            print(f"Post ID: {post['id']}")
+            print(f"Title: {post['title']}")
+            print(f"Author: {post['author']}")
+            print(f"Date: {post['date']}")
+            print(f"Status: {post['status']}")
+            print()
 
+    def test_own_access(self):
+        print("Test own access\n")
+
+        # Set the access token in the Authorization header
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        # Make a GET request to retrieve the list of posts
+        response = self.client.get('/posts/?type=own')
+        print("response" + str(response))
+        print()
+
+        posts = response.data
+        for post in posts:
+            print(f"Post ID: {post['id']}")
+            print(f"Title: {post['title']}")
+            print(f"Author: {post['author']}")
+            print(f"Date: {post['date']}")
+            print(f"Status: {post['status']}")
+            print()
 
 # class GetPostDetail(TestCase):
 #     def setUp(self):
@@ -434,7 +466,7 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post :\n")
 #         url = '/approve'
-#         data = {'postId': 1, 'response': 'True'}
+#         data = {'postId': 1, 'response': 'true'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
 #         print("Data : " + str(response.data))
@@ -457,9 +489,10 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\Refusing post :\n")
 #         url = '/approve'
-#         data = {'postId': 2, 'response': 'False'}
+#         data = {'postId': 2, 'decision': 'False'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
+#         print("Data : " + str(response.data))
 
 #         print("\nPost list :\n")
 #         # Set the access token in the Authorization header
@@ -479,9 +512,10 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post already approved :\n")
 #         url = '/approve'
-#         data = {'postId': 3, 'response': 'True'}
+#         data = {'postId': 3, 'decision': 'True'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
+#         print("Data : " + str(response.data))
 
 #         print("\nStatus conclusion :\n")
 #         # print the status of all post in the database
@@ -699,14 +733,195 @@ from api_postBee.models import Account, Post, Comment
 
 #         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
 #         self.access_token = response.data.get('access')
+#         self.refresh_token = response.data.get('refresh')
     
 #     def test_refresh_token(self):
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
 #         print("\nRefresh token :\n")
+#         print("Refresh token : " + str(self.refresh_token))
 #         url = '/refresh_token'
-#         response = self.client.get(url)
+#         response = self.client.post(url, data={'refresh': self.refresh_token})
 #         print("response" + str(response))
 #         print("Data : " + str(response.data))
 #         datas = response.data
 #         self.assertNotEqual(datas['access'], self.access_token)
+
+# class LogoutTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+#         self.refresh_token = response.data.get('refresh')
+
+#         post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
+#         post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
+#         post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='1')
+
+#     def test_logout(self):
+#         print("\nPost list :\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/?amount=7')
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         posts = response.data
+#         # for post in posts:
+#         #     print(f"Post ID: {post['id']}")
+#         #     print(f"Title: {post['title']}")
+#         #     print(f"Date: {post['date']}")
+#         #     print(f"Status: {post['status']}")
+#         #     print()  # Print an empty line between posts
+#         # Check the response status code
+#         # self.assertEqual(response.status_code, 200)
+
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nLogout :\n")
+#         url = '/logout'
+#         response = self.client.post(url, data={'refresh_token': self.refresh_token})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         # datas = response.data
+#         # self.assertEqual(datas['detail'], 'Successfully logged out.')
+#         # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#         print("\nRefresh token :\n")
+#         url = '/refresh_token'
+#         response = self.client.post(url, data={'refresh_token': self.refresh_token})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         # datas = response.data
+#         # self.assertNotEqual(datas['access'], self.access_token)
+
+
+
+# class ResetPasswordTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='prouxmarc@gmail.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+    
+#     def test_reset_password(self):
+#         print("\nReset password :\n")
+#         url = '/reset_password'
+#         response = self.client.post(url, data={'email': self.user.email})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         datas = response.data
+#         # self.assertEqual(datas['detail'], 'Password reset e-mail has been sent.')
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+# class UsersListTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='prouxmarc@gmail.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Marc',
+#             last_name='Proux',
+#         )
+
+#         self.user2 = Account.objects.create_user(
+#             email='alexandre.kho@uha.fr',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Alexandre',
+#             last_name='Kho',
+#         )
+
+#         self.user3 = Account.objects.create_user(
+#             email='zoe.albertini@uha.fr',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Zoe',
+#             last_name='Albertini',
+#         )
+
+#         self.user4 = Account.objects.create_user(
+#             email='isaac.dalberto@uha.fr',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Isaac',
+#             last_name='Dalberto',
+#         )
+
+#         self.user5 = Account.objects.create_user(
+#             email='ayhan.spash@uha.fr',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='Ayhan',
+#             last_name='Spash',
+#         )
+
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+#         print("login :"+str(response))
+
+#     def test_users_list(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nUsers list :\n")
+#         url = '/users/'
+#         response = self.client.get(url)
+#         print("response" + str(response))
+
+#         datas = response.data
+#         print("Data : " + str(datas))
+#         print()
+#         for data in datas:
+#             print("Last name : " + str(data['last_name']))
+#             print("First name : " + str(data['first_name']))
+#             print("Email : " + str(data['email']))
+#             print()
+
+# class ChangePasswordTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=False,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+
+#     def test_change_password(self):
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nChange password :\n")
+#         url = '/change_password'
+#         response = self.client.post(url, data={'old_password': 'testpassword', 'new_password': 'newpassword'})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'newpassword'})
+#         print("login :"+str(response))

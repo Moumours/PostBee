@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.utils import timezone
+from rest_framework.authtoken.models import Token
 
 # CustomUserManager using email, password and automatically generated username
 class CustomUserManager(UserManager):

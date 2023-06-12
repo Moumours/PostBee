@@ -19,10 +19,13 @@ Login :
 	}
 
 Liste des postes :
-	postbee.alwaysdata.net/posts/?amount=x&modo=True
+	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}
 	amount correspond aux nombres de postes demandé
-	le champ modo=True est à mettre que sur l'écran de liste des postes à publier (modérateur), dans ce cas, la
-	liste renvoyée est celle à approuver
+	le champ typé défini si on est en mode écran d'accueil, page modo ou page perso
+	
+	Accueil : postbee.alwaysdata.net/posts/?amount=x
+	Page perso : postbee.alwaysdata.net/posts/?amount=x&type=own
+	Page modo : postbee.alwaysdata.net/posts/?amount=x&type=moderate
 
 Détail d'un poste :
 	postbee.alwaysdata.net/post/?id=x
@@ -78,3 +81,32 @@ Obtenir les informations d'un utilisateur :
 
 Mise à jour du token :
 	postbee.alwaysdata.net/refresh_token
+	json requis :
+	{
+		"refresh_token": "string"
+	}
+
+Déconnextion :
+	postbee.alwaysdata.net/logout
+
+Mot de passe oublié :
+	postbee.alwaysdata.net/forgot_password
+	json requis :
+	{
+		"email": "string"
+	}
+
+Changer de mot de passe :
+	postbee.alwaysdata.net/change_password
+	json requis :
+	{
+		"old_password": "string",
+		"new_password": "string"
+	}
+
+Liste des utilisateurs :
+	postbee.alwaysdata.net/users
+	json requis :
+	{
+		"amount": "int"
+	}

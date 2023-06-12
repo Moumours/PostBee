@@ -72,3 +72,20 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = Account
         fields = ['first_name', 'last_name', 'email', 'ensisaGroup', 'profile_picture', 'is_staff']
+
+class ResetPasswordSerializer(ModelSerializer):
+    email = serializers.EmailField()
+    class Meta:
+        model = Account
+        fields = ['email']
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    class Meta:
+        model = Account
+        fields = ['old_password', 'new_password']

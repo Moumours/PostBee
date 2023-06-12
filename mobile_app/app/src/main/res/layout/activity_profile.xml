@@ -1,97 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".controller.ProfileActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="100px"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <ImageView
-            android:id="@+id/profile_imageview_pfp"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintDimensionRatio="H,1:1"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_ensisa" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_line_small" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/profile_textview_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="20dp"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Name"
-            app:layout_constraintBottom_toTopOf="@+id/profile_textview_firstname"
-            app:layout_constraintStart_toStartOf="parent"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <TextView
-            android:id="@+id/profile_textview_firstname"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Firstname"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
-            app:layout_constraintStart_toStartOf="@+id/profile_textview_name" />
-
-        <EditText
-            android:id="@+id/profile_edittext_password"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Changer de mot de passe"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_textview_firstname" />
+            android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/profile_edittext_passwordConfirm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Confirmer le mot de passe"
-            android:inputType="textPassword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/profile_textview_myposts"
-            app:layout_constraintTop_toBottomOf="@+id/profile_edittext_password" />
+            <ImageView
+                android:id="@+id/profile_imageview_pfp"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintDimensionRatio="H,1:1"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/profile_textview_myposts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="Mes posts"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="@+id/profile_recyclerview_posts"
-            app:layout_constraintTop_toBottomOf="@+id/profile_edittext_passwordConfirm" />
+            <TextView style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:id="@+id/profile_textview_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_part"
+                android:layout_marginBottom="@dimen/gap_item"
+                android:textStyle="bold"
+                android:text="@string/ui_name"
+                app:layout_constraintBottom_toTopOf="@+id/profile_textview_firstname"
+                app:layout_constraintStart_toStartOf="parent"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/profile_recyclerview_posts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_textview_myposts" />
+            <TextView style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:id="@+id/profile_textview_firstname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/ui_firstname"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_name" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+            <TextView style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/profile_textview_changePassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_part"
+                android:text="@string/ui_changePassword"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/gap_part"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_firstname" />
+
+            <EditText style="@style/DefaultTextField"
+                android:id="@+id/profile_edittext_oldPassword"
+                android:layout_marginStart="@dimen/gap_part"
+                android:layout_marginTop="@dimen/gap_item"
+                android:layout_marginEnd="@dimen/gap_part"
+                android:hint="@string/ui_oldPassword"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_changePassword" />
+
+            <EditText style="@style/DefaultTextField"
+                android:id="@+id/profile_edittext_newPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_part"
+                android:layout_marginEnd="@dimen/gap_part"
+                android:hint="@string/ui_newPassword"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_myposts"
+                app:layout_constraintTop_toBottomOf="@+id/profile_edittext_oldPassword" />
+
+            <EditText style="@style/DefaultTextField"
+                android:id="@+id/profile_edittext_passwordConfirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/gap_part"
+                android:layout_marginEnd="@dimen/gap_part"
+                android:hint="@string/ui_confirmPassword"
+                android:inputType="textPassword"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_myposts"
+                app:layout_constraintTop_toBottomOf="@+id/profile_edittext_newPassword" />
+
+            <Button style="@style/ButtonActionBorder"
+                android:id="@+id/profile_button_changePassword"
+                android:text="@string/ui_changePassword"
+                android:layout_marginTop="@dimen/gap_part"
+                android:layout_marginHorizontal="@dimen/gap_part"
+                android:background="@drawable/border_button"
+                app:backgroundTint="@null"
+                app:layout_constraintTop_toBottomOf="@id/profile_edittext_passwordConfirm"
+                app:layout_constraintStart_toStartOf="parent"
+                />
+
+            <TextView style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/profile_textview_myposts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_part"
+                android:text="@string/ui_myPosts"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/gap_part"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/profile_button_changePassword" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/profile_recyclerview_posts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:layout_marginTop="@dimen/gap_part"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_myposts" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</LinearLayout>

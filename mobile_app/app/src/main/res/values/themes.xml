@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Mobile_app" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 
     <style name="Theme.Mobile_app" parent="Base.Theme.Mobile_app" />
@@ -16,14 +17,13 @@
         <item name="android:textColor">@color/ensisa_blue</item>
     </style>
 
-    <style name="DefaultListItemButton">
+    <style name="DefaultListItemButton" parent="TextAppearance.Material3.DisplayMedium">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">#0000</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/ensisa_yellow</item>
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:textSize">16dp</item>
-        <item name="paddingStart">24dp</item>
     </style>
 
     <style name="Divider">
@@ -43,7 +43,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:padding">32dp</item>
+        <item name="android:padding">@dimen/gap_part</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
     </style>
@@ -68,6 +68,14 @@
         <item name="android:padding">@dimen/gap_part</item>
         <item name="android:focusable">true</item>
         <item name="android:focusableInTouchMode">true</item>
+    </style>
+
+    <style name="DefaultTab">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tabTextColor">@color/ensisa_blue</item>
+        <item name="tabSelectedTextColor">@color/ensisa_yellow</item>
+        <item name="tabIndicatorColor">@color/ensisa_yellow</item>
     </style>
 
 </resources>

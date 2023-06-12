@@ -1,25 +1,32 @@
 from rest_framework.views import APIView
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
-from rest_framework.decorators import action
+from rest_framework.viewsets import ReadOnlyModelViewSet
 import json
+from django.conf import settings
+from django.http import FileResponse, HttpRequest, HttpResponse
+from django.views.decorators.cache import cache_control
+from django.views.decorators.http import require_GET
 from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.exceptions import TokenError
 from django.utils import timezone
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 
 from api_postBee.forms import RegisterForm
-from api_postBee.tokens import account_activation_token
+from api_postBee.tokens import account_activation_token, password_reset_token
 from api_postBee.models import *
 from api_postBee.serializers import *
+
+from django.db.models import F
 
 
 class IndexView(APIView):
@@ -28,6 +35,7 @@ class IndexView(APIView):
 
 class LoginView(APIView):
     def post(self, request, format=None):
+        print("Data :"+str(request.data))
         email = request.data.get('email')
         password = request.data.get('password')
 
@@ -125,26 +133,28 @@ class ActivateAccount(APIView):
 
 class PostList(ReadOnlyModelViewSet):
     serializer_class = PostListSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Post.objects.all()
-        moderate = self.request.query_params.get('moderate')
+        type = self.request.query_params.get('type', None)
         amount = self.request.query_params.get('amount', 10)
         # print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
         # print("User is staff : " + str(self.request.user.is_staff))
         # print("Moderate : " + str(moderate))
         # print("Amount : " + str(amount))
-        # get amount of posts to return or default to 10
 
         # User is staff status and filter moderate is true
-        if moderate == 'True':# and self.request.user.is_staff:
-            # print('Moderate is true and user is staff')
+        if type == 'moderate' and self.request.user.is_staff:
+            print('Moderate is true and user is staff')
             queryset = queryset.filter(status='0').order_by('-date')[:int(amount)]
 
         # all user if moderate is false
-        else:
+        elif type == 'own':
             # print('Moderate is false')
+            queryset = queryset.filter(author=self.request.user).order_by('-date')[:int(amount)]
+        
+        else:
             queryset = queryset.filter(status='1').order_by('-date')[:int(amount)]
         
         return queryset
@@ -252,6 +262,7 @@ class ApprovePost(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
+            print("request.data : " + str(request.data))
             serializer = ApprovePostSerializer(data=request.data)
             # if not self.request.user.is_staff:
             #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
@@ -262,13 +273,15 @@ class ApprovePost(APIView):
                     return Response({'error': 'Post ID and approve status are required'}, status=status.HTTP_400_BAD_REQUEST)
                 post = get_object_or_404(Post, id=id, status='0')
 
-                if approve_status == 'True':
+                if approve_status == 'true':
                     post.status = '1'  # Approve the post
                     post.date = timezone.now()  # Set the date to now
+                    post.save()
+                    return Response({'success': True, 'message': 'Post approved successfully.'}, status=200)
                 else:
                     post.status = '2'
-                post.save()
-                return Response({'success': True, 'message': 'Post status updated successfully.'}, status=200)
+                    post.save()
+                    return Response({'success': True, 'message': 'Post rejected successfully.'}, status=200)
             else:
                 response_data = {
                     'success': False,
@@ -366,8 +379,6 @@ class DeleteComment(APIView):
                 }
                 return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-# View that return the info of the user that is logged in
-
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -382,15 +393,129 @@ class UserView(APIView):
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class LogoutView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        if self.request.data.get('all'):
+            token = RefreshToken.for_user(request.user)
+            for token in OutstandingToken.objects.filter(user=request.user):
+                _, _ = BlacklistedToken.objects.get_or_create(token=token)
+            return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
+        refresh_token = self.request.data.get('refresh_token')
+        token = RefreshToken(token=refresh_token)
+        token.blacklist()
+        return Response({"status": "OK, goodbye"})
+
+@require_GET
+@cache_control(max_age=60 * 60 * 24, immutable=True, public=True)  # one day
+def favicon(request: HttpRequest) -> HttpResponse:
+    file = (settings.BASE_DIR / "static" / "favicon.png").open("rb")
+    return FileResponse(file)
+
+class ResetPassword(APIView):
+    serializer_class = ResetPasswordSerializer
+
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializer = self.serializer_class(data=request.data)
+            if serializer.is_valid():
+                email = serializer.data.get('email')
+                user = Account.objects.get(email=email)
+                if user:
+                    current_site = get_current_site(request)
+                    mail_subject = 'Reset your password'
+                    message = render_to_string('api_postBee/template_reset_password.html', {
+                        'name': str(user.first_name)+" "+str(user.last_name),
+                        'domain': current_site.domain,
+                        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                        'token': password_reset_token.make_token(user),
+                    })
+                    to_email = email
+                    email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+                    )
+                    email.send()
+                    return Response({'success': True, 'message': 'Password reset link sent successfully.'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'success': False, 'errors': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ResetPasswordConfirm(APIView):
+    def get(self, request, uidb64, token):
+        User = Account
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
         
-class TokenRefresh(APIView):
+        if user is not None and password_reset_token.check_token(user, token):
+            return render(request, 'api_postBee/resetPassword.html', {
+                'uidb64': uidb64,
+                'token': token
+            })
+        else:
+            return Response({'success': False, 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    def post(self, request, uidb64, token):
+        User = Account
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            print("user = " + str(user))
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        
+        if user is not None and password_reset_token.check_token(user, token):
+            password = request.data.get('new_password')
+            confirm_password = request.data.get('confirm_password')
+            if password == confirm_password:
+                user.set_password(password)
+                user.save()
+                return Response({'success': True, 'message': 'Password reset successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'success': False, 'errors': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response({'success': False, 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
+            
+
+class UsersLists(ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = Account.objects.all()
+        amount = self.request.query_params.get('amount', 10)
+        return queryset.order_by(F('last_name').asc(nulls_last=True))[:amount]
+    
+    def list(self, request, *args, **kwargs):
+        print("list")
+        if not self.request.user.is_staff:
+            return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+class ChangePassword(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
-        if request.method == 'GET':
-            user = self.request.user
-            token = RefreshToken.for_user(user)
-            return Response({'refresh': str(token), 'access': str(token.access_token)}, status=status.HTTP_200_OK)
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            serializer = ChangePasswordSerializer(data=request.data)
+            if serializer.is_valid():
+                user = self.request.user
+                if user.check_password(serializer.data.get('old_password')):
+                    user.set_password(serializer.data.get('new_password'))
+                    user.save()
+                    return Response({'success': True, 'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+                else:
+                    return Response({'success': False, 'errors': 'Old password is incorrect.'}, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         else:
             response_data = {
                 'success': False,
