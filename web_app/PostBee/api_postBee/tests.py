@@ -434,7 +434,7 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post :\n")
 #         url = '/approve'
-#         data = {'postId': 1, 'response': 'True'}
+#         data = {'postId': 1, 'response': 'true'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
 #         print("Data : " + str(response.data))
@@ -457,9 +457,10 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\Refusing post :\n")
 #         url = '/approve'
-#         data = {'postId': 2, 'response': 'False'}
+#         data = {'postId': 2, 'decision': 'False'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
+#         print("Data : " + str(response.data))
 
 #         print("\nPost list :\n")
 #         # Set the access token in the Authorization header
@@ -479,9 +480,10 @@ from api_postBee.models import Account, Post, Comment
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         print("\nApproving post already approved :\n")
 #         url = '/approve'
-#         data = {'postId': 3, 'response': 'True'}
+#         data = {'postId': 3, 'decision': 'True'}
 #         response = self.client.post(url, data=data)
 #         print("response" + str(response))
+#         print("Data : " + str(response.data))
 
 #         print("\nStatus conclusion :\n")
 #         # print the status of all post in the database
@@ -710,3 +712,94 @@ from api_postBee.models import Account, Post, Comment
 #         print("Data : " + str(response.data))
 #         datas = response.data
 #         self.assertNotEqual(datas['access'], self.access_token)
+
+# class LogoutTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'testpassword'})
+#         self.access_token = response.data.get('access')
+#         self.refresh_token = response.data.get('refresh')
+
+#         post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
+#         post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
+#         post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='1')
+
+#     def test_logout(self):
+#         print("\nPost list :\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/?amount=7')
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         posts = response.data
+#         # for post in posts:
+#         #     print(f"Post ID: {post['id']}")
+#         #     print(f"Title: {post['title']}")
+#         #     print(f"Date: {post['date']}")
+#         #     print(f"Status: {post['status']}")
+#         #     print()  # Print an empty line between posts
+#         # Check the response status code
+#         # self.assertEqual(response.status_code, 200)
+
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         print("\nLogout :\n")
+#         url = '/logout'
+#         response = self.client.post(url, data={'refresh': self.refresh_token})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         # datas = response.data
+#         # self.assertEqual(datas['detail'], 'Successfully logged out.')
+#         # self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+#         print("\nPost list :\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/?amount=7')
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+
+#         posts = response.data
+#         # for post in posts:
+#         #     print(f"Post ID: {post['id']}")
+#         #     print(f"Title: {post['title']}")
+#         #     print(f"Date: {post['date']}")
+#         #     print(f"Status: {post['status']}")
+#         #     print()  # Print an empty line between posts
+#         # Check the response status code
+#         # self.assertEqual(response.status_code, 200)
+
+# class ResetPasswordTestCase(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='prouxmarc@gmail.com',
+#             password='testpassword',
+#             ensisaGroup='0',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+    
+#     def test_reset_password(self):
+#         print("\nReset password :\n")
+#         url = '/reset_password'
+#         response = self.client.post(url, data={'email': self.user.email})
+#         print("response" + str(response))
+#         print("Data : " + str(response.data))
+#         datas = response.data
+#         # self.assertEqual(datas['detail'], 'Password reset e-mail has been sent.')
+#         self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # import des éléments pour mettre la langue en français et le fuseau horaire en Europe/Paris
 from django.utils.translation import gettext_lazy as _
@@ -44,12 +45,22 @@ INSTALLED_APPS = [
     'api_postBee',
     'rest_framework', # Django REST Framework
     'rest_framework_simplejwt', # Django REST Framework JWT
+    'rest_framework_simplejwt.token_blacklist', # Django REST Framework JWT Blacklist
+    'rest_framework.authtoken', # Django REST Framework Token
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    'SINGIN_KEY': SECRET_KEY,
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True
 }
 
 MIDDLEWARE = [

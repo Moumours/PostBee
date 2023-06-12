@@ -72,3 +72,9 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = Account
         fields = ['first_name', 'last_name', 'email', 'ensisaGroup', 'profile_picture', 'is_staff']
+
+class ResetPasswordSerializer(ModelSerializer):
+    email = serializers.EmailField()
+    class Meta:
+        model = Account
+        fields = ['email']
