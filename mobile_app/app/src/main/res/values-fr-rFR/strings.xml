@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_users">Utilisateurs</string>
+    <string name="ui_moderation">Modération</string>
+    <string name="ui_postToValidate">Posts en attente</string>
+    <string name="ui_comments">Commentaires</string>
+    <string name="ui_target">Public ciblé</string>
+    <string name="ui_loading">Chargement...</string>
+    <string name="ui_warning">Attention !</string>
+    <string name="ui_delete">Supprimer</string>
+    <string name="ui_cancel">Annuler</string>
+    <string name="ui_sendPost">Publier le post</string>
+    <string name="ui_deleteAccountWarning">Êtes-vous sûr de vouloir supprimer votre compte ?\nVos posts seront concervés mais anonymisés.</string>
+    <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
+    <string name="ui_welcome">Bienvenue à PostBee !</string>
+    <string name="ui_resetPassword">Réinitialiser le mot de passe</string>
+    <string name="ui_resetPasswordTitle">Réinitialisation du mot de passe</string>
+    <string name="ui_name">Nom</string>
+    <string name="ui_firstname">Prénom</string>
+    <string name="ui_email">E-mail</string>
+    <string name="ui_password">Mot de passe</string>
+    <string name="ui_confirmPassword">Confirmer le mot de passe</string>
+    <string name="ui_status">Statut</string>
+    <string name="ui_forgotPassword">Mot de passe oublié</string>
+    <string name="ui_connect">Se connecter</string>
+    <string name="ui_register">S\'inscrire</string>
+    <string name="ui_registration">Inscription</string>
+    <string name="ui_settings">Paramètres</string>
+    <string name="hint_title">Titre</string>
+    <string name="hint_content">Ecrivez votre post ici...</string>
+    <string name="status_student">Etudiant</string>
+    <string name="status_teacher">Enseignant</string>
+    <string name="status_other">Autre personnel</string>
+    <string name="ui_profile">Profil</string>
+    <string name="ui_addPost">Ajouter un post</string>
+    <string name="ui_myPosts">Mes posts</string>
+    <string name="ui_oldPassword">Ancien mot de passe</string>
+    <string name="ui_newPassword">Nouveau mot de passe</string>
+    <string name="ui_changePassword">Changer de mot de passe</string>
+    <string name="setting_changeTheme">Change de thème</string>
+    <string name="setting_logout">Se déconnecter</string>
+    <string name="setting_deleteAccount">Supprimer le compte</string>
+    <string name="toast_notSamePassword">Les deux champs ne correspondent pas !</string>
+</resources>

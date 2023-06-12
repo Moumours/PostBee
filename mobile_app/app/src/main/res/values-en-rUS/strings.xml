@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_users">Users</string>
+    <string name="ui_moderation">Moderation</string>
+    <string name="ui_postToValidate">Waiting posts</string>
+    <string name="ui_comments">Comments</string>
+    <string name="ui_target">Target audience</string>
+    <string name="ui_loading">Loading...</string>
+    <string name="ui_warning">Warning!</string>
+    <string name="ui_delete">Delete</string>
+    <string name="ui_cancel">Cancel</string>
+    <string name="ui_sendPost">Publish post</string>
+    <string name="ui_deleteAccountWarning">"Are you sure you want to delete your account?\nYour posts will remain but they will be anonymized. "</string>
+    <string name="ui_deleteUserWarning">Are you sure you want to delete the user</string>
+    <string name="ui_welcome">Welcome to PostBee!</string>
+    <string name="ui_resetPassword">Reset password</string>
+    <string name="ui_resetPasswordTitle">Password reset</string>
+    <string name="ui_name">Lastname</string>
+    <string name="ui_firstname">Firstname</string>
+    <string name="ui_email">Email</string>
+    <string name="ui_password">Password</string>
+    <string name="ui_confirmPassword">Confirm password</string>
+    <string name="ui_status">Status</string>
+    <string name="ui_forgotPassword">Forgot password?</string>
+    <string name="ui_connect">Log in</string>
+    <string name="ui_register">Register</string>
+    <string name="ui_registration">Registration</string>
+    <string name="ui_settings">Settings</string>
+    <string name="hint_title">Title</string>
+    <string name="hint_content">Write your post here...</string>
+    <string name="status_student">Student</string>
+    <string name="status_teacher">Teacher</string>
+    <string name="status_other">Other staff member</string>
+    <string name="ui_profile">Profile</string>
+    <string name="ui_addPost">Add post</string>
+    <string name="ui_myPosts">My posts</string>
+    <string name="ui_oldPassword">Old password</string>
+    <string name="ui_newPassword">New password</string>
+    <string name="ui_changePassword">Change password</string>
+    <string name="setting_changeTheme">Change theme</string>
+    <string name="setting_logout">Log out</string>
+    <string name="setting_deleteAccount">Delete account</string>
+    <string name="toast_notSamePassword">The two fields do not match!</string>
+</resources>
