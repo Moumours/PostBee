@@ -38,8 +38,6 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
         View rootView = inflater.inflate(R.layout.fragment_moderation_users, container, false);
         RecyclerView recyclerView = rootView.findViewById(R.id.modusers_recyclerview_users);
 
-        //users.add(new ItemUser(7,"Delta", "Alexandre", "alexandre.delta@uha.fr", 2));
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(new ItemUserAdapter(users, getActivity(), this));
 

@@ -2,5 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="bg_blue">#9999F5</color>
+
+    <color name="ensisa_blue">#8aa6d6</color>
+    <color name="ensisa_blue_semitransparent">#546D99</color>
+    <color name="ensisa_blue_dark">#314261</color>
+    <color name="night_blue">#1F2F4D</color>
+    <color name="ensisa_yellow">#fad706</color>
 </resources>

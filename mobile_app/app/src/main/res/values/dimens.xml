@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="gap_item">8dp</dimen>
+    <dimen name="gap_part">32dp</dimen>
+    <dimen name="gap_partBig">44dp</dimen>
+</resources>

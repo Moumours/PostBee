@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import java.io.DataOutputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -54,16 +55,16 @@ public class EditPostActivity extends AppCompatActivity {
                             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                             connection.setRequestMethod("POST");
-                            connection.setRequestProperty("Content-Type", "application/json");
+                            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
                             connection.setDoOutput(true);
+                            connection.setDoInput(true);
 
                             OutputStream os = connection.getOutputStream();
-                            DataOutputStream writer = new DataOutputStream(os);
-
-                            writer.writeBytes(json);
+                            OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
+                            writer.write(json);
                             writer.flush();
                             writer.close();
-                            os.close();
+
 
                             int responseCode = connection.getResponseCode();
                             Log.d("EditPostActivity", "Response Code: " + responseCode);

@@ -15,14 +15,34 @@
     <string name="ui_warning">Attention !</string>
     <string name="ui_delete">Supprimer</string>
     <string name="ui_cancel">Annuler</string>
+    <string name="ui_sendPost">Publier le post</string>
 
     <string name="ui_deleteAccountWarning">
         Êtes-vous sûr de vouloir supprimer votre compte ?\n
         Vos posts seront concervés mais anonymisés. </string>
     <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
 
+    <string name="ui_welcome">Bienvenue à PostBee !</string>
+    <string name="ui_resetPassword">Réinitialiser le mot de passe</string>
+    <string name="ui_resetPasswordTitle">Réinitialisation du mot de passe</string>
+    <string name="ui_name">Nom</string>
+    <string name="ui_firstname">Prénom</string>
+    <string name="ui_email">Email</string>
+    <string name="ui_password">Mot de passe</string>
+    <string name="ui_confirmPassword">Confirmer le mot de passe</string>
+    <string name="ui_status">Statut</string>
+    <string name="ui_forgotPassword">Mot de passe oublié</string>
+    <string name="ui_connect">Se connecter</string>
+    <string name="ui_register">S\'inscrire</string>
+    <string name="ui_registration">Inscription</string>
+    <string name="ui_settings">Paramètres</string>
+
     <string name="hint_title">Titre</string>
     <string name="hint_content">Ecrivez votre post ici...</string>
+
+    <string name="status_student">Etudiant</string>
+    <string name="status_teacher">Enseignant</string>
+    <string name="status_other">Autre personnel</string>
 
 
     <string name="placeholder_title">Titre un petit peu plus long</string>
@@ -42,6 +62,4 @@
     <string name="placeholder_email">my.cool@email.com</string>
     <string name="placeholder_role">The role</string>
     <string name="placeholder_setting">Sample setting</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
