@@ -21,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mobile_app.R;
 
-public class MainActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
     private EditText nom, prenom, email, password, confirmPassword;
     private RadioGroup statusRadioGroup;
     private Button inscriptionButton;
@@ -29,15 +29,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
-        nom = findViewById(R.id.main_edittext_nom);
-        prenom = findViewById(R.id.main_edittext_prenom);
+        nom = findViewById(R.id.main_edittext_lastname);
+        prenom = findViewById(R.id.main_edittext_firstname);
         email = findViewById(R.id.main_edittext_email);
         password = findViewById(R.id.main_edittext_password);
         confirmPassword = findViewById(R.id.main_edittext_confirmPassword);
         statusRadioGroup = findViewById(R.id.main_edittext_statusRadioGroup);
-        inscriptionButton = findViewById(R.id.main_edittext_inscriptionButton);
+        inscriptionButton = findViewById(R.id.main_button_register);
 
         inscriptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,27 +54,25 @@ public class MainActivity extends AppCompatActivity {
                 String statut = selectedRadioButton.getText().toString();
 
 
-                if (statut.equals("Etudiant")) {
+                if (statut.equals(getText(R.string.status_student))) {
                     ensisaGroup = '0';
-                } else if (statut.equals("Professeur")) {
+                } else if (statut.equals(getText(R.string.status_teacher))) {
                     ensisaGroup = '1';
                 } else {
                     ensisaGroup = '2';
                 }
 
-                Log.d("MainActivity", "ensisaGroup : " + ensisaGroup);
+                Log.d("RegisterActivity", "ensisaGroup : " + ensisaGroup);
                 String emailComplete = emailText + "@uha.fr";
 
                 if (passwordText.equals(confirmPasswordText)) {
                     User user = new User(nomText, prenomText, emailComplete, passwordText, confirmPasswordText, ensisaGroup);
                     registerUser(user);
-                    Toast.makeText(MainActivity.this, "Inscription réussie!", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MainActivity.this, String.valueOf(user.getEnsisaGroup()), Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MainActivity.this, user.getFirst_name(), Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(RegisterActivity.this, "Inscription réussie !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, String.valueOf(user.getEnsisaGroup()), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, user.getFirst_name(), Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, "Les mots de passe ne correspondent pas!", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(RegisterActivity.this, "Les mots de passe ne correspondent pas !", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -98,19 +96,19 @@ public class MainActivity extends AppCompatActivity {
 
                     System.out.println(jsonUser);
 
-                    Log.d("MainActivity", "Envoi de la requête d'inscription");
+                    Log.d("RegisterActivity", "Envoi de la requête d'inscription");
 
                     try (OutputStreamWriter os = new OutputStreamWriter(django.getOutputStream(), "UTF-8")) {
                         os.write(jsonUser);
                         os.flush();
-                        Log.d("MainActivity", "Requête envoyée avec succès");
+                        Log.d("RegisterActivity", "Requête envoyée avec succès");
                     } catch (Exception e) {
                         e.printStackTrace();
-                        Log.e("MainActivity", "Erreur lors de l'envoi de la requête : " + e.getMessage());
+                        Log.e("RegisterActivity", "Erreur lors de l'envoi de la requête : " + e.getMessage());
                     }
 
                     int responseCode = django.getResponseCode();
-                    Log.d("MainActivity", "Code de réponse : " + responseCode);
+                    Log.d("RegisterActivity", "Code de réponse : " + responseCode);
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
                     String inputLine;
@@ -121,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     in.close();
 
-                    Log.d("MainActivity", "Réponse du serveur : " + response.toString());
+                    Log.d("RegisterActivity", "Réponse du serveur : " + response.toString());
 
 
                     System.out.println(response.toString());

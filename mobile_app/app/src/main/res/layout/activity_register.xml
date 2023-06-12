@@ -1,0 +1,103 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".controller.RegisterActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout style="@style/LayoutDefault">
+
+        <ImageView
+            android:id="@+id/main_imageview_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="28dp"
+            android:src="@drawable/logo_line" />
+
+        <TextView style="@style/TextAppearance.Material3.TitleLarge"
+            android:id="@+id/main_textview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="@string/ui_registration" />
+
+        <EditText style="@style/DefaultTextField"
+            android:id="@+id/main_edittext_lastname"
+            android:hint="@string/ui_name" />
+
+        <EditText style="@style/DefaultTextField"
+            android:id="@+id/main_edittext_firstname"
+            android:hint="@string/ui_firstname" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText style="@style/DefaultTextField"
+                android:id="@+id/main_edittext_email"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:inputType="textEmailAddress"
+                android:hint="@string/ui_email" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/ensisa_blue"
+                android:text="\@uha.fr"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <EditText style="@style/DefaultTextField"
+            android:id="@+id/main_edittext_password"
+            android:layout_marginTop="@dimen/gap_part"
+            android:inputType="textPassword"
+            android:hint="@string/ui_password" />
+
+        <EditText style="@style/DefaultTextField"
+            android:id="@+id/main_edittext_confirmPassword"
+            android:inputType="textPassword"
+            android:hint="@string/ui_confirmPassword" />
+
+        <TextView style="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_partBig"
+            android:text="@string/ui_status" />
+
+        <RadioGroup
+            android:id="@+id/main_edittext_statusRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <RadioButton
+                android:id="@+id/main_edittext_studentRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:buttonTint="@color/ensisa_yellow"
+                android:text="@string/status_student" />
+
+            <RadioButton
+                android:id="@+id/main_edittext_teacherRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:buttonTint="@color/ensisa_yellow"
+                android:text="@string/status_teacher" />
+
+            <RadioButton
+                android:id="@+id/main_edittext_otherRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:buttonTint="@color/ensisa_yellow"
+                android:text="@string/status_other" />
+        </RadioGroup>
+
+        <Button style="@style/ButtonAction"
+            android:id="@+id/main_button_register"
+            app:cornerRadius="12dp"
+            android:text="@string/ui_register"
+            android:layout_marginTop="@dimen/gap_partBig" />
+    </LinearLayout>
+</ScrollView>

@@ -27,8 +27,8 @@ public class MdpActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mdp);
-        editTextEmail = findViewById(R.id.editTextEmail);
-        buttonResetPassword = findViewById(R.id.buttonResetPassword);
+        editTextEmail = findViewById(R.id.resetpassword_edittext_email);
+        buttonResetPassword = findViewById(R.id.resetpassword_button_reset);
 
         buttonResetPassword.setOnClickListener(new View.OnClickListener() {
 
