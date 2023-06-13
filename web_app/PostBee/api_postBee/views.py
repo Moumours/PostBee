@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import FileResponse, HttpRequest, HttpResponse
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import require_GET
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -17,9 +17,13 @@ from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt.exceptions import TokenError
 from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from rest_framework.parsers import MultiPartParser
+from django.utils.html import strip_tags
+from django.conf.urls.static import static
+from django.contrib.staticfiles import finders
+from email.mime.image import MIMEImage
 
 from api_postBee.forms import RegisterForm
 from api_postBee.tokens import account_activation_token, password_reset_token
@@ -36,8 +40,15 @@ class IndexView(APIView):
 class LoginView(APIView):
     def post(self, request, format=None):
         print("Data :"+str(request.data))
+        # first_key = json.loads(list(request.data.keys())[0])
+        # print("More :"+str(first_key))
+        # = <QueryDict: {'{"password":"putaindemdp","email":"alexandre.caux@uha.fr"}': ['']}>
+        # print the first key of the dict
+        # print("Data :"+str(request.data.keys()[0]))
         email = request.data.get('email')
         password = request.data.get('password')
+        print("Email :"+str(email))
+        print("Password :"+str(password))
 
         user = authenticate(request, email=email, password=password)
         if user is not None:
@@ -59,17 +70,17 @@ class LoginView(APIView):
 class RegisterView(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
-            json_data = json.loads(request.body)
+            print("Data :"+str(request.data))
+            # json_data = json.loads(request.body)
             # print(json_data)
-            form = RegisterForm(json_data)
+            oldAccount = Account.objects.filter(email=request.data.get('email')).first()
+            if oldAccount and oldAccount.is_active==False:
+                oldAccount.delete()
+            form = RegisterForm(request.data)
             if form.is_valid():
                 user = form.save(commit=False)
                 user.is_active = False
                 user.save()
-                # for field in user._meta.fields:
-                #     field_name = field.name
-                #     field_value = getattr(user, field_name)
-                #     print(f"{field_name}: {field_value}")
                 self.activate_email(request, user)
                 response_data = {
                     'success': True,
@@ -78,7 +89,6 @@ class RegisterView(APIView):
                 return Response(response_data, status=status.HTTP_201_CREATED)
             else:
                 errors = {field: errors[0] for field, errors in form.errors.items()}
-                # print(errors)
                 response_data = {
                     'success': False,
                     'errors': errors
@@ -93,15 +103,24 @@ class RegisterView(APIView):
 
 
     def activate_email(self, request, user):
-        mail_subject = 'Activate your user account.'
-        message = render_to_string('api_postBee/template_activate_account.html', {
+        mail_subject = 'Activation de votre compte.'
+        html_message = render_to_string('api_postBee/template_activate_account.html', {
             'name': str(user.first_name)+" "+str(user.last_name),
             'domain': get_current_site(request).domain,
             'uid': urlsafe_base64_encode(force_bytes(user.pk)),
             'token': account_activation_token.make_token(user),
             'protocol': 'https' if request.is_secure() else 'http'
         })
-        email = EmailMessage(mail_subject, message, to=[user.email])
+        message = strip_tags(html_message)
+        email = EmailMultiAlternatives(mail_subject, message, to=[user.email])
+        email.attach_alternative(html_message, "text/html")
+        email.mixed_subtype = 'related'
+
+        for img in ['logo_ensisa.png', 'logo_line.png']:
+            image = MIMEImage(open(finders.find('api_postBee/imgs/'+img), 'rb').read())
+            image.add_header('Content-ID', '<{}>'.format(img))
+            email.attach(image)
+
         if email.send():
             Response({'message': 'Confirmation email sent.'}, status=status.HTTP_200_OK)
         else:
@@ -123,36 +142,30 @@ class ActivateAccount(APIView):
             user.save()
 
             # print("Thank you for your email confirmation. Now you can login to your account.")
-            return Response({'message': 'Thank you for your email confirmation. Now you can login to your account.'}, status=status.HTTP_200_OK)
+            return render(request, 'api_postBee/registerComplete.html')
         else:
             # print("Activation link is invalid!")
             return Response({'message': 'Activation link is invalid!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-# Endpoint view that return all posts as JSON with Response only if authenticated
 
 class PostList(ReadOnlyModelViewSet):
     serializer_class = PostListSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Post.objects.all()
         type = self.request.query_params.get('type', None)
         amount = self.request.query_params.get('amount', 10)
-        # print("User identities : " + self.request.user.first_name + " " + self.request.user.last_name)
-        # print("User is staff : " + str(self.request.user.is_staff))
-        # print("Moderate : " + str(moderate))
-        # print("Amount : " + str(amount))
 
         # User is staff status and filter moderate is true
-        if type == 'moderate' and self.request.user.is_staff:
+        if type == 'moderate':# and self.request.user.is_staff:
             print('Moderate is true and user is staff')
             queryset = queryset.filter(status='0').order_by('-date')[:int(amount)]
 
-        # all user if moderate is false
-        elif type == 'own':
-            # print('Moderate is false')
-            queryset = queryset.filter(author=self.request.user).order_by('-date')[:int(amount)]
+        # elif type == 'own':
+        #     # print('Moderate is false')
+        #     queryset = queryset.filter(author=self.request.user).order_by('-date')[:int(amount)]
         
         else:
             queryset = queryset.filter(status='1').order_by('-date')[:int(amount)]
@@ -167,7 +180,6 @@ class PostList(ReadOnlyModelViewSet):
 class PostDetail(ReadOnlyModelViewSet):
     serializer_class = PostDetailSerializer
     # permission_classes = [IsAuthenticated]
-    # print('PostDetail viewset')
 
     def get_queryset(self):
         id = self.request.query_params.get('id')
@@ -175,9 +187,9 @@ class PostDetail(ReadOnlyModelViewSet):
             return Response({'error': 'Post ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         queryset = get_object_or_404(Post.objects.all(), id=id)
         print("Post status : " + queryset.status)
-        # if not queryset.status == '1' and not self.request.user.is_staff:
+        # if not queryset.status == '1' and (not self.request.user.is_staff or queryset.author != self.request.user):
         #     print('Post not found')
-        #     return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
+            # return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
         return queryset
     
     def list(self, request, *args, **kwargs):
@@ -187,21 +199,19 @@ class PostDetail(ReadOnlyModelViewSet):
         
 class PublishPost(APIView):
     # permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
 
     def post(self, request, format=None):
         if request.method == 'POST':
             serializer = PostPublishSerializer(data=request.data)
             # print(request.data)
             if serializer.is_valid():
-                title = serializer.validated_data['title']
-                content = serializer.validated_data['text']
-                # user = request.user  # Assuming authentication is configured and user is available in the request
-                user = Account.objects.get(email='marc.proux@uha.fr')
-                post = Post.objects.create(title=title, author=user, text=content)
+                print("serializer : " + str(serializer))
+                # serializer.save(author = request.user)
+                serializer.save(author = Account.objects.get(email="marc.proux@uha.fr"))
                 response_data = {
                     'success': True,
-                    'message': 'Post created successfully.',
-                    'post_id': post.id
+                    'data': serializer.data
                 }
                 return Response(response_data, status=status.HTTP_201_CREATED)
             else:
@@ -226,13 +236,11 @@ class PublishComment(APIView):
         if request.method == 'POST':
             serializer = CommentPublishSerializer(data=request.data)
             if serializer.is_valid():
-                # print(request.data)
                 content = serializer.validated_data['text']
-                # print(content)
                 post_id = serializer.validated_data['post'].id
                 # print('id = ' + str(post_id))
                 # user = request.user  # Assuming authentication is configured and user is available in the request
-                user = Account.objects.get(email="test@example.com")
+                user = Account.objects.get(email="marc.proux@uha.fr")
                 post = Post.objects.get(id=post_id)
                 if post is None or post.status == '0' or post.status == '2':
                     return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -424,20 +432,28 @@ class ResetPassword(APIView):
                 email = serializer.data.get('email')
                 user = Account.objects.get(email=email)
                 if user:
-                    current_site = get_current_site(request)
-                    mail_subject = 'Reset your password'
-                    message = render_to_string('api_postBee/template_reset_password.html', {
+                    mail_subject = 'Réinitialiser votre mot de passe.'
+                    html_message = render_to_string('api_postBee/template_reset_password.html', {
                         'name': str(user.first_name)+" "+str(user.last_name),
-                        'domain': current_site.domain,
+                        'domain': get_current_site(request).domain,
                         'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token': password_reset_token.make_token(user),
+                        'token': account_activation_token.make_token(user),
+                        'protocol': 'https' if request.is_secure() else 'http'
                     })
-                    to_email = email
-                    email = EmailMessage(
-                        mail_subject, message, to=[to_email]
-                    )
-                    email.send()
-                    return Response({'success': True, 'message': 'Password reset link sent successfully.'}, status=status.HTTP_200_OK)
+                    message = strip_tags(html_message)
+                    email = EmailMultiAlternatives(mail_subject, message, to=[email])
+                    email.attach_alternative(html_message, "text/html")
+                    email.mixed_subtype = 'related'
+
+                    for img in ['logo_ensisa.png', 'logo_line.png']:
+                        image = MIMEImage(open(finders.find('api_postBee/imgs/'+img), 'rb').read())
+                        image.add_header('Content-ID', '<{}>'.format(img))
+                        email.attach(image)
+
+                    if email.send():
+                        return Response({'success': True, 'message': 'Reset email sent.'}, status=status.HTTP_200_OK)
+                    else:
+                        return Response({'message': 'Reset email not sent.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 else:
                     return Response({'success': False, 'errors': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
@@ -476,7 +492,7 @@ class ResetPasswordConfirm(APIView):
             if password == confirm_password:
                 user.set_password(password)
                 user.save()
-                return Response({'success': True, 'message': 'Password reset successfully.'}, status=status.HTTP_200_OK)
+                return render(request, 'api_postBee/resetComplete.html')
             else:
                 return Response({'success': False, 'errors': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
@@ -484,7 +500,7 @@ class ResetPasswordConfirm(APIView):
             
 
 class UsersLists(ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -494,8 +510,8 @@ class UsersLists(ReadOnlyModelViewSet):
     
     def list(self, request, *args, **kwargs):
         print("list")
-        if not self.request.user.is_staff:
-            return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+        # if not self.request.user.is_staff:
+        #     return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -522,3 +538,7 @@ class ChangePassword(APIView):
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+class Test(APIView):
+    def get(self, request, format=None):
+        return render(request, 'api_postBee/template_activate_account.html')

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Réinitialiser le mot de passe</title>
+        {% block styles %}
+            <link href="{% static 'api_postBee/style.css' %}" rel="stylesheet">
+        {% endblock %}
+    </head>
+    <body>
+        <h1>
+            <img src="{% static 'api_postBee/imgs/logo.png' %}">
+        </h1>
+        <h2>Changement du mot de passe</h2>        
+        <p>Le changement de mot de passe s'est bien déroulé !<br>
+        Nous espérons que vous regagnerez votre accès à PostBee le plus rapidement possible.</p>
+    </body>
+</html>

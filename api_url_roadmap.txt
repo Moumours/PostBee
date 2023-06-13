@@ -22,7 +22,7 @@ Liste des postes :
 	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}
 	amount correspond aux nombres de postes demandé
 	le champ typé défini si on est en mode écran d'accueil, page modo ou page perso
-	
+
 	Accueil : postbee.alwaysdata.net/posts/?amount=x
 	Page perso : postbee.alwaysdata.net/posts/?amount=x&type=own
 	Page modo : postbee.alwaysdata.net/posts/?amount=x&type=moderate
@@ -40,7 +40,7 @@ Publier un post :
 	}
 
 Publier un commentaire :
-	postbee.alwaysdata.net//comment
+	postbee.alwaysdata.net/comment
 	json requis :
 	{
 		"text": "string",
@@ -90,7 +90,7 @@ Déconnextion :
 	postbee.alwaysdata.net/logout
 
 Mot de passe oublié :
-	postbee.alwaysdata.net/forgot_password
+	postbee.alwaysdata.net/reset_password
 	json requis :
 	{
 		"email": "string"

@@ -18,7 +18,8 @@ from django.urls import path, include
 from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework import routers
 from api_postBee import views as core_views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 from api_postBee.views import *
 
@@ -48,4 +49,5 @@ urlpatterns = [
     path('reset_password', ResetPassword.as_view(), name='reset_password'),
     path('reset_password/confirm/<uidb64>/<token>', ResetPasswordConfirm.as_view(), name='reset_password_confirm'),
     path('change_password', ChangePassword.as_view(), name='change_password'),
-]
+    path('test', Test.as_view(), name='test'),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

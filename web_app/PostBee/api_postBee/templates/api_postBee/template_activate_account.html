@@ -1,7 +1,22 @@
-{% autoescape off %}
-Hi {{ name }},
-
-Please click on the link below to confirm your registration:
-
-http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
-{% endautoescape %}
+<html>
+    <body>
+        {% autoescape off %}
+        <p>Bonjour {{ name }} et bienvenue à PostBee !</p>
+        
+        <p>Nous vous remercions sincèrement de nous avoir rejoint.
+            Cependant, il reste une petite broutille administrative à régler...</p>
+        
+        <p>Nous vous invitons à cliquer sur le lien ci-dessous pour confirmer votre inscription.
+            Après cela, vous serez officiellement des nôtres !</p>
+        
+        <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}">Confirmer votre inscription</a>
+        
+        <p>Nous espérons que nos services vous seront utiles et agréables !</p>
+        <p>L'équipe de PostBee</p>
+        <div style="display: flex; column-gap: 2rem; filter: drop-shadow(0 0 0.1rem #3335);">
+            <img src="cid:logo_ensisa.png" alt="Logo de l'ENSISA">
+            <img src="cid:logo_line.png" alt="Logo de PostBee">
+        </div>
+        {% endautoescape %}
+    </body>
+</html>

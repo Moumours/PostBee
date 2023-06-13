@@ -40,10 +40,10 @@ class PostDetailSerializer(ModelSerializer):
         return serializer.data
 
 
-class PostPublishSerializer(ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ['title', 'text']
+# class PostPublishSerializer(ModelSerializer):
+#     class Meta:
+#         model = Post
+#         fields = ['title', 'text']
     
 class CommentPublishSerializer(ModelSerializer):
     post = PrimaryKeyRelatedField(queryset=Post.objects.all())
@@ -89,3 +89,45 @@ class ChangePasswordSerializer(serializers.Serializer):
     class Meta:
         model = Account
         fields = ['old_password', 'new_password']
+
+class ImageSerializer(serializers.ModelSerializer):
+    image = serializers.ImageField(max_length=None, use_url=True)
+    class Meta:
+        model = Image
+        fields = "__all__"
+
+class VideoSerializer(serializers.ModelSerializer):
+    video = serializers.FileField(max_length=None, use_url=True)
+    class Meta:
+        model = Video
+        fields = "__all__"
+
+
+class PostPublishSerializer(serializers.Serializer):
+    images = serializers.ListField(
+        child=serializers.ImageField(allow_empty_file=False, use_url=False),
+        write_only=True
+    )
+    videos = serializers.ListField(
+        child=serializers.FileField(allow_empty_file=False, use_url=False),
+        write_only=True
+    )
+    title = serializers.CharField(max_length=100)
+    text = serializers.CharField()
+
+    class Meta:
+        model = Post
+        fields = ['title', 'text', 'images', 'videos']
+
+    def create(self, validated_data):
+        images_data = validated_data.pop('images')
+        videos_data = validated_data.pop('videos')
+        post = Post.objects.create(**validated_data)
+
+        for image_data in images_data:
+            Image.objects.create(post=post, image=image_data)
+        
+        for video_data in videos_data:
+            Video.objects.create(post=post, video=video_data)
+            
+        return post

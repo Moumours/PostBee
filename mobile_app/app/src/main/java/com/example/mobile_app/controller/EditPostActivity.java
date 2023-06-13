@@ -80,6 +80,10 @@ public class EditPostActivity extends AppCompatActivity {
                             int responseCode = connection.getResponseCode();
                             Log.d("EditPostActivity", "Response Code: " + responseCode);
 
+                            //TODO : Retravailler la condition
+                            if (responseCode < 300)
+                                finish();
+
                             connection.disconnect();
                         } catch (Exception e) {
                             e.printStackTrace();
