@@ -31,7 +31,7 @@ postRouter.register('users', UsersLists, basename='usersLists')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('refresh_token', TokenRefreshView.as_view(), name='token_refresh'),
+    path('refresh_token', CustumTokenRefreshView.as_view(), name='token_refresh'),
     path('login', LoginView.as_view(), name='login'),
     path('register', RegisterView.as_view(), name='register'),
     path('activate/<uidb64>/<token>', ActivateAccount.as_view(), name='activate'),
@@ -49,5 +49,4 @@ urlpatterns = [
     path('reset_password', ResetPassword.as_view(), name='reset_password'),
     path('reset_password/confirm/<uidb64>/<token>', ResetPasswordConfirm.as_view(), name='reset_password_confirm'),
     path('change_password', ChangePassword.as_view(), name='change_password'),
-    path('test', Test.as_view(), name='test'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
