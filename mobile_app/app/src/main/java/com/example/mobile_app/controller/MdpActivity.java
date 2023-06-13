@@ -46,6 +46,7 @@ public class MdpActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
+
                     URL url = new URL("http://postbee.alwaysdata.net/reset_password");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("POST");

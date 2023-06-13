@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.ResponseData;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.google.gson.Gson;
@@ -148,49 +150,11 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://postbee.alwaysdata.net/change_password");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setRequestProperty("Authorization", "Bearer " + mTokenAccess);
-
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-
-                    Gson gson = new Gson();
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("old_password", oldPassword);
                     params.put("new_password", newPassword);
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    os.writeBytes(gson.toJson(params));
-
-                    Log.d("ProfileActivity", "Request JSON sent to the server: " + gson.toJson(params));
-
-                    Log.d("ProfileActivity", "Token récupéré: " + mTokenAccess);
-
-                    int responseCode = conn.getResponseCode();
-                    Log.d("ProfileActivity", "HTTP response code: " + responseCode);
-
-                    /*
-                    if (responseCode == 200) {
-                        Sa c'est bien passé
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(ProfileActivity.this, "L'ancien mot de passe est incorrect", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                     */
-
-                    os.flush();
-                    os.close();
-
-                    Log.d("ProfileActivity", "HTTP response code: " + conn.getResponseCode()); // Add this line
-
-                    conn.disconnect();
+                    ResponseData response;
+                    response = (ResponseData) Token.connectToServer("change_password", "POST", mTokenAccess,params, params.getClass(), ResponseData.class,null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

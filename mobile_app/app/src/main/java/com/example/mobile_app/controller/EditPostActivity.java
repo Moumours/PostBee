@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.ResponseData;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UploadPost;
 import com.google.gson.Gson;
 
@@ -25,12 +28,12 @@ public class EditPostActivity extends AppCompatActivity {
     private EditText mEditTextTitle;
     private EditText mEditTextContent;
     private Button mButtonSubmit;
-    private String mToken;
+    private String mTokenAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent i = getIntent();
-        mToken = getIntent().getStringExtra("TOKEN");
+        mTokenAccess = getIntent().getStringExtra("TOKEN");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
@@ -44,47 +47,27 @@ public class EditPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String title = mEditTextTitle.getText().toString();
                 String text = mEditTextContent.getText().toString();
-                UploadPost uploadPost;
-
-                HashMap<String, String> postData = new HashMap<>();
-                postData.put("title", title);
-                postData.put("text", text);
-
-                Gson gson = new Gson();
-                String json = gson.toJson(postData);
-
-                Log.d("EditPostActivity","Le JSON : " + json);
+                //Récupérer la liste de documents
+                //ici null représente la liste de documents
+                UploadPost uploadPost = new UploadPost(title,text,null);
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            URL url = new URL("http://postbee.alwaysdata.net/publish");
-                            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                            connection.setRequestMethod("POST");
-                            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                            String tokenCredentials = "Bearer " + mToken;
-                            connection.setRequestProperty("Authorization", tokenCredentials);
-                            connection.setRequestProperty("Content-Type", "application/json");
-                            connection.setDoOutput(true);
-                            connection.setDoInput(true);
-
-                            OutputStream os = connection.getOutputStream();
-                            OutputStreamWriter writer = new OutputStreamWriter(os, "UTF-8");
-                            writer.write(json);
-                            writer.flush();
-                            writer.close();
-
-
-                            int responseCode = connection.getResponseCode();
-                            Log.d("EditPostActivity", "Response Code: " + responseCode);
-
-                            //TODO : Retravailler la condition
-                            if (responseCode < 300)
-                                finish();
-
-                            connection.disconnect();
+                            ResponseData response;
+                            response = (ResponseData) Token.connectToServer("publish", "POST", mTokenAccess,uploadPost, UploadPost.class, ResponseData.class,null);
+                            if(response != null) {
+                                Log.d("EditPostActivity","Response : Success :"+ response.getSuccess() + " | " + "Message :" + response.getMessage());
+                                if (response.getSuccess().equals("True")) {
+                                    Toast.makeText(EditPostActivity.this, "Publication envoyée", Toast.LENGTH_LONG).show();
+                                    Intent i = new Intent(EditPostActivity.this, HomeActivity.class);
+                                    startActivity(i);
+                                }
+                                else {
+                                    Log.d("EditPostActivity","Error : no server response");
+                                }
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
