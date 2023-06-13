@@ -5,23 +5,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".controller.SettingsActivity"
-    android:orientation="vertical"
+    android:orientation="vertical">
 
-    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100px"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
+        >
+
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:scaleType="fitStart"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_ensisa" />
+        <ImageView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:scaleType="fitEnd"
+            android:adjustViewBounds="true"
+            android:src="@drawable/logo_line_small" />
+    </LinearLayout>
+
+    <TextView style="@style/TextAppearance.Material3.TitleLarge"
+        android:id="@+id/settings_textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/gap_part"
+        android:layout_marginVertical="@dimen/gap_item"
+        android:gravity="start"
+        android:text="@string/ui_settings" />
 
     <Button style="@style/DefaultListItemButton"
         android:id="@+id/settings_button_changeTheme"
-        android:text="Changer de thème"/>
+        android:text="@string/setting_changeTheme"/>
 
     <View style="@style/Divider"/>
 
     <Button style="@style/DefaultListItemButton"
         android:id="@+id/settings_button_logout"
-        android:text="Se déconnecter"/>
+        android:text="@string/setting_logout"/>
 
     <View style="@style/Divider"/>
 
     <Button style="@style/DefaultListItemButton"
         android:id="@+id/settings_button_accountDelete"
-        android:text="Supprimer le compte"/>
+        android:text="@string/setting_deleteAccount"/>
 </LinearLayout>
