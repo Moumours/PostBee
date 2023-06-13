@@ -15,6 +15,8 @@ import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -62,7 +64,7 @@ public class ViewPostActivity extends AppCompatActivity {
             public void run() {
                 try {
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
-                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, Token.class,null));
+                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, ViewPost.class,null));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

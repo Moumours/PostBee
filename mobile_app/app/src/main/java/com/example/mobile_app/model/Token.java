@@ -116,6 +116,7 @@ public class Token implements Serializable {
     public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive, Type typeToReceive){;
         Object objToReceive = null;
         try {
+            //URL url = new URL("http://10.39.251.162:8000/"+endURL);
             URL url = new URL("http://postbee.alwaysdata.net/"+endURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(requestMethod);
@@ -129,7 +130,7 @@ public class Token implements Serializable {
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
             }
-            Log.d("connectToServer", "Connecting to "+"http://postbee.alwaysdata.net/"+endURL+" with method \"" + requestMethod + "\"");
+            Log.d("connectToServer", "Connecting to "+url+" with method \"" + requestMethod + "\"");
 
             //Send data to the server
             if (objToSend != null) {
@@ -167,6 +168,25 @@ public class Token implements Serializable {
                 }
                 Log.d("connectToServer", "Object received");
             }
+            else if(respCode == HttpURLConnection.HTTP_ACCEPTED){
+                Log.d("connectToServer","Connected to server but data sent is invalid");
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuffer response = new StringBuffer();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+                String rawPostData = response.toString();
+
+                Gson gsonerrormsg = new Gson();
+                HashMap<String, String> params = new HashMap<String, String>();
+                params = gsonerrormsg.fromJson(rawPostData, params.getClass());
+
+                Log.d("connectToServer","Error message : "+params.get("error"));
+                UserStatic.message = params.get("error");
+            }
             conn.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,5 +194,7 @@ public class Token implements Serializable {
         return objToReceive;
     }
 }
+
+//conn.setRequestProperty("Content-Type", "multipart/form-data");
 
 

@@ -1,14 +1,19 @@
 package com.example.mobile_app.controller;
 
+import static com.example.mobile_app.model.UserStatic.access;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.User;
+import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.google.gson.Gson;
 
@@ -38,6 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button buttonForgotPassword;
     private Button buttonRegister;
     private Token mToken = new Token(null,null);
+    User mUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +62,6 @@ public class LoginActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
                 sendLoginDataToServer(email,password);
-
-                Toast.makeText(LoginActivity.this, "Connexion : " + email + ", " + password, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -87,25 +91,38 @@ public class LoginActivity extends AppCompatActivity {
 
         new Thread(new Runnable() {
             public void run() {
+                User user = null;
                 try {
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("email", email);
                     params.put("password", password);
-                    mToken = (Token.class).cast(Token.connectToServer("login","POST",null,params,params.getClass(), Token.class,null));
-                    if(mToken != null){
-                        Log.d("LoginActivity","Connexion successful");
-                        //Stocke les infos du token de manière sécurisée
-                        Token.storeToken(LoginActivity.this,mToken);
-                        //Connexion réussie --> On passe à HomeActivity
-                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                        i.putExtra("TOKEN_ACCESS", mToken.getAccess());
-                        startActivity(i);
-                    }
-                    else{
-                        Log.d("LoginActivity","Connexion failed");
-                    }
+                    user = (User.class).cast(Token.connectToServer("login", "POST", null, params, params.getClass(), User.class, null));
+
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    User finalUser = user;
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            if(finalUser != null) {
+                                    Log.d("LoginActivity","Sauvegarde des tokens et mise à jour des variables statiques");
+                                    Token.storeToken(LoginActivity.this,new Token(finalUser.access,finalUser.refresh));
+                                    UserStatic.access = finalUser.access;
+                                    UserStatic.refresh = finalUser.refresh;
+                                    UserStatic.first_name = finalUser.first_name;
+                                    UserStatic.last_name = finalUser.last_name;
+                                    UserStatic.email = finalUser.email;
+                                    UserStatic.ensisaGroup = finalUser.ensisaGroup;
+                                    UserStatic.profile_picture = finalUser.profile_picture;
+                                    UserStatic.is_staff = finalUser.is_staff;
+                                    Toast.makeText(LoginActivity.this, "Connexion réussie", Toast.LENGTH_LONG).show();
+                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                }
+                            else {
+                                Toast.makeText(LoginActivity.this, "Erreur : "+ UserStatic.message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
             }
         }).start();

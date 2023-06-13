@@ -77,7 +77,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mAddPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
+                Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
+                startActivity(i);
             }
         });
 
