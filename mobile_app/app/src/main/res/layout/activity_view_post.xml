@@ -1,63 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_itempost_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <LinearLayout style="@style/LayoutDefault">
-        <TextView style="@style/TextAppearance.Material3.HeadlineLarge"
-            android:id="@+id/viewpost_textview_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
-                android:id="@+id/viewpost_textview_author"
-                android:layout_width="0dp"
+        <LinearLayout style="@style/LayoutDefault">
+            <TextView style="@style/TextAppearance.Material3.HeadlineLarge"
+                android:id="@+id/viewpost_textview_title"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="start" />
+                android:textStyle="bold" />
 
-            <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
-                android:id="@+id/viewpost_textview_date"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
+                    android:id="@+id/viewpost_textview_author"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="start" />
+
+                <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
+                    android:id="@+id/viewpost_textview_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <TextView style="@style/TextAppearance.Material3.BodyLarge"
+                android:id="@+id/viewpost_textview_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end" />
+                android:layout_marginTop="@dimen/gap_part" />
         </LinearLayout>
-
-        <TextView style="@style/TextAppearance.Material3.BodyLarge"
-            android:id="@+id/viewpost_textview_content"
+        <TextView style="@style/TextAppearance.Material3.TitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_part" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/gap_part"
             android:text="@string/ui_comments"
-            android:textSize="36sp"
             android:textStyle="bold"/>
-
-        <TextView
-            android:id="@+id/viewpost_textview_commentuser"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_comments"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/placeholder_username"
-            android:textSize="20sp"/>
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/gap_item"/>
 
-        <TextView
-            android:id="@+id/viewpost_textview_commenttext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/placeholder_comment"
-            android:textSize="20sp"/>
+        <EditText style="@style/DefaultTextField"
+            android:id="@+id/viewpost_edittext_writecomment"
+            android:layout_marginHorizontal="@dimen/gap_part"
+            android:inputType="textLongMessage"
+            android:hint="@string/ui_writeComment" />
+
+        <Button style="@style/ButtonAction"
+            android:id="@+id/viewpost_button_postcomment"
+            app:cornerRadius="12dp"
+            android:layout_marginHorizontal="@dimen/gap_part"
+            android:text="@string/ui_postComment"
+            android:layout_marginTop="@dimen/gap_item" />
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

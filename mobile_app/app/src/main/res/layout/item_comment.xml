@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@drawable/border_list_item"
-    android:padding="12dp">
+    android:padding="12dp"
+    android:layout_marginTop="@dimen/gap_item"
+    android:layout_marginHorizontal="@dimen/gap_part" >
 
     <LinearLayout
         android:layout_width="0dp"
@@ -21,6 +23,31 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:text="@string/placeholder_username" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView style="@style/TextAppearance.Material3.BodyMedium"
+                android:id="@+id/itemcomment_textview_role"
+                android:textStyle="bold|italic"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/placeholder_role" />
+
+            <TextView style="@style/TextAppearance.Material3.BodyMedium"
+                android:id="@+id/itemcomment_textview_date"
+                android:textStyle="bold|italic"
+                android:textColor="@color/white"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:text="@string/placeholder_date" />
+        </LinearLayout>
 
         <TextView style="@style/TextAppearance.Material3.BodyLarge"
             android:id="@+id/itemcomment_textview_content"

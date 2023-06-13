@@ -66,4 +66,9 @@
     <string name="setting_logout">Se déconnecter</string>
     <string name="setting_deleteAccount">Supprimer le compte</string>
     <string name="toast_notSamePassword">Les deux champs ne correspondent pas !</string>
+    <string name="ui_yes">Oui</string>
+    <string name="ui_no">Non</string>
+    <string name="ui_deleteCommentWarning">Êtes-vous sûr de vouloir supprimer ce commentaire ?</string>
+    <string name="ui_writeComment">Ecrire un commentaire</string>
+    <string name="ui_postComment">Publier un commentaire</string>
 </resources>
