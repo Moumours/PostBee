@@ -91,14 +91,14 @@ public class LoginActivity extends AppCompatActivity {
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("email", email);
                     params.put("password", password);
-                    mToken = (Token.class).cast(Token.connectToServer("login","POST",null,params,params.getClass(), Token.class));
+                    mToken = (Token.class).cast(Token.connectToServer("login","POST",null,params,params.getClass(), Token.class,null));
                     if(mToken != null){
                         Log.d("LoginActivity","Connexion successful");
                         //Stocke les infos du token de manière sécurisée
                         Token.storeToken(LoginActivity.this,mToken);
                         //Connexion réussie --> On passe à HomeActivity
                         Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                        i.putExtra("TOKEN", mToken.getAccess());
+                        i.putExtra("TOKEN_ACCESS", mToken.getAccess());
                         startActivity(i);
                     }
                     else{
@@ -111,57 +111,4 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
 }
-
-
-/*
-                    URL url = new URL("http://postbee.alwaysdata.net/login");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-
-                    Gson gson = new Gson();
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    params.put("email", email);
-                    params.put("password", password);
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    os.writeBytes(gson.toJson(params));
-
-                    Log.d("LoginData", "Login JSON sent to the server: " + gson.toJson(params)); // Add this line
-
-                    os.flush();
-                    os.close();
-
-                    if(conn.getResponseCode() == HttpURLConnection.HTTP_OK){
-                        BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        String inputLine;
-                        StringBuffer response = new StringBuffer();
-
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-
-                        String rawPostData = response.toString();
-
-                        Gson gsonreceiving = new Gson();
-                        mToken = gsonreceiving.fromJson(rawPostData, Token.class);
-                        Log.d("LoginData", "Token reçu, token access : " + mToken.getAccess());
-                        Log.d("LoginData", "Token reçu, token refresh : " + mToken.getRefresh());
-
-                        //Stocke les infos du token de manière sécurisée
-                        Token.storeToken(LoginActivity.this,mToken);
-
-                        Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                        i.putExtra("TOKEN", mToken.getAccess());
-                        startActivity(i);
-                    }
-                    Log.d("LoginData", "HTTP response code: " + conn.getResponseCode()); // Add this line
-
-
-                    conn.disconnect();
-
-                     */
 

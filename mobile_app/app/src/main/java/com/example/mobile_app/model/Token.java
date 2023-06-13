@@ -15,6 +15,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -112,7 +113,7 @@ public class Token implements Serializable {
         editor.commit();
     }
 
-    public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive){;
+    public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive, Type typeToReceive){;
         Object objToReceive = null;
         try {
             URL url = new URL("http://postbee.alwaysdata.net/"+endURL);
@@ -157,7 +158,12 @@ public class Token implements Serializable {
                 String rawPostData = response.toString();
 
                 Gson gsonreceiving = new Gson();
-                objToReceive = gsonreceiving.fromJson(rawPostData, classToReceive);
+                if(classToReceive != null) {
+                    objToReceive = gsonreceiving.fromJson(rawPostData, classToReceive);
+                }
+                else if (typeToReceive != null){
+                    objToReceive = gsonreceiving.fromJson(rawPostData, typeToReceive);
+                }
                 Log.d("connectToServer", "Object received");
             }
             conn.disconnect();

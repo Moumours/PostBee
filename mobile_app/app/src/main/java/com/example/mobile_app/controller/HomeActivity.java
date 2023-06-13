@@ -5,8 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +15,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
@@ -27,7 +27,11 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -39,12 +43,12 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private Button mModerationButton;
     private Button mSettingsButton;
 
-    private String mToken;
+    private String mTokenAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Intent i = getIntent();
-        mToken = getIntent().getStringExtra("TOKEN");
+        mTokenAccess = getIntent().getStringExtra("TOKEN_ACCESS");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
@@ -70,7 +74,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
-                i.putExtra("TOKEN",mToken);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
                 startActivity(i);
             }
         });
@@ -79,7 +83,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, ProfileActivity.class);
-                i.putExtra("TOKEN",mToken);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
                 startActivity(i);
             }
         });
@@ -88,7 +92,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, ModerationActivity.class);
-                i.putExtra("TOKEN",mToken);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
                 startActivity(i);
             }
         });
@@ -97,7 +101,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomeActivity.this, SettingsActivity.class);
-                i.putExtra("TOKEN",mToken);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
                 startActivity(i);
             }
         });
@@ -119,55 +123,51 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        homeActivityIntent.putExtra("TOKEN", mToken);
+        homeActivityIntent.putExtra("TOKEN_ACCESS", mTokenAccess);
 
         startActivity(homeActivityIntent);
     }
 
+    public static List<ItemPost> convertObjectToList(Object obj) {
+        if (obj != null) {
+            List<ItemPost> list = new ArrayList<>();
+            if (obj.getClass().isArray()) {
+                list = Arrays.asList((ItemPost[]) obj);
+            } else if (obj instanceof Collection) {
+                list = new ArrayList<>((Collection<ItemPost>) obj);
+            }
+            return list;
+        }
+        else {
+            return null;
+        }
+    }
     public void receiveHomePage() {
         new Thread(new Runnable() {
             public void run() {
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
-
-                    URL url = new URL("http://postbee.alwaysdata.net/posts");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-                    Log.d("HomeActivity","Token : "+mToken);
-                    django.setRequestProperty("Authorization", "Bearer " + mToken);
-                    django.setRequestMethod("GET");
-                    django.setRequestProperty("Accept","application/json");
-
-                    int responseCode = django.getResponseCode();
-                    Log.d("HomeActivity","Code de réponse : "+responseCode);
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    String rawPostData = response.toString();
-                    Log.d("HomeActivity", "Données brutes reçues : " + rawPostData);
-
-                    Gson gson = new Gson();
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
-
+                    String endUrl = "posts/";
+                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             posts.clear();
-                            posts.addAll(receivedPosts);
-                            mRecyclerView.getAdapter().notifyDataSetChanged();
+                            if(receivedPosts != null) {
+                                posts.addAll(receivedPosts);
+                                mRecyclerView.getAdapter().notifyDataSetChanged();
+                            }
+                            else {
+                                Log.d("HomeActivity","Error while receiving the list of posts");
+                            }
                         }
                     });
-
+                    /*
                     Log.d("HomeActivity", "Nombre de posts reçus : " + posts.size());
 
                     django.disconnect();
+                    */
                 } catch (Exception e) {
                     Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
                 }
