@@ -198,7 +198,7 @@ class PostDetail(ReadOnlyModelViewSet):
         return Response(serializer.data)
         
 class PublishPost(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     parser_classes = [MultiPartParser]
 
     def post(self, request, format=None):
@@ -207,7 +207,8 @@ class PublishPost(APIView):
             # print(request.data)
             if serializer.is_valid():
                 print("serializer : " + str(serializer))
-                serializer.save(author = request.user)
+                # serializer.save(author = request.user)
+                serializer.save(author = Account.objects.get(email="marc.proux@uha.fr"))
                 response_data = {
                     'success': True,
                     'data': serializer.data
@@ -265,14 +266,14 @@ class PublishComment(APIView):
 
 
 class ApprovePost(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         if request.method == 'POST':
             print("request.data : " + str(request.data))
             serializer = ApprovePostSerializer(data=request.data)
-            if not self.request.user.is_staff:
-                return Response({'error': 'You are not authorized to perform this action.'}, status=403)
+            # if not self.request.user.is_staff:
+            #     return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             if serializer.is_valid():
                 id = request.data.get('postId')
                 approve_status = request.data.get('response')
@@ -499,7 +500,7 @@ class ResetPasswordConfirm(APIView):
             
 
 class UsersLists(ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = UserSerializer
 
     def get_queryset(self):
@@ -509,8 +510,8 @@ class UsersLists(ReadOnlyModelViewSet):
     
     def list(self, request, *args, **kwargs):
         print("list")
-        if not self.request.user.is_staff:
-            return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+        # if not self.request.user.is_staff:
+        #     return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
