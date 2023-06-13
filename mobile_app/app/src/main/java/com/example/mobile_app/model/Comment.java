@@ -15,4 +15,24 @@ public class Comment {
         this.date = date;
     }
 
+    public String getText() {
+        return commentText;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
 }

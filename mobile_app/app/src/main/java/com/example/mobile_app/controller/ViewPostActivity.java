@@ -111,17 +111,23 @@ public class ViewPostActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            // Le code de votre méthode onPostExecute ici
+// Mettre à jour l'interface utilisateur avec les données récupérées
             mTextContent.setText(postText);
-            // Utiliser les commentaires pour mettre à jour votre vue des commentaires
-            // Par exemple, vous pouvez les ajouter à une liste ou les afficher dans un RecyclerView
+
             for (Comment comment : comments) {
-                // Faites quelque chose avec chaque commentaire
-                // comment.getText()
-                // comment.getAuthor()
-                // comment.getFullName()
-                // comment.getProfilePicture()
-                // comment.getDate()
+
+                String commentText = comment.getText();
+                String author = comment.getAuthor();
+                String fullName = comment.getFullName();
+                String profilePicture = comment.getProfilePicture();
+                String date = comment.getDate();
+
+                System.out.println("Comment: " + comment.getText());
+                System.out.println("Author: " + comment.getAuthor());
+                System.out.println("Full Name: " + comment.getFullName());
+                System.out.println("Profile Picture: " + comment.getProfilePicture());
+                System.out.println("Date: " + comment.getDate());
+
             }
         }
 
