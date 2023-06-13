@@ -70,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String emailComplete = emailText + "@uha.fr";
 
                 if (passwordText.equals(confirmPasswordText)) {
-                    User user = new User(nomText, prenomText, emailComplete, passwordText, confirmPasswordText, ensisaGroup);
+                    User user = new User(prenomText, nomText, emailComplete, passwordText, confirmPasswordText, ensisaGroup);
                     registerUser(user);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Les mots de passe ne correspondent pas !", Toast.LENGTH_SHORT).show();

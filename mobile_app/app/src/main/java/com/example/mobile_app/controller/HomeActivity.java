@@ -1,19 +1,20 @@
 package com.example.mobile_app.controller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
@@ -29,36 +30,39 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
-
+    private int mPostStatus = 0;
     private Button mAddPostButton;
     private Button mProfileButton;
     private Button mModerationButton;
     private Button mSettingsButton;
-
     private String mTokenAccess;
+    private int amount = 5;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Intent i = getIntent();
-        mTokenAccess = getIntent().getStringExtra("TOKEN_ACCESS");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //posts.add(new ItemPost(0, "Premier test", new Author("Jean-Michel", "II"), "03/03/2003"));
-        //posts.add(new ItemPost(1, "Deuxième test (mon préféré :) )", new Author("Moi", ""), "01/01/2000"));
-        //posts.add(new ItemPost(2, "abc", new Author("Bernard", "Rouge"), "12/06/2023"));
+        mTokenAccess = getIntent().getStringExtra("TOKEN_ACCESS");
+
+        mRecyclerView = findViewById(R.id.home_recyclerview_posts);
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1) && !isLoading) {
+                    receiveHomePage(amount);
+                }
+            }
+        });
 
         mSwipeRefreshLayout = findViewById(R.id.home_swiperefreshlayout_s2r);
-        mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mAddPostButton = findViewById(R.id.home_menu_button_addpost);
         mProfileButton = findViewById(R.id.home_menu_button_profile);
         mModerationButton = findViewById(R.id.home_menu_button_moderation);
@@ -73,9 +77,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mAddPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
-                i.putExtra("TOKEN_ACCESS",mTokenAccess);
-                startActivity(i);
+                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
             }
         });
 
@@ -91,27 +93,24 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mModerationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, ModerationActivity.class);
-                i.putExtra("TOKEN_ACCESS",mTokenAccess);
-                startActivity(i);
+                startActivity(new Intent(HomeActivity.this, ModerationActivity.class));
             }
         });
 
         mSettingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, SettingsActivity.class);
-                i.putExtra("TOKEN_ACCESS",mTokenAccess);
-                startActivity(i);
+                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
             }
         });
-        receiveHomePage();
+        receiveHomePage(amount);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                receiveHomePage();
-                mSwipeRefreshLayout.setRefreshing(false);
+                posts.clear();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                receiveHomePage(amount);
             }
         });
     }
@@ -123,11 +122,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        homeActivityIntent.putExtra("TOKEN_ACCESS", mTokenAccess);
+        homeActivityIntent.putExtra("STATUS", mPostStatus);
 
         startActivity(homeActivityIntent);
     }
-
     public static List<ItemPost> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemPost> list = new ArrayList<>();
@@ -142,25 +140,27 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             return null;
         }
     }
-    public void receiveHomePage() {
+    public void receiveHomePage(int amount) {
+        isLoading = true;
+
         new Thread(new Runnable() {
             public void run() {
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    String endUrl = "posts/";
+                    String endUrl = "posts/?amount=" + amount + "&start=" + posts.size();
                     final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            posts.clear();
-                            if(receivedPosts != null) {
+                            if(receivedPosts.size() == 0){
+                                Toast.makeText(getApplicationContext(),"Il reste plus de poste",Toast.LENGTH_SHORT).show();
+                            } else {
                                 posts.addAll(receivedPosts);
                                 mRecyclerView.getAdapter().notifyDataSetChanged();
                             }
-                            else {
-                                Log.d("HomeActivity","Error while receiving the list of posts");
-                            }
+                            mSwipeRefreshLayout.setRefreshing(false);
                         }
                     });
                     /*
@@ -170,7 +170,16 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     */
                 } catch (Exception e) {
                     Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    isLoading = false;
                 }
+
             }
         }).start();
     }

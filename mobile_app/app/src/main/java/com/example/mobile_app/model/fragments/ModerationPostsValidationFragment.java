@@ -36,6 +36,8 @@ import java.util.List;
 public class ModerationPostsValidationFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemPost> posts = new ArrayList<ItemPost>();
     private RecyclerView recyclerView;
+    private String type = "moderate";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,7 +69,7 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveModaratePage");
 
-                    URL url = new URL("http://postbee.alwaysdata.net/posts/?moderate=True&amount=10");
+                    URL url = new URL("http://postbee.alwaysdata.net/posts/?type=" + type + "&amount=10");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -107,5 +109,4 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
             }
         }).start();
     }
-
 }
