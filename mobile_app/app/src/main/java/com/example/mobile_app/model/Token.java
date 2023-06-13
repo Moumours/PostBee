@@ -158,6 +158,7 @@ public class Token implements Serializable {
                 in.close();
 
                 String rawPostData = response.toString();
+                Log.d("connectToServer", "JSON received from the server: " + rawPostData);
 
                 Gson gsonreceiving = new Gson();
                 if(classToReceive != null) {
@@ -185,7 +186,7 @@ public class Token implements Serializable {
                 params = gsonerrormsg.fromJson(rawPostData, params.getClass());
 
                 Log.d("connectToServer","Error message : "+params.get("error"));
-                UserStatic.message = params.get("error");
+                UserStatic.setMessage(params.get("error"));
             }
             conn.disconnect();
         } catch (Exception e) {

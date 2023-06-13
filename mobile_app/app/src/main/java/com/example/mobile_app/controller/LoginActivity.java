@@ -1,7 +1,5 @@
 package com.example.mobile_app.controller;
 
-import static com.example.mobile_app.model.UserStatic.access;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
@@ -97,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                     params.put("email", email);
                     params.put("password", password);
                     user = (User.class).cast(Token.connectToServer("login", "POST", null, params, params.getClass(), User.class, null));
+                    if (user != null) {Log.d("LogInActivity","user : "+ user.getFirst_name() + user.getEmail() + user.getAccess() + user.getIs_staff() + user.getLast_name());}
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -105,21 +104,23 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         public void run() {
                             if(finalUser != null) {
+                                    Log.d("LoginActivity","finalUser : "+finalUser.getFirst_name());
                                     Log.d("LoginActivity","Sauvegarde des tokens et mise à jour des variables statiques");
-                                    Token.storeToken(LoginActivity.this,new Token(finalUser.access,finalUser.refresh));
-                                    UserStatic.access = finalUser.access;
-                                    UserStatic.refresh = finalUser.refresh;
-                                    UserStatic.first_name = finalUser.first_name;
-                                    UserStatic.last_name = finalUser.last_name;
-                                    UserStatic.email = finalUser.email;
-                                    UserStatic.ensisaGroup = finalUser.ensisaGroup;
-                                    UserStatic.profile_picture = finalUser.profile_picture;
-                                    UserStatic.is_staff = finalUser.is_staff;
+                                    Token.storeToken(LoginActivity.this,new Token(finalUser.getAccess(),finalUser.getRefresh()));
+                                    UserStatic.setAccess(finalUser.getAccess());
+                                    UserStatic.setRefresh(finalUser.getRefresh());
+                                    UserStatic.setFirst_name(finalUser.getFirst_name());
+                                    UserStatic.setLast_name(finalUser.getLast_name());
+                                    UserStatic.setEmail(finalUser.getEmail());
+                                    UserStatic.setEnsisaGroup(finalUser.getEnsisaGroup());
+                                    UserStatic.setProfile_picture(finalUser.getProfile_picture());
+                                    UserStatic.setIs_staff(finalUser.getIs_staff());
+                                    Log.d("LoginActivity","UserStatic : "+UserStatic.getFirst_name());
                                     Toast.makeText(LoginActivity.this, "Connexion réussie", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                 }
                             else {
-                                Toast.makeText(LoginActivity.this, "Erreur : "+ UserStatic.message, Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Erreur : "+ UserStatic.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         }
                     });

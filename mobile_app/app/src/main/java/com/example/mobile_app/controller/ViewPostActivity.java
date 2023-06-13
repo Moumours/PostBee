@@ -16,6 +16,7 @@ import com.example.mobile_app.R;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
@@ -180,7 +181,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
             public void run() {
                 try {
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
-                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, ViewPost.class,null));
+                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET", UserStatic.getAccess(),null,null, ViewPost.class,null));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
