@@ -19,9 +19,11 @@ Login :
 	}
 
 Liste des postes :
-	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}
+	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}&start=x
+	
 	amount correspond aux nombres de postes demandé
 	le champ typé défini si on est en mode écran d'accueil, page modo ou page perso
+	start correspond à l'index de début de recherche
 
 	Accueil : postbee.alwaysdata.net/posts/?amount=x
 	Page perso : postbee.alwaysdata.net/posts/?amount=x&type=own
@@ -105,8 +107,7 @@ Changer de mot de passe :
 	}
 
 Liste des utilisateurs :
-	postbee.alwaysdata.net/users
-	json requis :
-	{
-		"amount": "int"
-	}
+	postbee.alwaysdata.net/users/?amount=x&start=x
+
+	amount correspond aux nombres d'utilisateurs demandé
+	start correspond à l'index de début de recherche

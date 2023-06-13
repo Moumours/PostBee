@@ -106,11 +106,11 @@ class VideoSerializer(serializers.ModelSerializer):
 class PostPublishSerializer(serializers.Serializer):
     images = serializers.ListField(
         child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True
+        write_only=True, required=False, allow_null=True
     )
     videos = serializers.ListField(
         child=serializers.FileField(allow_empty_file=False, use_url=False),
-        write_only=True
+        write_only=True, required=False, allow_null=True
     )
     title = serializers.CharField(max_length=100)
     text = serializers.CharField()
@@ -120,13 +120,14 @@ class PostPublishSerializer(serializers.Serializer):
         fields = ['title', 'text', 'images', 'videos']
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images')
-        videos_data = validated_data.pop('videos')
+        images_data = validated_data.pop('images', [])
+        videos_data = validated_data.pop('videos', [])
+
         post = Post.objects.create(**validated_data)
 
         for image_data in images_data:
             Image.objects.create(post=post, image=image_data)
-        
+
         for video_data in videos_data:
             Video.objects.create(post=post, video=video_data)
             
