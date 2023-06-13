@@ -43,7 +43,7 @@ public class TokenActivity extends AppCompatActivity {
                         UserStatic.setRefresh(mToken.getRefresh());
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("refresh", mToken.getRefresh());
-                        mToken = (Token.class).cast(Token.connectToServer("refresh_token","POST",UserStatic.getRefresh(),params,params.getClass(), Token.class,null));
+                        mToken = (Token.class).cast(Token.connectToServer("refresh_token","POST",mToken.getAccess(),params,params.getClass(), Token.class,null));
 
                         if (mToken != null){
                             Log.d("TokenActivity","Token update successful");
