@@ -1,6 +1,8 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,9 +24,13 @@ public class EditPostActivity extends AppCompatActivity {
     private EditText mEditTextTitle;
     private EditText mEditTextContent;
     private Button mButtonSubmit;
+    private String mToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Intent i = getIntent();
+        mToken = getIntent().getStringExtra("TOKEN");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_post);
 
@@ -56,6 +62,9 @@ public class EditPostActivity extends AppCompatActivity {
 
                             connection.setRequestMethod("POST");
                             connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                            String tokenCredentials = "Bearer " + mToken;
+                            connection.setRequestProperty("Authorization", tokenCredentials);
+                            connection.setRequestProperty("Content-Type", "application/json");
                             connection.setDoOutput(true);
                             connection.setDoInput(true);
 
@@ -68,6 +77,10 @@ public class EditPostActivity extends AppCompatActivity {
 
                             int responseCode = connection.getResponseCode();
                             Log.d("EditPostActivity", "Response Code: " + responseCode);
+
+                            //TODO : Retravailler la condition
+                            if (responseCode < 300)
+                                finish();
 
                             connection.disconnect();
                         } catch (Exception e) {

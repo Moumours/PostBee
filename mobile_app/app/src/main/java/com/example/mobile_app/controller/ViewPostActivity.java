@@ -26,6 +26,8 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView mTextDate;
     ViewPost mViewPost;
 
+    String mToken;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,13 +38,15 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
-        int postId = getIntent().getIntExtra("ID",0);
+        Intent i = getIntent();
+        int postId = i.getIntExtra("ID",0);
         downloadViewPost(postId);
 
-        mTextTitle.setText(getIntent().getStringExtra("TITLE"));
-        mTextAuthor.setText(getIntent().getStringExtra("AUTHOR"));
-        mTextDate.setText(getIntent().getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
+        mTextTitle.setText(i.getStringExtra("TITLE"));
+        mTextAuthor.setText(i.getStringExtra("AUTHOR"));
+        mTextDate.setText(i.getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
 
+        mToken = i.getStringExtra("TOKEN");
 
         Log.d("ViewPostActivity","Voici l'id : " + postId);
 
@@ -60,6 +64,7 @@ public class ViewPostActivity extends AppCompatActivity {
 
                     django.setRequestMethod("GET");
                     django.setRequestProperty("Accept","application/json");
+                    django.setRequestProperty("Authorization", "Bearer " + mToken);
 
                     BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
                     String inputLine;

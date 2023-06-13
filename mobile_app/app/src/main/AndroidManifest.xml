@@ -29,12 +29,7 @@
             android:exported="false" />
         <activity
             android:name=".controller.LoginActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false">
         </activity>
         <activity
             android:name=".controller.HomeActivity"
@@ -48,6 +43,15 @@
         <activity
             android:name=".controller.RegisterActivity"
             android:exported="false" />
+        <activity
+            android:name=".controller.TokenActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
