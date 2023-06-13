@@ -156,19 +156,22 @@ class PostList(ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = Post.objects.all()
         type = self.request.query_params.get('type', None)
-        amount = self.request.query_params.get('amount', 10)
+        start = self.request.query_params.get('start', 0)
+        amount = int(self.request.query_params.get('amount', 5)) + int(start)
+        
 
+        # queryset get the amount of post from the start
         # User is staff status and filter moderate is true
         if type == 'moderate':# and self.request.user.is_staff:
             print('Moderate is true and user is staff')
-            queryset = queryset.filter(status='0').order_by('-date')[:int(amount)]
+            queryset = queryset.filter(status='0').order_by('-date')[int(start):int(amount)]
 
         # elif type == 'own':
         #     # print('Moderate is false')
-        #     queryset = queryset.filter(author=self.request.user).order_by('-date')[:int(amount)]
+        #     queryset = queryset.filter(author=self.request.user).order_by('-date')[int(start):int(amount)]
         
         else:
-            queryset = queryset.filter(status='1').order_by('-date')[:int(amount)]
+            queryset = queryset.filter(status='1').order_by('-date')[int(start):int(amount)]
         
         return queryset
 
@@ -505,8 +508,9 @@ class UsersLists(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Account.objects.all()
-        amount = self.request.query_params.get('amount', 10)
-        return queryset.order_by(F('last_name').asc(nulls_last=True))[:amount]
+        start = self.request.query_params.get('start', 0)
+        amount = int(self.request.query_params.get('amount', 10)) + int(start)
+        return queryset.order_by(F('last_name').asc(nulls_last=True))[int(start):int(amount)]
     
     def list(self, request, *args, **kwargs):
         print("list")
@@ -521,6 +525,7 @@ class ChangePassword(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
+            print("Changement de mdp pour " + str(request.user.email))
             serializer = ChangePasswordSerializer(data=request.data)
             if serializer.is_valid():
                 user = self.request.user
