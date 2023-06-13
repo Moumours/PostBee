@@ -86,7 +86,7 @@ public class RegisterActivity extends AppCompatActivity {
                     ResponseData response;
                     Log.d("RegisterActivity","Attempt to register...");
                     //connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive)
-                    response = (ResponseData) Token.connectToServer("register", "POST", null, user, user.getClass(), ResponseData.class);
+                    response = (ResponseData) Token.connectToServer("register", "POST", null, user, user.getClass(), ResponseData.class,null);
                     if(response != null) {
                         Log.d("RegisterActivity","Response : Success :"+ response.getSuccess() + " | " + "Message :" + response.getMessage());
                         if (response.getSuccess().equals("True")) {

@@ -1,5 +1,13 @@
 package com.example.mobile_app.model;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 public class User {
 
     public User(String firstName, String lastName, String email, String password1,String password2,char ensisaGroup) {

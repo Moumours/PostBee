@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.ViewPost;
 import com.google.gson.Gson;
 
@@ -26,7 +28,7 @@ public class ViewPostActivity extends AppCompatActivity {
     TextView mTextDate;
     ViewPost mViewPost;
 
-    String mToken;
+    String mTokenAccess;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
         mTextDate.setText(i.getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
 
-        mToken = i.getStringExtra("TOKEN");
+        mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
 
         Log.d("ViewPostActivity","Voici l'id : " + postId);
 
@@ -60,43 +62,24 @@ public class ViewPostActivity extends AppCompatActivity {
             public void run() {
                 try {
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("GET");
-                    django.setRequestProperty("Accept","application/json");
-                    django.setRequestProperty("Authorization", "Bearer " + mToken);
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    String rawPostData = response.toString();
-
-                    Gson gson = new Gson();
-                    mViewPost = gson.fromJson(rawPostData, ViewPost.class);
-
+                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, Token.class,null));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mTextContent.setText(mViewPost.getText());
+                            if(mViewPost != null) {
+                                Log.d("ViewPostActivity","Post content received successfully");
+                                mTextContent.setText(mViewPost.getText());
+                            }
+                            else{
+                                Log.d("ViewPostActivity","Post content not received");
+                            }
                         }
                     });
-
-                    Log.d("ViewPostActivity","Voici le contenu : " + mViewPost.getText());
-
-                    django.disconnect();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-
-
 }
 

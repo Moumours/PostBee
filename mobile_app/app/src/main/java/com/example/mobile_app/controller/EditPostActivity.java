@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.UploadPost;
 import com.google.gson.Gson;
 
 import java.io.DataOutputStream;
@@ -43,6 +44,7 @@ public class EditPostActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String title = mEditTextTitle.getText().toString();
                 String text = mEditTextContent.getText().toString();
+                UploadPost uploadPost;
 
                 HashMap<String, String> postData = new HashMap<>();
                 postData.put("title", title);
