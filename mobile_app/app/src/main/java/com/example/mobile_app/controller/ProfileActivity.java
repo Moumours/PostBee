@@ -56,7 +56,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
-        mImageView.setImageDrawable(getDrawable(R.drawable.round_person_24));
+        ProfilePictureManager.setProfilePicture(this, mImageView, 8);
 
         Intent i = getIntent();
         mTokenAccess = i.getStringExtra("TOKEN_ACCESS");

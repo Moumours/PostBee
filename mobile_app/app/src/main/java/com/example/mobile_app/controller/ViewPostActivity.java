@@ -1,16 +1,22 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.ViewPost;
+import com.example.mobile_app.model.Comment;
+import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -18,9 +24,10 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ViewPostActivity extends AppCompatActivity {
+public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
     TextView mTextTitle;
     TextView mTextContent;
@@ -29,6 +36,8 @@ public class ViewPostActivity extends AppCompatActivity {
     ViewPost mViewPost;
 
     String mTokenAccess;
+    private List<Comment> comments = new ArrayList<>();
+    RecyclerView mCommentsRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +49,14 @@ public class ViewPostActivity extends AppCompatActivity {
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
+        mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
+
         Intent i = getIntent();
         int postId = i.getIntExtra("ID",0);
         downloadViewPost(postId);
+
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, getApplicationContext(), this));
 
         mTextTitle.setText(i.getStringExtra("TITLE"));
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
@@ -62,13 +76,18 @@ public class ViewPostActivity extends AppCompatActivity {
             public void run() {
                 try {
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
-                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, Token.class,null));
+                    mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET",mTokenAccess,null,null, ViewPost.class,null));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if(mViewPost != null) {
                                 Log.d("ViewPostActivity","Post content received successfully");
                                 mTextContent.setText(mViewPost.getText());
+                                if (mViewPost.getListcomment() != null) {
+                                    comments.clear();
+                                    comments.addAll(mViewPost.getListcomment());
+                                    mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
+                                }
                             }
                             else{
                                 Log.d("ViewPostActivity","Post content not received");
@@ -81,5 +100,8 @@ public class ViewPostActivity extends AppCompatActivity {
             }
         }).start();
     }
+
+    @Override
+    public void onItemClick(int position) { }
 }
 

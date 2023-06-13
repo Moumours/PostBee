@@ -105,13 +105,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         });
         receiveHomePage(amount);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                posts.clear();
-                mRecyclerView.getAdapter().notifyDataSetChanged();
-                receiveHomePage(amount);
-            }
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            posts.clear();
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+            receiveHomePage(amount);
         });
     }
 

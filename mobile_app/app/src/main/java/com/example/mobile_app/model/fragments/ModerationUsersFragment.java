@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_user.ItemUser;
 import com.example.mobile_app.model.item_user.ItemUserAdapter;
@@ -29,19 +31,30 @@ import java.util.List;
 
 public class ModerationUsersFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemUser> users = new ArrayList<ItemUser>();
-    private RecyclerView recyclerView;
-
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_moderation_users, container, false);
-        RecyclerView recyclerView = rootView.findViewById(R.id.modusers_recyclerview_users);
+        mRecyclerView = rootView.findViewById(R.id.modusers_recyclerview_users);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.modusers_swiperefreshlayout_s2r);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ItemUserAdapter(users, getActivity(), this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new ItemUserAdapter(users, getActivity(), this));
 
         receiveModarateUserPage();
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                users.clear();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                receiveModarateUserPage();
+            }
+        });
+
         return rootView;
     }
 
@@ -84,7 +97,7 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
                         public void run() {
                             users.clear();
                             users.addAll(receivedUser);
-                            recyclerView.getAdapter().notifyDataSetChanged();
+                            mRecyclerView.getAdapter().notifyDataSetChanged();
                         }
                     });
 
@@ -92,6 +105,8 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
                     django.disconnect();
                 } catch (Exception e) {
                     Log.e("ModerationPostsValidationFragment", "Erreur dans receiveHomePage", e);
+                } finally {
+                    getActivity().runOnUiThread(() -> mSwipeRefreshLayout.setRefreshing(false));
                 }
             }
         }).start();
