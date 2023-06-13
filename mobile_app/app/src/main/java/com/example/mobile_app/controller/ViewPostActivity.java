@@ -125,23 +125,20 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-// Mettre à jour l'interface utilisateur avec les données récupérées
+            // Mettre à jour l'interface utilisateur avec les données récupérées
             mTextContent.setText(postText);
 
             for (Comment comment : comments) {
 
-                String commentText = comment.getText();
-                String author = comment.getAuthor();
-                String fullName = comment.getFullName();
-                String profilePicture = comment.getProfilePicture();
+                String commentText = comment.getContent();
+                String fullName = comment.getUsername();
+                int profilePicture = comment.getProfilePicture();
                 String date = comment.getDate();
 
-                System.out.println("Comment: " + comment.getText());
-                System.out.println("Author: " + comment.getAuthor());
-                System.out.println("Full Name: " + comment.getFullName());
+                System.out.println("Comment: " + comment.getContent());
+                System.out.println("Full Name: " + comment.getUsername());
                 System.out.println("Profile Picture: " + comment.getProfilePicture());
                 System.out.println("Date: " + comment.getDate());
-
             }
         }
 
@@ -164,7 +161,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                 String profilePicture = jsonComment.getString("profile_picture");
                 String date = jsonComment.getString("date");
                 // Créer un objet Comment et l'ajouter à la liste des commentaires
-                Comment comment = new Comment(commentText, author, fullName, profilePicture, date);
+                Comment comment = new Comment(fullName, commentText, 2, Integer.parseInt(profilePicture), date);
                 comments.add(comment);
             }
         }
