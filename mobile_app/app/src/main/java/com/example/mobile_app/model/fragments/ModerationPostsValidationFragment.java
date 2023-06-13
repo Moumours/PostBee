@@ -1,16 +1,19 @@
 package com.example.mobile_app.model.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.controller.HomeActivity;
@@ -35,16 +38,20 @@ import java.util.List;
 
 public class ModerationPostsValidationFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemPost> posts = new ArrayList<ItemPost>();
-    private RecyclerView recyclerView;
+    private RecyclerView mRecyclerView;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private String type = "moderate";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_moderation_posts_validation, container, false);
-        recyclerView = rootView.findViewById(R.id.modposts_recyclerview_posts);
+        mRecyclerView = rootView.findViewById(R.id.modposts_recyclerview_posts);
+        mSwipeRefreshLayout = rootView.findViewById(R.id.modposts_swiperefreshlayout_s2r);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new ItemPostValidationAdapter(posts, getActivity().getApplicationContext(), this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setAdapter(new ItemPostValidationAdapter(posts, getActivity().getApplicationContext(), this));
 
         receiveModaratePage();
         return rootView;
@@ -58,6 +65,15 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
         ModerationPostValidationFragment.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
         ModerationPostValidationFragment.putExtra("DATE", posts.get(position).getDate());
 
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                posts.clear();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                receiveModaratePage();
+            }
+        });
+
         startActivity(ModerationPostValidationFragment);
     }
 
@@ -67,7 +83,7 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                 try {
                     Log.d("HomeActivity", "Début de la méthode receiveModaratePage");
 
-                    URL url = new URL("http://postbee.alwaysdata.net/posts/?moderate=True&amount=10");
+                    URL url = new URL("http://postbee.alwaysdata.net/posts/?type=" + type + "&amount=10");
                     HttpURLConnection django = (HttpURLConnection) url.openConnection();
 
                     django.setRequestMethod("GET");
@@ -89,13 +105,10 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            posts.clear();
-                            posts.addAll(receivedPosts);
-                            recyclerView.getAdapter().notifyDataSetChanged();
-                        }
+                    getActivity().runOnUiThread(() -> {
+                        posts.clear();
+                        posts.addAll(receivedPosts);
+                        mRecyclerView.getAdapter().notifyDataSetChanged();
                     });
 
                     Log.d("ModerationPostsValidationFragment", "Nombre de posts reçus : " + posts.size());
@@ -103,9 +116,10 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                     django.disconnect();
                 } catch (Exception e) {
                     Log.e("ModerationPostsValidationFragment", "Erreur dans receiveHomePage", e);
+                } finally {
+                    getActivity().runOnUiThread(() -> mSwipeRefreshLayout.setRefreshing(false));
                 }
             }
         }).start();
     }
-
 }

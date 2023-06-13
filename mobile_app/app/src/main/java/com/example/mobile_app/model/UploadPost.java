@@ -10,92 +10,21 @@ import java.net.URL;
 import java.util.List;
 
 public class UploadPost {
-    private String title;
-    private String author;
-    private String contenu;
-    private List<Document> listedocument;
+    private final String title;
+    private final String text;
 
-    public UploadPost(String title, String author, String contenu, List<Document> listedocument) {
+
+    public UploadPost(String title, String contenu) {
         this.title = title;
-        this.author = author;
-        this.contenu = contenu;
-        this.listedocument = listedocument;
+        this.text = contenu;
+
     }
 
-    public void sendtoserver(){
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    URL url = new URL("http://postbee.alwaysdata.net/test");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("POST");
-                    django.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    django.setRequestProperty("Accept","application/json");
-                    django.setDoOutput(true);
-                    django.setDoInput(true);
-
-                    Gson gson = new Gson();
-                    String jsonUploadPost = gson.toJson(this);
-
-                    System.out.println(jsonUploadPost);
-
-                    try(OutputStreamWriter os = new OutputStreamWriter(django.getOutputStream(), "UTF-8")) {
-                        os.write(jsonUploadPost);
-                        os.flush();
-                    }
-
-                    int responseCode = django.getResponseCode();
-                    System.out.println("\nSending 'POST' request to URL : " + url);
-                    System.out.println("Response Code : " + responseCode);
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    System.out.println(response.toString());
-
-                    django.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();}
-            }
-        }).start();
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
-    }
-
-    public List<Document> getListedocument() {
-        return listedocument;
-    }
-
-    public void setListedocument(List<Document> listedocument) {
-        this.listedocument = listedocument;
-    }
 }
+
+//Attribut
+//private List<Document> listedocument;
+
+//Constructeur
+//List<Document> listedocument
+//this.listedocument = listedocument;

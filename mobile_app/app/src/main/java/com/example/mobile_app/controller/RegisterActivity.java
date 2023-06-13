@@ -1,6 +1,7 @@
 package com.example.mobile_app.controller;
 
 import android.content.Intent;
+import android.os.Looper;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -70,8 +71,14 @@ public class RegisterActivity extends AppCompatActivity {
                 String emailComplete = emailText + "@uha.fr";
 
                 if (passwordText.equals(confirmPasswordText)) {
-                    User user = new User(nomText, prenomText, emailComplete, passwordText, confirmPasswordText, ensisaGroup);
-                    registerUser(user);
+                    HashMap<String, String> params = new HashMap<String, String>();
+                    params.put("first_name",prenomText);
+                    params.put("last_name",nomText);
+                    params.put("email",emailComplete);
+                    params.put("ensisaGroup", String.valueOf(ensisaGroup));
+                    params.put("password1",passwordText);
+                    params.put("password2",confirmPasswordText);
+                    registerUser(params);
                 } else {
                     Toast.makeText(RegisterActivity.this, "Les mots de passe ne correspondent pas !", Toast.LENGTH_SHORT).show();
                 }
@@ -79,27 +86,41 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public void registerUser(User user) {
+    public void registerUser(HashMap<String, String> params) {
         new Thread(new Runnable() {
             public void run() {
+                ResponseData response = null;
                 try {
-                    ResponseData response;
+
                     Log.d("RegisterActivity","Attempt to register...");
                     //connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive)
-                    response = (ResponseData) Token.connectToServer("register", "POST", null, user, user.getClass(), ResponseData.class,null);
-                    if(response != null) {
-                        Log.d("RegisterActivity","Response : Success :"+ response.getSuccess() + " | " + "Message :" + response.getMessage());
-                        if (response.getSuccess().equals("True")) {
-                            Toast.makeText(RegisterActivity.this, "Inscription réussie, activez votre compte en cliquant sur le lien reçu par mail", Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
-                            startActivity(i);
-                        }
-                        else {
-                            Log.d("RegisterActivity","Error : no server response");
-                        }
-                    }
+
+                    response = (ResponseData) Token.connectToServer("register", "POST", null, params, params.getClass(), ResponseData.class,null);
+
+
                 } catch (Exception e) {
-                    e.printStackTrace();}
+                    e.printStackTrace();
+                } finally {
+                    ResponseData finalResponse = response;
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            if(finalResponse != null) {
+                                Log.d("RegisterActivity","Response : Success :"+ finalResponse.getSuccess() + " | " + "Message :" + finalResponse.getMessage());
+                                if (finalResponse.getSuccess().equals("True")) {
+                                    Toast.makeText(RegisterActivity.this, "Inscription réussie, activez votre compte en cliquant sur le lien reçu par mail", Toast.LENGTH_LONG).show();
+                                    Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(i);
+                                }
+                                else {
+                                    Toast.makeText(RegisterActivity.this, "Erreur : "+ finalResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                }
+                            }
+                            else{
+                                Log.d("RegisterActivity","Error : no server response");
+                            }
+                        }
+                    });
+                }
             }
         }).start();
     }

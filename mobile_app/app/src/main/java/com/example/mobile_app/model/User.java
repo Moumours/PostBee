@@ -1,37 +1,46 @@
 package com.example.mobile_app.model;
-
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.provider.MediaStore;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 public class User {
-
-    public User(String firstName, String lastName, String email, String password1,String password2,char ensisaGroup) {
-        this.first_name = firstName;
-        this.last_name = lastName;
-        this.email = email;
-        this.password1 = password1;
-        this.password2 = password2;
-        this.ensisaGroup = ensisaGroup;
-    }
-
-    private char ensisaGroup;
+    private String success;
+    private String message;
+    private String access;
+    private String refresh;
     private String first_name;
     private String last_name;
     private String email;
-    private String password1;
-    private String password2;
+    private int ensisaGroup;
+    private int profile_picture;
+    private String is_staff;
+
+    public String getAccess() {
+        return access;
+    }
+
+    public String getRefresh() {
+        return refresh;
+    }
 
     public String getFirst_name() {
         return first_name;
     }
 
-    public char getEnsisaGroup() {
+    public String getLast_name() {
+        return last_name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getEnsisaGroup() {
         return ensisaGroup;
+    }
+
+    public int getProfile_picture() {
+        return profile_picture;
+    }
+
+    public String getIs_staff() {
+        return is_staff;
     }
 }
 
