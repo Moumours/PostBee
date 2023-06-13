@@ -122,6 +122,7 @@ public class Token implements Serializable {
             conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             conn.setRequestProperty("Accept","application/json");
             if(token != null){
+                Log.d("connectToServer", "Token used : "+ token);
                 conn.setRequestProperty("Authorization", "Bearer " + token);
             }
             if(requestMethod.equals("POST")) {

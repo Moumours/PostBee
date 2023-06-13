@@ -11,13 +11,11 @@ import java.util.List;
 
 public class UploadPost {
     private String title;
-    private String author;
     private String contenu;
     private List<Document> listedocument;
 
-    public UploadPost(String title, String author, String contenu, List<Document> listedocument) {
+    public UploadPost(String title, String contenu, List<Document> listedocument) {
         this.title = title;
-        this.author = author;
         this.contenu = contenu;
         this.listedocument = listedocument;
     }
@@ -73,14 +71,6 @@ public class UploadPost {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
     }
 
     public String getContenu() {

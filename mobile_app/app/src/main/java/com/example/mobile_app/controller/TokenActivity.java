@@ -49,7 +49,7 @@ public class TokenActivity extends AppCompatActivity {
 
                             // Token réactualisé --> on peut passer directement à homeactivity
                             Intent i = new Intent(TokenActivity.this, HomeActivity.class);
-                            i.putExtra("TOKEN",mToken.getAccess());
+                            i.putExtra("TOKEN_ACCESS",mToken.getAccess());
                             startActivity(i);
                         }
                         else {
