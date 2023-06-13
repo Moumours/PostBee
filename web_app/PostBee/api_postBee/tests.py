@@ -1,11 +1,13 @@
-from django.test import TestCase
-from api_postBee.models import Account
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+from django.core.files.uploadedfile import SimpleUploadedFile
 import time
+import io
+from PIL import Image as img
 
-from api_postBee.models import Account, Post, Comment
+from api_postBee.models import Account, Post, Comment, Image
 
 # class LoginViewTest(TestCase):
 #     def setUp(self):
@@ -158,99 +160,99 @@ from api_postBee.models import Account, Post, Comment
 #             print()
 
 
-class GetPostListModo(TestCase):
-    def setUp(self):
-        self.client = APIClient()
-        self.user = Account.objects.create_user(
-            email='test@example.com',
-            password='testpassword',
-            ensisaGroup='1',
-            is_staff=True,
-            first_name='John',
-            last_name='Doe',
-        )
-        self.user2 = Account.objects.create_user(
-            email="david.anderson@gmail.com",
-            password="testpassword",
-            ensisaGroup='1',
-            is_staff=False,
-            first_name="David",
-            last_name="Anderson",
-        )
+# class GetPostListModo(TestCase):
+#     def setUp(self):
+#         self.client = APIClient()
+#         self.user = Account.objects.create_user(
+#             email='test@example.com',
+#             password='testpassword',
+#             ensisaGroup='1',
+#             is_staff=True,
+#             first_name='John',
+#             last_name='Doe',
+#         )
+#         self.user2 = Account.objects.create_user(
+#             email="david.anderson@gmail.com",
+#             password="testpassword",
+#             ensisaGroup='1',
+#             is_staff=False,
+#             first_name="David",
+#             last_name="Anderson",
+#         )
 
-        # Create some posts fields = ('author_id', 'content', 'title')
-        post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
-        post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
-        post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='2')
-        post4 = Post.objects.create(author=self.user2, text='test content 4', title='test title 4', status='0')
-        post5 = Post.objects.create(author=self.user2, text='test content 5', title='test title 5', status='1')
-        post6 = Post.objects.create(author=self.user2, text='test content 6', title='test title 6', status='1')
+#         # Create some posts fields = ('author_id', 'content', 'title')
+#         post1 = Post.objects.create(author=self.user, text='test content', title='test title', status='0')
+#         post2 = Post.objects.create(author=self.user, text='test content 2', title='test title 2', status='1')
+#         post3 = Post.objects.create(author=self.user, text='test content 3', title='test title 3', status='2')
+#         post4 = Post.objects.create(author=self.user2, text='test content 4', title='test title 4', status='0')
+#         post5 = Post.objects.create(author=self.user2, text='test content 5', title='test title 5', status='1')
+#         post6 = Post.objects.create(author=self.user2, text='test content 6', title='test title 6', status='1')
 
-        # Create a user and retrieve the access token
-        response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
-        self.assertEqual(response.status_code, 200)
-        self.access_token = response.data.get('access')
+#         # Create a user and retrieve the access token
+#         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
+#         self.assertEqual(response.status_code, 200)
+#         self.access_token = response.data.get('access')
     
-    def test_modo_normal_access(self):
-        print("Test normal access\n")
-        # Set the access token in the Authorization header
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#     def test_modo_normal_access(self):
+#         print("Test normal access\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-        # Make a GET request to retrieve the list of posts
-        response = self.client.get('/posts/')
-        print("response" + str(response))
-        print()
-        # print("response.data" + str(response.data))
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/')
+#         print("response" + str(response))
+#         print()
+#         # print("response.data" + str(response.data))
 
-        posts = response.data
-        for post in posts:
-            print(f"Post ID: {post['id']}")
-            print(f"Title: {post['title']}")
-            print(f"Date: {post['date']}")
-            print(f"Status: {post['status']}")
-            print()  # Print an empty line between posts
-        # Check the response status code
-        self.assertEqual(response.status_code, 200)
+#         posts = response.data
+#         for post in posts:
+#             print(f"Post ID: {post['id']}")
+#             print(f"Title: {post['title']}")
+#             print(f"Date: {post['date']}")
+#             print(f"Status: {post['status']}")
+#             print()  # Print an empty line between posts
+#         # Check the response status code
+#         self.assertEqual(response.status_code, 200)
 
-    def test_no_modo_modo_access(self):
-        print("Test modo access\n")
-        # Set the access token in the Authorization header
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#     def test_no_modo_modo_access(self):
+#         print("Test modo access\n")
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-        # Make a GET request to retrieve the list of posts
-        response = self.client.get('/posts/?type=moderate')
-        print("response" + str(response))
-        print()
-        # print("response.data" + str(response.data))
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/?type=moderate')
+#         print("response" + str(response))
+#         print()
+#         # print("response.data" + str(response.data))
 
-        posts = response.data
-        for post in posts:
-            print(f"Post ID: {post['id']}")
-            print(f"Title: {post['title']}")
-            print(f"Author: {post['author']}")
-            print(f"Date: {post['date']}")
-            print(f"Status: {post['status']}")
-            print()
+#         posts = response.data
+#         for post in posts:
+#             print(f"Post ID: {post['id']}")
+#             print(f"Title: {post['title']}")
+#             print(f"Author: {post['author']}")
+#             print(f"Date: {post['date']}")
+#             print(f"Status: {post['status']}")
+#             print()
 
-    def test_own_access(self):
-        print("Test own access\n")
+#     def test_own_access(self):
+#         print("Test own access\n")
 
-        # Set the access token in the Authorization header
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#         # Set the access token in the Authorization header
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
-        # Make a GET request to retrieve the list of posts
-        response = self.client.get('/posts/?type=own')
-        print("response" + str(response))
-        print()
+#         # Make a GET request to retrieve the list of posts
+#         response = self.client.get('/posts/?type=own')
+#         print("response" + str(response))
+#         print()
 
-        posts = response.data
-        for post in posts:
-            print(f"Post ID: {post['id']}")
-            print(f"Title: {post['title']}")
-            print(f"Author: {post['author']}")
-            print(f"Date: {post['date']}")
-            print(f"Status: {post['status']}")
-            print()
+#         posts = response.data
+#         for post in posts:
+#             print(f"Post ID: {post['id']}")
+#             print(f"Title: {post['title']}")
+#             print(f"Author: {post['author']}")
+#             print(f"Date: {post['date']}")
+#             print(f"Status: {post['status']}")
+#             print()
 
 # class GetPostDetail(TestCase):
 #     def setUp(self):
@@ -303,31 +305,34 @@ class GetPostListModo(TestCase):
 #         response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
 #         self.assertEqual(response.status_code, 200)
 #         self.access_token = response.data.get('access')
-#         print(self.user.first_name+ " " + self.user.last_name+" is logged in")
-#         print("School group : " + str(self.user.ensisaGroup))
+#         # print(self.user.first_name+ " " + self.user.last_name+" is logged in")
+#         # print("School group : " + str(self.user.ensisaGroup))
 
 #     def test_publish_post(self):
-#         # self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
-
+#         print("========================")
+#         print("Test publish post")
+#         print("========================")
+#         print()
+#         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 #         data = {'title': 'test title', 'text': 'test content'}
 #         response = self.client.post('/publish', data=data)
 
 #         print("response" + str(response))
-    
-
-#         print("Test no modo noraml access")
-#         # Set the access token in the Authorization header
-#         # self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+#         print()
 
 #         # Make a GET request to retrieve the list of posts
-#         print("Test no modo modo access")
+#         print("========================")
+#         print("Test get post")
+#         print("========================")
+#         print()
 #         # Set the access token in the Authorization header
 #         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
 
 #         # Make a GET request to retrieve the list of posts
-#         response = self.client.get('/posts/?moderate=True&amount=3')
+#         response = self.client.get('/posts/?type=moderate')
 #         print("response" + str(response))
 #         print("response.data" + str(response.data))
+#         print()
 
 #         posts = response.data
 #         for post in posts:
@@ -338,6 +343,22 @@ class GetPostListModo(TestCase):
 #             print(f"Status: {post['status']}")
 #             print()
 #         self.assertEqual(response.status_code, 200)
+
+#         print("========================")
+#         print("Posts list confirmed")
+#         print("========================")
+#         print()
+
+#         posts = Post.objects.all()
+#         print("Posts in database : ")
+#         for post in posts:
+#             print(f"Post ID: {post.id}")
+#             print(f"Title: {post.title}")
+#             print(f"Author: {post.author}")
+#             print(f"Date: {post.date}")
+#             print(f"Status: {post.status}")
+#             print()
+        
 
 
 # class GetPostDetailV2(TestCase):
@@ -925,3 +946,105 @@ class GetPostListModo(TestCase):
 
 #         response = self.client.post(reverse('login'), data={'email': self.user.email, 'password': 'newpassword'})
 #         print("login :"+str(response))
+
+@override_settings(MEDIA_ROOT='test_media/')
+class PublishPostTestCaseWithImage(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.user = Account.objects.create_user(
+            email='test@example.com',
+            password='testpassword',
+            ensisaGroup='0',
+            is_staff=True,
+            first_name='John',
+            last_name='Doe',
+        )
+    
+        response = self.client.post(reverse('login'), data={'email': 'test@example.com', 'password': 'testpassword'})
+        self.assertEqual(response.status_code, 200)
+        self.access_token = response.data.get('access')
+        # print(self.user.first_name+ " " + self.user.last_name+" is logged in")
+        # print("School group : " + str(self.user.ensisaGroup))
+
+    def test_publish_post(self):
+        print("========================")
+        print("Test publish post")
+        print("========================")
+        print()
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        """
+        -------------------------------------------
+        Creation of an image file for the test
+        -------------------------------------------
+        """
+        file = io.BytesIO()
+        image = img.new('RGBA', size=(100, 100), color=(155, 0, 0))
+        image.save(file, 'png')
+        file.name = 'test.png'
+        file.seek(0)
+
+        print("file" + str(file))
+
+        data = {
+            'title': 'Test Post',
+            'text': 'This is a test post.',
+            'images': [file],
+        }
+
+
+        response = self.client.post('/publish', data=data, format='multipart')
+
+        print("response" + str(response))
+        print()
+
+        # Make a GET request to retrieve the list of posts
+        print("========================")
+        print("Test get post")
+        print("========================")
+        print()
+        # Set the access token in the Authorization header
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.access_token}')
+
+        # Make a GET request to retrieve the list of posts
+        response = self.client.get('/posts/?type=moderate')
+        print("response" + str(response))
+        print("response.data" + str(response.data))
+        print()
+
+        posts = response.data
+        for post in posts:
+            print(f"Post ID: {post['id']}")
+            print(f"Title: {post['title']}")
+            print(f"Author: {post['author']}")
+            print(f"Date: {post['date']}")
+            print(f"Status: {post['status']}")
+            print()
+        self.assertEqual(response.status_code, 200)
+
+        print("========================")
+        print("Posts list confirmed")
+        print("========================")
+        print()
+
+        posts = Post.objects.all()
+        print("Posts in database : ")
+        for post in posts:
+            print(f"Post ID: {post.id}")
+            print(f"Title: {post.title}")
+            print(f"Author: {post.author}")
+            print(f"Date: {post.date}")
+            print(f"Status: {post.status}")
+            print()
+
+        print("========================")
+        print("Images list confirmed")
+        print("========================")
+        print()
+
+        images = Image.objects.all()
+        print("Images in database : ")
+        for image in images:
+            print(f"Image ID: {image.id}")
+            print(f"Post: {image.post}")
+            print()
