@@ -16,7 +16,7 @@ import java.util.List;
 public class ViewPost {
     private String text;
     private List<com.example.mobile_app.model.Comment> comments;
-    private List<Document> images;
+    private List<Document> attachments;
 
     public String getText() {
         return text;
@@ -34,11 +34,11 @@ public class ViewPost {
         this.comments = comments;
     }
 
-    public List<Document> getImages() {
-        return images;
+    public List<Document> getAttachments() {
+        return attachments;
     }
 
-    public void setImages(List<Document> images) {
-        this.images = images;
+    public void setAttachments(List<Document> attachments) {
+        this.attachments = attachments;
     }
 }

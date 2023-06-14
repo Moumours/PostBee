@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Comment;
+import com.example.mobile_app.model.Document;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.UserStatic;
@@ -69,10 +70,6 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
         mPicture = findViewById(R.id.XanxanHotPic);
-
-
-
-
 
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
 
@@ -247,8 +244,24 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                 Log.d("ViewPostActivity", "Post content received successfully");
                                 mTextContent.setText(mViewPost.getText());
                                 if (mViewPost.getComments() != null) {
+                                    //Ajout des commentaires
                                     comments.clear();
                                     comments.addAll(mViewPost.getComments());
+                                    mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
+                                    //Ajout des medias
+                                }
+                                if (mViewPost.getAttachments() != null){
+                                    Log.d("ViewPostActivity", "Liste d'images reçue");
+                                    drawables.clear();
+                                    for(Document doc : mViewPost.getAttachments()){
+                                        try {
+                                            if (doc.getType().equals("image")) {
+                                                retreivePicture(doc.getUrl());
+                                            }
+                                        } catch (Exception e) {
+                                        }
+                                    }
+
                                     mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
@@ -257,6 +270,24 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                             }
                         }
                     });
+                }
+            }
+        }).start();
+    }
+
+    public void retreivePicture(String url){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.d("ViewPostActivity","Tentative de récupération d'image Url : "+url);
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    Drawable d = Drawable.createFromStream(is, "src name");
+                    Log.d("ViewPostActivity","Image reçue");
+                    drawables.add(d);
+                } catch (Exception e) {
+                    Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                    Log.d("ViewPostActivity","Erreur : "+e);
                 }
             }
         }).start();
