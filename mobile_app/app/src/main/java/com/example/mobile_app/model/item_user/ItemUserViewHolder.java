@@ -19,13 +19,14 @@ import java.util.zip.Inflater;
 
 public class ItemUserViewHolder extends RecyclerView.ViewHolder {
     TextView text_fullname, text_email, text_role;
-    Button button_resetPassword, button_remove;
+    Button button_addModo, button_remove;
 
     public ItemUserViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
         super(itemView);
         text_fullname = itemView.findViewById(R.id.itemuser_textview_fullname);
         text_email = itemView.findViewById(R.id.itemuser_textview_email);
         text_role = itemView.findViewById(R.id.itemuser_textview_role);
+        button_addModo = itemView.findViewById(R.id.itemuser_button_addModo);
         button_remove = itemView.findViewById(R.id.itemuser_button_remove);
 
         itemView.setOnClickListener(new View.OnClickListener() {

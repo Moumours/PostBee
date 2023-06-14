@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.UserStatic;
 
 public class ItemCommentViewHolder extends RecyclerView.ViewHolder {
     TextView text_username, text_content, text_role, text_date;
