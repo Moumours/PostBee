@@ -42,21 +42,23 @@ public class ItemCommentAdapter extends RecyclerView.Adapter<ItemCommentViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ItemCommentViewHolder holder, int position) {
-        holder.text_username.setText(comments.get(position).getUsername());
-        holder.text_content.setText(comments.get(position).getContent());
+        holder.text_username.setText(comments.get(position).getAuthor().getFull_name());
+        holder.text_content.setText(comments.get(position).getText());
         holder.text_date.setText(comments.get(position).getDate());
         //ProfilePictureManager.setProfilePicture(mContext, holder.image_pfp, comments.get(position).getProfilePicture());
 
         //button_edit.setVisibility(UserStatic.getIs_staff().equals("true") ? View.VISIBLE : View.GONE);
         holder.button_remove.setVisibility(UserStatic.getIs_staff().equals("true") ? View.VISIBLE : View.GONE);
 
-        String roleText;
+        String roleText = "";
+        /*
         switch (comments.get(position).getRole()) {
             case 0: roleText = mContext.getString(R.string.status_student); break;
             case 1: roleText = mContext.getString(R.string.status_teacher); break;
             case 2: roleText = mContext.getString(R.string.status_other); break;
             default: roleText = ""; break;
         }
+         */
         holder.text_role.setText(roleText);
 
         holder.button_remove.setOnClickListener(v -> {

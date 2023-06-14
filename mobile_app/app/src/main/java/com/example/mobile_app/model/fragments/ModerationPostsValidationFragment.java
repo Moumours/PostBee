@@ -84,7 +84,7 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
         Intent ModerationPostValidationFragment = new Intent(getActivity(), ViewPostActivity.class);
         ModerationPostValidationFragment.putExtra("ID", posts.get(position).getId());
         ModerationPostValidationFragment.putExtra("TITLE", posts.get(position).getTitle());
-        ModerationPostValidationFragment.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
+        ModerationPostValidationFragment.putExtra("AUTHOR", posts.get(position).getAuthor().getFull_name());
         ModerationPostValidationFragment.putExtra("DATE", posts.get(position).getDate());
 
         startActivity(ModerationPostValidationFragment);

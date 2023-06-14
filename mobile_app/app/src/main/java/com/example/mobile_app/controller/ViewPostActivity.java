@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,11 +24,13 @@ import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.Document;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
 import com.example.mobile_app.model.item_media.MediaAdapter;
+import com.example.mobile_app.model.item_post.ItemPost;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -43,8 +46,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
@@ -59,6 +66,9 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
     private List<Drawable> drawables = new ArrayList<>();
     private RecyclerView mMediaRecyclerView;
 
+    Button mButtonComment;
+    EditText mTextComment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +81,9 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextContent = findViewById(R.id.viewpost_textview_content);
         mPicture = findViewById(R.id.XanxanHotPic);
 
+        //Commentaires
+        mButtonComment = findViewById(R.id.viewpost_button_postcomment);
+        mTextComment = findViewById(R.id.viewpost_edittext_writecomment);
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
 
         mMediaRecyclerView = findViewById(R.id.viewpost_recyclerview_media);
@@ -101,6 +114,27 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         // ViewPost.getListcomment()
 
         // RIM
+        mButtonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String commentText = mTextComment.getText().toString();
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("text", commentText);
+                            params.put("post", Integer.toString(postId));
+                            Token.connectToServer("comment", "POST", UserStatic.getAccess(), params, params.getClass(), null, null);
+                        } catch (Exception e) {
+                            Log.d("ViewPostActivity","Erreur lors de l'upload d'un commentaire");
+                            Log.d("ViewPostActivity","Erreur : "+e);
+                        }
+                    }
+                }).start();
+
+            }
+        });
     }
 
     /*
@@ -214,7 +248,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                         Log.d("ViewPostActivity","Erreur : "+e);
                     }
                      */
-
+                    /*
                     try {
 
                         File imgFile = new File("/storage/emulated/0/Pictures/IMG_20230614_152524.jpg");
@@ -230,6 +264,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                         Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
                         Log.d("ViewPostActivity","Erreur : "+e);
                     }
+                    */
 
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
                     mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET", UserStatic.getAccess(),null,null, ViewPost.class,null));
@@ -244,6 +279,18 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                 Log.d("ViewPostActivity", "Post content received successfully");
                                 mTextContent.setText(mViewPost.getText());
                                 if (mViewPost.getComments() != null) {
+                                    for (Comment comment : mViewPost.getComments()){
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                            String rawStringDate = comment.getDate();
+                                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                                            comment.setDate(date.format(formatter2).toString());
+                                        }
+                                    }
                                     //Ajout des commentaires
                                     comments.clear();
                                     comments.addAll(mViewPost.getComments());

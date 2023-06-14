@@ -105,7 +105,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         Intent homeActivityIntent = new Intent(HomeActivity.this, ViewPostActivity.class);
         homeActivityIntent.putExtra("ID", posts.get(position).getId());
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
-        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
+        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFull_name());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         homeActivityIntent.putExtra("STATUS", mPostStatus);
         startActivity(homeActivityIntent);
