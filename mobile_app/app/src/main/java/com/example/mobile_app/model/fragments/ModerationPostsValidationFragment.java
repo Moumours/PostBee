@@ -21,6 +21,8 @@ import com.example.mobile_app.controller.ModerationActivity;
 import com.example.mobile_app.controller.ViewPostActivity;
 import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.item_post.ItemPostValidationAdapter;
@@ -34,18 +36,21 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class ModerationPostsValidationFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemPost> posts = new ArrayList<ItemPost>();
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private String type = "moderate";
-
+    private String mTokenAccess = UserStatic.access;
+    private int amount = 5;
+    private boolean isLoading = false;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_moderation_posts_validation, container, false);
         mRecyclerView = rootView.findViewById(R.id.modposts_recyclerview_posts);
         mSwipeRefreshLayout = rootView.findViewById(R.id.modposts_swiperefreshlayout_s2r);
@@ -53,8 +58,42 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(new ItemPostValidationAdapter(posts, getActivity().getApplicationContext(), this));
 
-        receiveModaratePage();
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (!recyclerView.canScrollVertically(1) && !isLoading) {
+                    receiveModaratePage(amount);
+                }
+            }
+        });
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                posts.clear();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                receiveModaratePage(amount);
+            }
+        });
+
+        receiveModaratePage(amount);
+
         return rootView;
+    }
+
+    public static List<ItemPost> convertObjectToList(Object obj) {
+        if (obj != null) {
+            List<ItemPost> list = new ArrayList<>();
+            if (obj.getClass().isArray()) {
+                list = Arrays.asList((ItemPost[]) obj);
+            } else if (obj instanceof Collection) {
+                list = new ArrayList<>((Collection<ItemPost>) obj);
+            }
+            return list;
+        }
+        else {
+            return null;
+        }
     }
 
     @Override
@@ -65,60 +104,38 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
         ModerationPostValidationFragment.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
         ModerationPostValidationFragment.putExtra("DATE", posts.get(position).getDate());
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                posts.clear();
-                mRecyclerView.getAdapter().notifyDataSetChanged();
-                receiveModaratePage();
-            }
-        });
-
         startActivity(ModerationPostValidationFragment);
     }
 
-    public void receiveModaratePage() {
+    public void receiveModaratePage(int amount) {
+        isLoading = true;
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Log.d("HomeActivity", "Début de la méthode receiveModaratePage");
-
-                    URL url = new URL("http://postbee.alwaysdata.net/posts/?type=" + type + "&amount=10");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("GET");
-                    django.setRequestProperty("Accept","application/json");
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    String rawPostData = response.toString();
-                    Log.d("ModerationPostsValidationFragment", "Données brutes reçues : " + rawPostData);
-
-                    Gson gson = new Gson();
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
+                    String endUrl = "posts/?type=moderate&amount=" + amount + "&start=" + posts.size();
+                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
 
-                    getActivity().runOnUiThread(() -> {
-                        posts.clear();
-                        posts.addAll(receivedPosts);
-                        mRecyclerView.getAdapter().notifyDataSetChanged();
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            posts.addAll(receivedPosts);
+                            mRecyclerView.getAdapter().notifyDataSetChanged();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
                     });
-
-                    Log.d("ModerationPostsValidationFragment", "Nombre de posts reçus : " + posts.size());
-
-                    django.disconnect();
                 } catch (Exception e) {
-                    Log.e("ModerationPostsValidationFragment", "Erreur dans receiveHomePage", e);
+                        Log.e("ModeratinonPostsValidationFragment", "Erreur dans ModeratinonPostsValidationFragment", e);
                 } finally {
-                    getActivity().runOnUiThread(() -> mSwipeRefreshLayout.setRefreshing(false));
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });
+                    isLoading = false;
                 }
+
             }
         }).start();
     }

@@ -5,7 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,14 +19,14 @@ import java.util.zip.Inflater;
 
 public class ItemUserViewHolder extends RecyclerView.ViewHolder {
     TextView text_fullname, text_email, text_role;
-    Button button_resetPassword, button_remove;
+    ImageButton button_resetPassword, button_remove;
 
     public ItemUserViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
         super(itemView);
         text_fullname = itemView.findViewById(R.id.itemuser_textview_fullname);
         text_email = itemView.findViewById(R.id.itemuser_textview_email);
         text_role = itemView.findViewById(R.id.itemuser_textview_role);
-        button_remove = itemView.findViewById(R.id.itemuser_button_remove);
+        button_remove = (ImageButton) itemView.findViewById(R.id.itemuser_button_remove);
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

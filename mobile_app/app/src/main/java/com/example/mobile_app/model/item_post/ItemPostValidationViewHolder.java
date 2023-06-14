@@ -11,22 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.controller.Poste;
+import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.User;
+import com.example.mobile_app.model.UserStatic;
 import com.google.gson.Gson;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
     TextView text_title, text_author, text_date;
     Button accept_button, deny_button;
     int postId;
+    private String mTokenAccess;
     public ItemPostValidationViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
         super(itemView);
+        mTokenAccess = UserStatic.access;
+        Log.d("HomeActivity", "TOKEN HOME : " + UserStatic.access);
+
         text_title = itemView.findViewById(R.id.itempost_textview_title);
         text_author = itemView.findViewById(R.id.itempost_textview_author);
         text_date = itemView.findViewById(R.id.itempost_textview_date);
@@ -75,51 +84,13 @@ public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    URL url = new URL("http://postbee.alwaysdata.net/approve");
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
+                    //URL url = new URL("http://postbee.alwaysdata.net/approve");
+                    String endUrl = "approve";
+                    Token.connectToServer(endUrl,"POST",UserStatic.getAccess(),postDecision,PostDecision.class,null, null);
 
-                    django.setRequestMethod("POST");
-                    django.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    django.setRequestProperty("Accept","application/json");
-                    django.setDoOutput(true);
-                    django.setDoInput(true);
-
-                    Gson gson = new Gson();
-                    String jsonDecision = gson.toJson(postDecision);
-
-                    System.out.println(jsonDecision);
-
-                    Log.d("MainActivity", "Envoi de la requête de la decision d'un poste");
-
-                    try (OutputStreamWriter os = new OutputStreamWriter(django.getOutputStream(), "UTF-8")) {
-                        os.write(jsonDecision);
-                        os.flush();
-                        Log.d("MainActivity", "Requête envoyée avec succès");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.e("MainActivity", "Erreur lors de l'envoi de la requête : " + e.getMessage());
-                    }
-
-                    int responseCode = django.getResponseCode();
-                    Log.d("MainActivity", "Code de réponse : " + responseCode);
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    Log.d("MainActivity", "Réponse du serveur : " + response);
-
-
-                    System.out.println(response.toString());
-
-                    django.disconnect();
                 } catch (Exception e) {
-                    e.printStackTrace();}
+                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
+                }
             }
         }).start();
     }

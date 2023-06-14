@@ -7,7 +7,6 @@ public class ItemPost {
     private String title;
     private Author author;
     private String date;
-
     private char status;
 
     public int getId() { return id; }
@@ -22,10 +21,11 @@ public class ItemPost {
     public void setDate(String date) { this.date = date; }
 
 
-    public ItemPost(int id, String title, Author author, String date) {
+    public ItemPost(int id, String title, Author author, String date, char status) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.date = date;
+        this.status = status;
     }
 }
