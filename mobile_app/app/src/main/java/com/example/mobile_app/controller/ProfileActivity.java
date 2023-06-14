@@ -86,16 +86,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
             }
         });
 
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (!recyclerView.canScrollVertically(1) && !isLoading) {
-                    receiveprofilePage(amount);
-                }
-            }
-        });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.profile_swipe_refresh_layout);
+        /*mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.profile_swipe_refresh_layout);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -103,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                 mRecyclerView.getAdapter().notifyDataSetChanged();
                 receiveprofilePage(amount);
             }
-        });
+        });*/
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
@@ -148,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                         public void run() {
                             posts.addAll(receivedPosts);
                             mRecyclerView.getAdapter().notifyDataSetChanged();
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            //mSwipeRefreshLayout.setRefreshing(false);
                         }
                     });
                 } catch (Exception e) {
@@ -157,7 +148,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
+                            //mSwipeRefreshLayout.setRefreshing(false);
                         }
                     });
                     isLoading = false;
