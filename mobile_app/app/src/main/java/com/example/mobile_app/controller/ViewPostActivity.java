@@ -55,7 +55,6 @@ import java.util.Locale;
 
 public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-    ImageView mPicture;
     private TextView mTextTitle, mTextContent, mTextAuthor, mTextDate;
     private ViewPost mViewPost;
 
@@ -79,8 +78,6 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextAuthor = findViewById(R.id.viewpost_textview_author);
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
-        mPicture = findViewById(R.id.XanxanHotPic);
-
         //Commentaires
         mButtonComment = findViewById(R.id.viewpost_button_postcomment);
         mTextComment = findViewById(R.id.viewpost_edittext_writecomment);
@@ -100,7 +97,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
 
         mTextTitle.setText(i.getStringExtra("TITLE"));
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
-        mTextDate.setText(i.getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
+        mTextDate.setText(i.getStringExtra("DATE"));
 
         mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
 
@@ -302,16 +299,14 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                     drawables.clear();
                                     for(Document doc : mViewPost.getAttachments()){
                                         try {
-                                            if (doc.getType().equals("image")) {
+                                            //if (doc.getType().equals("image")) {
+                                            if (true) {
                                                 Thread t = retreivePicture(doc.getUrl());
                                                 t.start();
                                                 t.join();
                                             }
                                         } catch (Exception e) {
                                         }
-                                    }
-                                    if (drawables.size()>0) {
-                                        mPicture.setImageDrawable(drawables.get(drawables.size() - 1));
                                     }
                                     mMediaRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
