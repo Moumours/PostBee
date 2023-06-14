@@ -15,6 +15,7 @@
 
     <string name="ui_deleteAccountWarning">Êtes-vous sûr de vouloir supprimer votre compte ?\nVos posts seront concervés mais anonymisés.</string>
     <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
+    <string name="ui_addModoConfirmation">Êtes-vous sûr de vouloir ajouter cet utilisateur comme modérateur ?</string>
 
     <string name="ui_welcome">Bienvenue à PostBee !</string>
     <string name="ui_resetPassword">Réinitialiser le mot de passe</string>

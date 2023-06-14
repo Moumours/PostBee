@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +20,8 @@ import java.util.zip.Inflater;
 
 public class ItemUserViewHolder extends RecyclerView.ViewHolder {
     TextView text_fullname, text_email, text_role;
-    Button button_addModo, button_remove;
+    ImageButton button_addModo, button_remove;
+
 
     public ItemUserViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
         super(itemView);

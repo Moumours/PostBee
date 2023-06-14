@@ -71,8 +71,9 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
                     int position = holder.getAdapterPosition();
 
                     if (position != RecyclerView.NO_POSITION) {
-                        int userId = users.get(position).getId();
-                        DelatedUser user = new DelatedUser(userId);
+                        String userEmail = users.get(position).getEmail();
+                        DelatedUser user = new DelatedUser(userEmail);
+                        Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
                         deleteUser(user);
                         Toast.makeText(mContext, "Account Deleted", Toast.LENGTH_SHORT).show();
                     }
@@ -86,6 +87,33 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             builder.create();
             builder.show();
         });
+
+        holder.button_addModo.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setMessage(mActivity.getString(R.string.ui_addModoConfirmation) +
+                    String.format(" %s ?", holder.text_fullname.getText()));
+            builder.setPositiveButton(R.string.ui_yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    int position = holder.getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        String userEmail = users.get(position).getEmail();
+                        DelatedUser user = new DelatedUser(userEmail);
+                        Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
+                        addModo(user);
+                        Toast.makeText(mContext, "User Added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.ui_no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                }
+            });
+            builder.create();
+            builder.show();
+        });
+
+
     }
 
     @Override
@@ -105,5 +133,19 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             }
         }).start();
     }
+
+    public void addModo (DelatedUser user) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String endUrl = "add_modo";
+                    Token.connectToServer(endUrl,"POST", UserStatic.getAccess(),user, DelatedUser.class,null, null);
+                } catch (Exception e) {
+                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
+                }
+            }
+        }).start();
+    }
+
 
 }

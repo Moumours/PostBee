@@ -47,4 +47,5 @@
     <string name="ui_writeComment">Write a comment</string>
     <string name="ui_postComment">Post comment</string>
     <string name="ui_changePfp">Change profile picture</string>
+    <string name="ui_addModoConfirmation">Are you sure you want to add this user as a moderator ?</string>
 </resources>
