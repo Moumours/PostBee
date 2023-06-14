@@ -1,10 +1,14 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +24,7 @@ import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
+import com.example.mobile_app.model.item_media.MediaAdapter;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -38,15 +43,16 @@ import java.util.List;
 
 public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-    TextView mTextTitle;
-    TextView mTextContent;
-    TextView mTextAuthor;
-    TextView mTextDate;
-    ViewPost mViewPost;
+    private TextView mTextTitle, mTextContent, mTextAuthor, mTextDate;
+    private ViewPost mViewPost;
 
-    String mTokenAccess;
+    private String mTokenAccess;
     private List<Comment> comments = new ArrayList<>();
-    RecyclerView mCommentsRecyclerView;
+    private RecyclerView mCommentsRecyclerView;
+
+    private List<Drawable> drawables = new ArrayList<>();
+    private RecyclerView mMediaRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +65,11 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextContent = findViewById(R.id.viewpost_textview_content);
 
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
+
+        mMediaRecyclerView = findViewById(R.id.viewpost_recyclerview_media);
+        mMediaRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mMediaRecyclerView.setAdapter(new MediaAdapter(drawables));
+
 
         Intent i = getIntent();
         int postId = i.getIntExtra("ID", 0);
