@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".controller.ProfileActivity">
+    tools:context=".controller.ProfileActivity"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:layout_height="100px"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="8dp"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -21,28 +21,27 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_gravity="left"
             android:scaleType="fitStart"
             android:adjustViewBounds="true"
             android:src="@drawable/logo_ensisa" />
-
         <ImageView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
+            android:layout_gravity="right"
             android:scaleType="fitEnd"
             android:adjustViewBounds="true"
             android:src="@drawable/logo_line_small" />
     </LinearLayout>
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/profile_swipe_refresh_layout"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/profile_imageview_pfp"
@@ -53,14 +52,16 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintDimensionRatio="H,1:1"
-                tools:srcCompat="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/avatars"
+                android:clickable="true"
+                android:onClick="clickImage"
+                />
 
             <TextView style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:id="@+id/profile_textview_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gap_part"
-                android:layout_marginBottom="@dimen/gap_item"
                 android:textStyle="bold"
                 android:text="@string/ui_name"
                 app:layout_constraintBottom_toTopOf="@+id/profile_textview_firstname"
@@ -70,10 +71,19 @@
                 android:id="@+id/profile_textview_firstname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/gap_item"
                 android:textStyle="bold"
                 android:text="@string/ui_firstname"
-                app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
+                app:layout_constraintBottom_toTopOf="@id/profile_textview_email"
                 app:layout_constraintStart_toStartOf="@+id/profile_textview_name" />
+
+            <TextView style="@style/TextAppearance.Material3.TitleMedium"
+                android:id="@+id/profile_textview_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ui_email"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_firstname" />
 
             <TextView style="@style/TextAppearance.Material3.TitleLarge"
                 android:id="@+id/profile_textview_changePassword"
@@ -84,7 +94,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/gap_part"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_textview_firstname" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_email" />
 
             <EditText style="@style/DefaultTextField"
                 android:id="@+id/profile_edittext_oldPassword"
@@ -106,7 +116,7 @@
                 android:hint="@string/ui_newPassword"
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_myposts"
                 app:layout_constraintTop_toBottomOf="@+id/profile_edittext_oldPassword" />
 
             <EditText style="@style/DefaultTextField"
@@ -118,7 +128,7 @@
                 android:hint="@string/ui_confirmPassword"
                 android:inputType="textPassword"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_myposts"
                 app:layout_constraintTop_toBottomOf="@+id/profile_edittext_newPassword" />
 
             <Button style="@style/ButtonActionBorder"
@@ -146,12 +156,13 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/profile_recyclerview_posts"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
+                android:isScrollContainer="false"
+
                 android:layout_marginTop="@dimen/gap_part"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_textview_myposts"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_myposts" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </ScrollView>
 </LinearLayout>
