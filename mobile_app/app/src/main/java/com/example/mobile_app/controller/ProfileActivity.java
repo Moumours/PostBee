@@ -23,6 +23,7 @@ import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.item_pfp.ProfilePictureAdapter;
+import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.google.gson.Gson;
@@ -163,7 +164,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                     params.put("old_password", oldPassword);
                     params.put("new_password", newPassword);
                     ResponseData response;
-                    response = (ResponseData) Token.connectToServer("change_password", "POST", mTokenAccess,params, params.getClass(), ResponseData.class,null);
+                    response = (ResponseData) Token.connectToServer("change_password", "POST", UserStatic.getAccess(),params, params.getClass(), ResponseData.class,null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

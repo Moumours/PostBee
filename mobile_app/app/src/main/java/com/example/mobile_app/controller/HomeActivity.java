@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
@@ -77,7 +78,9 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mAddPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
+                Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
+                i.putExtra("TOKEN_ACCESS",mTokenAccess);
+                startActivity(i);
             }
         });
 
@@ -146,7 +149,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     Log.d("HomeActivity", "Début de la méthode receiveHomePage");
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     String endUrl = "posts/?amount=" + amount + "&start=" + posts.size();
-                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
+                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
 
                     runOnUiThread(new Runnable() {
                         @Override

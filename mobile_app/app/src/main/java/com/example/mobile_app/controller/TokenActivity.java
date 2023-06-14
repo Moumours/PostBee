@@ -13,6 +13,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.UserStatic;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -38,6 +39,8 @@ public class TokenActivity extends AppCompatActivity {
             new Thread(new Runnable() {
                 public void run() {
                     try {
+                        UserStatic.setAccess(mToken.getAccess());
+                        UserStatic.setRefresh(mToken.getRefresh());
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("refresh", mToken.getRefresh());
                         mToken = (Token.class).cast(Token.connectToServer("refresh_token","POST",mToken.getAccess(),params,params.getClass(), Token.class,null));

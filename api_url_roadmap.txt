@@ -1,3 +1,35 @@
+Login :
+	postbee.alwaysdata.net/login
+	json requis :
+	{
+		"email": "string",
+		"password": "string"
+	}
+
+	Retour :
+		Succès :
+		{
+			"success": true,
+			"message": "string"
+			"user" : User datas
+			HTTP 200
+		}
+		Erreur :
+		{
+			"success": false,
+			"message": "string"
+			HTTP 202
+		}
+
+
+
+Mise à jour du token :
+	postbee.alwaysdata.net/refresh_token
+	json requis :
+	{
+		"refresh_token": "string"
+	}
+
 Register :
 	postbee.alwaysdata.net/register
 	json requis :
@@ -10,17 +42,24 @@ Register :
 		"password2": "string"
 	}
 
-Login :
-	postbee.alwaysdata.net/login
-	json requis :
-	{
-		"email": "string",
-		"password": "string"
-	}
+	Retour :
+		Succès :
+		{
+			"success": true,
+			"message": "string"
+			HTTP 200
+		}
+		Erreur :
+		{
+			"success": false,
+			"message": "string"
+			HTTP 202
+		}
+
 
 Liste des postes :
 	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}&start=x
-	
+
 	amount correspond aux nombres de postes demandé
 	le champ typé défini si on est en mode écran d'accueil, page modo ou page perso
 	start correspond à l'index de début de recherche
@@ -28,6 +67,7 @@ Liste des postes :
 	Accueil : postbee.alwaysdata.net/posts/?amount=x
 	Page perso : postbee.alwaysdata.net/posts/?amount=x&type=own
 	Page modo : postbee.alwaysdata.net/posts/?amount=x&type=moderate
+
 
 Détail d'un poste :
 	postbee.alwaysdata.net/post/?id=x
@@ -81,12 +121,6 @@ Supprimer un commentaire :
 Obtenir les informations d'un utilisateur :
 	postbee.alwaysdata.net/user_info
 
-Mise à jour du token :
-	postbee.alwaysdata.net/refresh_token
-	json requis :
-	{
-		"refresh_token": "string"
-	}
 
 Déconnextion :
 	postbee.alwaysdata.net/logout
@@ -105,6 +139,20 @@ Changer de mot de passe :
 		"old_password": "string",
 		"new_password": "string"
 	}
+
+	Retour :
+		Succès :
+		{
+			"success": true,
+			"message": "string"
+			HTTP 200
+		}
+		Erreur :
+		{
+			"success": false,
+			"message": "string"
+			HTTP 202
+		}
 
 Liste des utilisateurs :
 	postbee.alwaysdata.net/users/?amount=x&start=x
