@@ -1,27 +1,23 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.IntentCompat;
-
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import androidx.security.crypto.EncryptedSharedPreferences;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.UserStatic;
+import com.example.mobile_app.model.item_user.DelatedUser;
+import com.example.mobile_app.model.item_user.ItemUserAdapter;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private Context mContext;
     private Button mLogoutButton, mAccountDeleteButton;
+    private String mTokenAccess = UserStatic.access;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +35,9 @@ public class SettingsActivity extends AppCompatActivity {
             builder.setTitle(getString(R.string.ui_warning));
             builder.setMessage(getString(R.string.ui_deleteAccountWarning));
             builder.setPositiveButton(getString(R.string.ui_delete), (dialog, id) -> {
-                //TODO: Insérer suppression du compte ici
+                String currentUserEmail = UserStatic.getEmail();
+                DelatedUser currentUser = new DelatedUser(currentUserEmail);
+                ItemUserAdapter.deleteUser(currentUser);
                 logout();
                 Toast.makeText(mContext, "Account Deleted", Toast.LENGTH_SHORT).show();
             });
@@ -50,7 +48,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void logout () {
-        //TODO: Insérer logique de déconnexion au serveur ici
         Token.clearKeys(SettingsActivity.this);
         Intent intents = new Intent(SettingsActivity.this, LoginActivity.class);
         intents.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK

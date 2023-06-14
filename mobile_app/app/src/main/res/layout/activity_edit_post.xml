@@ -28,34 +28,26 @@
             android:hint="@string/hint_content"
             android:minHeight="48dp" />
 
+        <Button
+            android:id="@+id/editpost_button_addMedia"
+            style="@style/ButtonActionBorder"
+            android:background="@drawable/border_button"
+            app:backgroundTint="@null"
+            android:layout_marginTop="@dimen/gap_part"
+            android:layout_width="match_parent"
+            android:drawableTop="@drawable/icon_media"
+            android:drawableTint="@color/ensisa_yellow"
+            android:text="@string/ui_addMedia"
+            app:cornerRadius="12dp" />
+
         <LinearLayout
+            android:id="@+id/media_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/gap_part">
-            <Button
-                android:id="@+id/editpost_button_picture"
-                style="@style/ButtonActionBorder"
-                android:background="@drawable/border_button"
-                app:backgroundTint="@null"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:drawableTop="@drawable/baseline_image_24"
-                android:drawableTint="@color/ensisa_yellow"
-                android:text="@string/ui_addPicture"
-                app:cornerRadius="12dp" />
+            android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/editpost_button_video"
-                    android:drawableTop="@drawable/round_video_library_24"
-                    android:drawableTint="@color/ensisa_yellow"
-                    app:backgroundTint="@null"
-                    style="@style/ButtonActionBorder"
-                    android:background="@drawable/border_button"
-                    android:layout_marginStart="@dimen/gap_item"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/ui_addVideo"
-                    app:cornerRadius="12dp" />
+            <!-- Add TextViews here to display selected media URIs -->
+
         </LinearLayout>
 
         <Button style="@style/ButtonAction"

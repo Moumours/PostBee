@@ -1,6 +1,7 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
+import com.example.mobile_app.model.item_media.MediaAdapter;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -51,10 +53,16 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
     TextView mTextDate;
     ViewPost mViewPost;
     ImageView mPicture;
+    private TextView mTextTitle, mTextContent, mTextAuthor, mTextDate;
+    private ViewPost mViewPost;
 
-    String mTokenAccess;
+    private String mTokenAccess;
     private List<Comment> comments = new ArrayList<>();
-    RecyclerView mCommentsRecyclerView;
+    private RecyclerView mCommentsRecyclerView;
+
+    private List<Drawable> drawables = new ArrayList<>();
+    private RecyclerView mMediaRecyclerView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,11 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
 
 
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
+
+        mMediaRecyclerView = findViewById(R.id.viewpost_recyclerview_media);
+        mMediaRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mMediaRecyclerView.setAdapter(new MediaAdapter(drawables));
+
 
         Intent i = getIntent();
         int postId = i.getIntExtra("ID", 0);

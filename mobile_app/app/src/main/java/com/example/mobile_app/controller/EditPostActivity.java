@@ -17,9 +17,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.GestionMedias;
 import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UploadPost;
@@ -47,12 +51,17 @@ public class EditPostActivity extends AppCompatActivity {
     private EditText mEditTextContent;
     private Button mButtonSubmit;
 
-    private Button mButtonImage;
+    private Button mButtonMedia;
 
     private Uri[] mImageUris;
     private String mTokenAccess;
 
     private byte mCurrentImageIndex = 0;
+
+    private ImageView mMediaView;
+    private LinearLayout mMediaContainer;
+    private Uri[] mMediaUris;
+    private int mCurrentMediaIndex = 0;
 
 
     @Override
@@ -62,8 +71,9 @@ public class EditPostActivity extends AppCompatActivity {
 
         mEditTextTitle = findViewById(R.id.editpost_edittext_title);
         mEditTextContent = findViewById(R.id.editpost_edittext_content);
-        mButtonImage = findViewById(R.id.editpost_button_picture);
-        mButtonImage.setOnClickListener(v -> GestionPhoto.selectPhoto(this));
+        mButtonMedia = findViewById(R.id.editpost_button_addMedia);
+        mButtonMedia.setOnClickListener(v -> GestionMedias.selectMedia(this));
+        mMediaContainer = findViewById(R.id.media_container);
         mButtonSubmit = findViewById(R.id.editpost_button_submit);
 
         mButtonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +205,22 @@ public class EditPostActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return (responseData);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == GestionMedias.REQUEST_MEDIA_PICK) {
+            GestionMedias.handleActivityResult(this, requestCode, resultCode, data, mMediaContainer, mMediaUris, mCurrentMediaIndex);
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        GestionMedias.handlePermissionResult(this, requestCode, permissions, grantResults);
     }
 
 /*

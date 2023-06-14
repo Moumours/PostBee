@@ -75,4 +75,5 @@
     <string name="ui_writeComment">Ecrire un commentaire</string>
     <string name="ui_postComment">Publier un commentaire</string>
     <string name="ui_changePfp">Changer d\'image de profil</string>
+    <string name="ui_addMedia">Ajouter un média</string>
 </resources>
