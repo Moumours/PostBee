@@ -1,14 +1,14 @@
 package com.example.mobile_app.controller;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_MEDIA_IMAGES;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +23,7 @@ import com.example.mobile_app.model.UploadPost;
 import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
 import com.google.gson.Gson;
+
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -40,7 +41,13 @@ public class EditPostActivity extends AppCompatActivity {
     private EditText mEditTextTitle;
     private EditText mEditTextContent;
     private Button mButtonSubmit;
+
+    private Button mButtonImage;
+
+    private Uri[] mImageUris;
     private String mTokenAccess;
+
+    private byte mCurrentImageIndex = 0;
 
 
     @Override
@@ -50,6 +57,8 @@ public class EditPostActivity extends AppCompatActivity {
 
         mEditTextTitle = findViewById(R.id.editpost_edittext_title);
         mEditTextContent = findViewById(R.id.editpost_edittext_content);
+        mButtonImage = findViewById(R.id.edit_post_button_photo);
+        mButtonImage.setOnClickListener(v -> GestionPhoto.selectPhoto(this));
         mButtonSubmit = findViewById(R.id.editpost_button_submit);
 
         mButtonSubmit.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +226,21 @@ public class EditPostActivity extends AppCompatActivity {
     });
 }
 
+
+    // A modifier
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        GestionPhoto.handleActivityResult(this, requestCode, resultCode, data, mImageContainer, mImageUris, mCurrentImageIndex);
+
+        // Afficher l'URI de l'image sélectionnée
+        if (resultCode == RESULT_OK && requestCode == GestionPhoto.REQUEST_CODE_SELECT_PHOTO) {
+            if (data != null) {
+
+                // Gerer l'URI
+            }
+        }
+    }
 
     public void PublishPostExample() {
         //String url = "http://10.39.251.162:8000/publish";

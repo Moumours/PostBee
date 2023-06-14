@@ -117,8 +117,12 @@ public class LoginActivity extends AppCompatActivity {
                                     UserStatic.setIs_staff(finalUser.getIs_staff());
                                     Log.d("LoginActivity","UserStatic : "+UserStatic.getFirst_name());
                                     Toast.makeText(LoginActivity.this, "Connexion réussie", Toast.LENGTH_LONG).show();
-                                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                }
+                                    Log.d("LoginActivity","TOKEN DANS LOGIN : " + finalUser.getAccess());
+                                    Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                    intent.putExtra("TOKEN_ACCESS", UserStatic.access);
+                                    startActivity(intent);
+
+                            }
                             else {
                                 Toast.makeText(LoginActivity.this, "Erreur : "+ UserStatic.getMessage(), Toast.LENGTH_LONG).show();
                             }
