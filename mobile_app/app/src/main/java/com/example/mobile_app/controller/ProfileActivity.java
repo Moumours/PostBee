@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobile_app.R;
@@ -53,6 +54,10 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        final TextView lastnameText = findViewById(R.id.profile_textview_name);
+        final TextView firstnameText = findViewById(R.id.profile_textview_firstname);
+        final TextView emailText = findViewById(R.id.profile_textview_email);
+
         final EditText oldPasswordEditText = findViewById(R.id.profile_edittext_oldPassword);
         final EditText newPasswordEditText = findViewById(R.id.profile_edittext_newPassword);
         final EditText confirmPasswordEditText = findViewById(R.id.profile_edittext_passwordConfirm);
@@ -60,8 +65,6 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
 
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
-
-        ProfilePictureManager.setProfilePicture(this, mImageView, 8);
 
         Intent i = getIntent();
         mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
@@ -96,6 +99,12 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
          */
         //receiveprofilePage();
+
+        //Affectation des valeurs
+        lastnameText.setText(UserStatic.getLast_name());
+        firstnameText.setText(UserStatic.getFirst_name());
+        emailText.setText(UserStatic.getEmail());
+        ProfilePictureManager.setProfilePicture(this, mImageView, UserStatic.getProfile_picture());
     }
 
     @Override

@@ -62,7 +62,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/gap_part"
-                android:layout_marginBottom="@dimen/gap_item"
                 android:textStyle="bold"
                 android:text="@string/ui_name"
                 app:layout_constraintBottom_toTopOf="@+id/profile_textview_firstname"
@@ -72,10 +71,19 @@
                 android:id="@+id/profile_textview_firstname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/gap_item"
                 android:textStyle="bold"
                 android:text="@string/ui_firstname"
-                app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
+                app:layout_constraintBottom_toTopOf="@id/profile_textview_email"
                 app:layout_constraintStart_toStartOf="@+id/profile_textview_name" />
+
+            <TextView style="@style/TextAppearance.Material3.TitleMedium"
+                android:id="@+id/profile_textview_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ui_email"
+                app:layout_constraintBottom_toBottomOf="@+id/profile_imageview_pfp"
+                app:layout_constraintStart_toStartOf="@+id/profile_textview_firstname" />
 
             <TextView style="@style/TextAppearance.Material3.TitleLarge"
                 android:id="@+id/profile_textview_changePassword"
@@ -86,7 +94,7 @@
                 android:textStyle="bold"
                 android:layout_marginStart="@dimen/gap_part"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_textview_firstname" />
+                app:layout_constraintTop_toBottomOf="@+id/profile_textview_email" />
 
             <EditText style="@style/DefaultTextField"
                 android:id="@+id/profile_edittext_oldPassword"
