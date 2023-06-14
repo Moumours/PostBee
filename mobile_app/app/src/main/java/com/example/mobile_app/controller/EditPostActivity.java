@@ -6,10 +6,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +35,8 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -68,7 +73,6 @@ public class EditPostActivity extends AppCompatActivity {
                 String text = mEditTextContent.getText().toString();
                 //Récupérer la liste de documents
                 //ici null représente la liste de documents
-                UploadPost uploadPost = new UploadPost(title,text);
 
                 new Thread(new Runnable() {
                     public void run() {
@@ -107,7 +111,7 @@ public class EditPostActivity extends AppCompatActivity {
         });
     }
 
-    public ResponseData publishPostExample(String rawtitle, String rawtext, String imagePath) {
+    public ResponseData publishPostExample(String rawtitle, String rawtext, URI document) {
         String url = "http://postbee.alwaysdata.net/publish";
         String text = rawtext;
         String title = rawtitle;
@@ -142,8 +146,8 @@ public class EditPostActivity extends AppCompatActivity {
             request.write( text.getBytes("UTF-8"));
             request.writeBytes("\r\n");
 
-            if (imagePath != null) {
-                File imageFile = new File(imagePath);
+            if (document != null) {
+                File imageFile = new File(document);
 
                 // Write the image field
                 request.writeBytes("--" + boundary + "\r\n");
@@ -241,6 +245,18 @@ public class EditPostActivity extends AppCompatActivity {
             }
         }
     }
+
+    */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123 && resultCode == Activity.RESULT_OK){
+            Uri content_describer = data.getData();
+            Log.d("EditPostActivity","Fichier obtenu : "+content_describer.toString());
+            //String filename = content_describer.getLastPathSegment();
+        }
+    }
+    /*
 
     public void PublishPostExample() {
         //String url = "http://10.39.251.162:8000/publish";

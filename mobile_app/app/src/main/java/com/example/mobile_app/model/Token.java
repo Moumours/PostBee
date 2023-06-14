@@ -181,11 +181,9 @@ public class Token implements Serializable {
                 String rawPostData = response.toString();
 
                 Gson gsonerrormsg = new Gson();
-                HashMap<String, String> params = new HashMap<String, String>();
-                params = gsonerrormsg.fromJson(rawPostData, params.getClass());
-
-                Log.d("connectToServer","Error message : "+params.get("error"));
-                UserStatic.setMessage(params.get("error"));
+                ResponseData resp = gsonerrormsg.fromJson(rawPostData, ResponseData.class);
+                UserStatic.setMessage(resp.getMessage());
+                Log.d("connectToServer","Error message : "+resp.getMessage());
             }
             conn.disconnect();
         } catch (Exception e) {

@@ -23,13 +23,23 @@ public class GestionPhoto {
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int PERMISSION_REQUEST_CODE = 3;
     public static final int REQUEST_CODE_SELECT_PHOTO = 4;
+    private static final int PICKFILE_RESULT_CODE = 123;
 
 
     public static void selectPhoto(AppCompatActivity activity) {
         if (checkPermission(activity)) {
+            /*
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
-            activity.startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_IMAGE_PICK);
+            activity.startActivityForResult(Intent.createChooser(new Intent(Intent.ACTION_GET_CONTENT), "Select Picture"), 100);
+            */
+            Intent chooseFile = new Intent(Intent.ACTION_GET_CONTENT);
+            chooseFile.addCategory(Intent.CATEGORY_OPENABLE);
+            chooseFile.setType("image/jpeg");
+            activity.startActivityForResult(
+                    Intent.createChooser(chooseFile, "Choose a file"),
+                    PICKFILE_RESULT_CODE
+            );
         } else {
             requestPermission(activity);
         }

@@ -12,14 +12,14 @@ import java.util.List;
 public class UploadPost {
     private final String title;
     private final String text;
+    private final List<String> attachments;
 
 
-    public UploadPost(String title, String contenu) {
+    public UploadPost(String title, String text, List<String> attachments) {
         this.title = title;
-        this.text = contenu;
-
+        this.text = text;
+        this.attachments = attachments;
     }
-
 }
 
 //Attribut

@@ -65,6 +65,14 @@
             android:layout_marginHorizontal="@dimen/gap_part"
             android:text="@string/ui_postComment"
             android:layout_marginTop="@dimen/gap_item" />
+
+        <ImageView
+            android:id="@+id/XanxanHotPic"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/default_profile_image" />
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

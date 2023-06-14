@@ -16,22 +16,29 @@ import java.util.List;
 public class ViewPost {
     private String text;
     private List<com.example.mobile_app.model.Comment> comments;
-    private List<Image> images;
-    private List<Video> videos;
+    private List<Document> images;
 
     public String getText() {
         return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public List<Comment> getComments() {
         return comments;
     }
 
-    public List<Image> getImages() {
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Document> getImages() {
         return images;
     }
 
-    public List<Video> getVideos() {
-        return videos;
+    public void setImages(List<Document> images) {
+        this.images = images;
     }
 }

@@ -5,7 +5,7 @@ public class Video extends Document {
     private int duration;
 
     public Video(String name, String fileType, String filePath, int duration) {
-        super(name, fileType, filePath);
+        //super(name, fileType, filePath);
         this.duration = duration;
     }
 

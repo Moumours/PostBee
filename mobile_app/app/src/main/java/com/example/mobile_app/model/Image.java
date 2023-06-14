@@ -19,7 +19,7 @@ public class Image extends Document {
     private static final int REQUEST_IMAGE_PICK = 456;
 
     public Image(String name, String fileType, String filePath, int width, int height) {
-        super(name, fileType, filePath);
+        //super(name, fileType, filePath);
         this.width = width;
         this.height = height;
     }

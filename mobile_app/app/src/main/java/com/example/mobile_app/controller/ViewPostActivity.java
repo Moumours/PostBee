@@ -5,10 +5,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +35,10 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +50,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
     TextView mTextAuthor;
     TextView mTextDate;
     ViewPost mViewPost;
+    ImageView mPicture;
 
     String mTokenAccess;
     private List<Comment> comments = new ArrayList<>();
@@ -57,6 +65,11 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextAuthor = findViewById(R.id.viewpost_textview_author);
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
+        mPicture = findViewById(R.id.XanxanHotPic);
+
+
+
+
 
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
 
@@ -183,6 +196,36 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    /*
+                    try {
+                        Log.d("ViewPostActivity","Tentative de récupération d'image");
+                        InputStream is = (InputStream) new URL("http://postbee.alwaysdata.net/media/images/halo.jpeg").getContent();
+                        Drawable d = Drawable.createFromStream(is, "src name");
+                        Log.d("ViewPostActivity","Image reçue on la set sur le post");
+                        mPicture.setImageDrawable(d);
+                        Log.d("ViewPostActivity","Image set");
+                    } catch (Exception e) {
+                        Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                        Log.d("ViewPostActivity","Erreur : "+e);
+                    }
+                     */
+
+                    try {
+
+                        File imgFile = new File(new URI("content://com.android.providers.media.documents/document/image%3A31"));
+
+                        if (imgFile.exists()) {
+
+                            Drawable d = Drawable.createFromPath(imgFile.getAbsolutePath());
+                            mPicture.setImageDrawable(d);
+
+                        }
+                    }
+                    catch (Exception e){
+                        Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                        Log.d("ViewPostActivity","Erreur : "+e);
+                    }
+
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
                     mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET", UserStatic.getAccess(),null,null, ViewPost.class,null));
 

@@ -1,37 +1,22 @@
 package com.example.mobile_app.model;
 
 public class Document {
-    private String name;
-    private String fileType;
-    private String filePath;
+    private String type;
+    private String url;
 
-    public Document(String name, String fileType, String filePath) {
-        this.name = name;
-        this.fileType = fileType;
-        this.filePath = filePath;
+    public String getType() {
+        return type;
     }
 
-    public String getName() {
-        return name;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getUrl() {
+        return url;
     }
 
-    public String getFileType() {
-        return fileType;
-    }
-
-    public void setFileType(String fileType) {
-        this.fileType = fileType;
-    }
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setUrl(String url) {
+        this.url = url;
     }
 }
