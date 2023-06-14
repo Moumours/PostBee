@@ -116,7 +116,7 @@ public class Token implements Serializable {
     public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive, Type typeToReceive){;
         Object objToReceive = null;
         try {
-            //URL url = new URL("http://10.117.21.10:8000/"+endURL);
+            //URL url = new URL("http://10.39.251.162:8000/"+endURL);
             URL url = new URL("http://postbee.alwaysdata.net/"+endURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(requestMethod);

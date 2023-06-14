@@ -41,6 +41,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gap_part" />
         </LinearLayout>
+
+        <!-- Images et vidéos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <TextView style="@style/TextAppearance.Material3.TitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

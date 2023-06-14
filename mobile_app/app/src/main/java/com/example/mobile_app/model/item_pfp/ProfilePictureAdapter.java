@@ -3,6 +3,7 @@ package com.example.mobile_app.model.item_pfp;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
+import com.example.mobile_app.controller.LoginActivity;
 import com.example.mobile_app.controller.ProfilePictureManager;
+import com.example.mobile_app.controller.RegisterActivity;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UserStatic;
 
@@ -69,17 +73,29 @@ public class ProfilePictureAdapter extends RecyclerView.Adapter<ProfilePictureVi
     public int getItemCount() { return ProfilePictureManager.PFP_AMOUNT; }
 
     public void UploadChanges(int newId) {
-        try {
-            Token.connectToServer(
-                    "profile_picture/?id=" + newId,
-                    "GET",
-                    UserStatic.getAccess(),
-                    null,
-                    null,
-                    null,
-                    null);
-        } finally {
-            mDialog.dismiss();
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+
+                    Log.d("Profil_picture", "requete de chgt de pp");
+                    //connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive)
+
+                    Token.connectToServer(
+                            "profile_picture/?id=" + newId,
+                            "GET",
+                            UserStatic.getAccess(),
+                            null,
+                            null,
+                            null,
+                            null);
+
+
+                } catch (Exception e) {
+                    Toast.makeText(mContext, e.toString(), Toast.LENGTH_SHORT).show();
+                } finally {
+                    mDialog.dismiss();
+                }
+            }
+        }).start();
     }
 }

@@ -124,9 +124,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             String rawStringDate = posts.get(position).getDate();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
-            LocalDate date = LocalDate.parse(rawStringDate, formatter);
-            Log.d("HomeActivity","Conversion de la date : "+date.toString());
-            homeActivityIntent.putExtra("DATE", date.toString());
+            //LocalDate date = LocalDate.parse(rawStringDate, formatter);
+            //Log.d("HomeActivity","Conversion de la date : "+date.toString());
+            //homeActivityIntent.putExtra("DATE", date.toString());
+            homeActivityIntent.putExtra("DATE", "DATE");
         }
         else {
             homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
