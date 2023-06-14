@@ -70,8 +70,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mModerationButton = findViewById(R.id.home_menu_button_moderation);
         mSettingsButton = findViewById(R.id.home_menu_button_settings);
 
-        //TODO: change this generic condition
-        // mModerationButton.setVisibility(thisUser.isModerator ? View.VISIBLE : View.GONE);
+        mModerationButton.setVisibility(UserStatic.getIs_staff().equals("true") ? View.VISIBLE : View.GONE);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
