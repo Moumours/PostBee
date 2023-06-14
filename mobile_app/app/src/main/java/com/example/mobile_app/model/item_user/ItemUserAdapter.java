@@ -55,9 +55,15 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
 
         String roleText;
         switch (users.get(position).getRole()) {
-            case 0: roleText = mContext.getString(R.string.status_student); break;
-            case 1: roleText = mContext.getString(R.string.status_teacher); break;
-            case 2: roleText = mContext.getString(R.string.status_other); break;
+            case 0: roleText = mContext.getString(R.string.status_student);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
+            case 1: roleText = mContext.getString(R.string.status_teacher);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
+            case 2: roleText = mContext.getString(R.string.status_other);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
             default: roleText = ""; break;
         }
         holder.text_role.setText(roleText);
@@ -112,8 +118,6 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             builder.create();
             builder.show();
         });
-
-
     }
 
     @Override
