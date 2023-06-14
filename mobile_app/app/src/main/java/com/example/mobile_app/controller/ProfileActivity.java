@@ -88,16 +88,9 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
             }
         });
 
-
-        Author me = new Author("Jean", "Sériens");
-        posts.add(new ItemPost(0,"Mon 1er article", me, "01/01/2000"));
-        posts.add(new ItemPost(4,"Titre d'article 2", me, "02/02/2002"));
-        posts.add(new ItemPost(7,"Titre d'article 3", me, "03/03/2003"));
-        posts.add(new ItemPost(9,"Titre d'article 4", me, "12/10/2015"));
-
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
-        //receiveprofilePage();
+        receiveprofilePage();
 
         //Affectation des valeurs
         lastnameText.setText(UserStatic.getLast_name());
