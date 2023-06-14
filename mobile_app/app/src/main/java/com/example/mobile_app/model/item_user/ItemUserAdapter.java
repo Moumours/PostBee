@@ -76,8 +76,6 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
         }
         holder.text_is_staff.setText(staffText);
 
-
-
         holder.button_remove.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setMessage(mActivity.getString(R.string.ui_deleteUserWarning) +
@@ -134,7 +132,7 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
     public int getItemCount() { return users.size(); }
 
 
-    public void deleteUser(DelatedUser user) {
+    public static void deleteUser(DelatedUser user) {
         new Thread(new Runnable() {
             public void run() {
                 try {

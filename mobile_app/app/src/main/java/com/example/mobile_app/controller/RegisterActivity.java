@@ -1,7 +1,6 @@
 package com.example.mobile_app.controller;
 
 import android.content.Intent;
-import android.os.Looper;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -10,20 +9,10 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
-
 import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.User;
-import com.google.gson.Gson;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.mobile_app.R;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -91,13 +80,7 @@ public class RegisterActivity extends AppCompatActivity {
             public void run() {
                 ResponseData response = null;
                 try {
-
-                    Log.d("RegisterActivity","Attempt to register...");
-                    //connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive)
-
                     response = (ResponseData) Token.connectToServer("register", "POST", null, params, params.getClass(), ResponseData.class,null);
-
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {

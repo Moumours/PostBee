@@ -31,7 +31,7 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private String mTokenAccess = UserStatic.access;
-    private int amount = 2;
+    private int amount = 7;
     private boolean isLoading = false;
 
     @Override
@@ -47,7 +47,7 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 if (!recyclerView.canScrollVertically(1) && !isLoading) {
-                    receiveModarateUserPage(amount);
+                    receiveUserList(amount);
                 }
             }
         });
@@ -57,11 +57,11 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
             public void onRefresh() {
                 users.clear();
                 mRecyclerView.getAdapter().notifyDataSetChanged();
-                receiveModarateUserPage(amount);
+                receiveUserList(amount);
             }
         });
 
-        receiveModarateUserPage(amount);
+        receiveUserList(amount);
         return rootView;
     }
 
@@ -72,19 +72,16 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
     public static List<ItemUser> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemUser> list = new ArrayList<>();
-            if (obj.getClass().isArray()) {
+            if (obj.getClass().isArray())
                 list = Arrays.asList((ItemUser[]) obj);
-            } else if (obj instanceof Collection) {
+            else if (obj instanceof Collection)
                 list = new ArrayList<>((Collection<ItemUser>) obj);
-            }
             return list;
-        }
-        else {
+        }else
             return null;
-        }
     }
 
-    public void receiveModarateUserPage(int amount) {
+    public void receiveUserList(int amount) {
         isLoading = true;
         new Thread(new Runnable() {
             public void run() {
@@ -101,15 +98,14 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
                         }
                     });
                 } catch (Exception e) {
-                    Log.e("ModerationUsersFragent", "Erreur dans ModerationUsersFragent", e);
+                    Log.e("ModerationUsersFragment", "Erreur dans ModerationUsersFragment", e);
                 } finally {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
-                    isLoading = false;
+                    });isLoading = false;
                 }
             }
         }).start();
