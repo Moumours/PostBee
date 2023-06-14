@@ -92,8 +92,8 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         int postId = i.getIntExtra("ID", 0);
         downloadViewPost(postId);
 
-        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, getApplicationContext(), this));
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(ViewPostActivity.this));
+        mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, ViewPostActivity.this, this));
 
         mTextTitle.setText(i.getStringExtra("TITLE"));
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
@@ -126,6 +126,8 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                         } catch (Exception e) {
                             Log.d("ViewPostActivity","Erreur lors de l'upload d'un commentaire");
                             Log.d("ViewPostActivity","Erreur : "+e);
+                        }finally {
+                            downloadViewPost(postId);
                         }
                     }
                 }).start();
