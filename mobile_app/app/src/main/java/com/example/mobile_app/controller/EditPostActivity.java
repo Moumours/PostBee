@@ -50,6 +50,7 @@ public class EditPostActivity extends AppCompatActivity {
 
         mEditTextTitle = findViewById(R.id.editpost_edittext_title);
         mEditTextContent = findViewById(R.id.editpost_edittext_content);
+        mButtonImage = findViewById(R.id.edit_post_button_photo);
         mButtonImage.setOnClickListener(v -> GestionPhoto.selectPhoto(this));
         mButtonSubmit = findViewById(R.id.editpost_button_submit);
 
