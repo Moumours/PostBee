@@ -47,11 +47,6 @@ import java.util.List;
 
 public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-    TextView mTextTitle;
-    TextView mTextContent;
-    TextView mTextAuthor;
-    TextView mTextDate;
-    ViewPost mViewPost;
     ImageView mPicture;
     private TextView mTextTitle, mTextContent, mTextAuthor, mTextDate;
     private ViewPost mViewPost;
