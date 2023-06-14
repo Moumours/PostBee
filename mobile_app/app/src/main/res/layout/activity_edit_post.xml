@@ -40,6 +40,16 @@
             android:text="@string/ui_addMedia"
             app:cornerRadius="12dp" />
 
+        <LinearLayout
+            android:id="@+id/media_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Add TextViews here to display selected media URIs -->
+
+        </LinearLayout>
+
         <Button style="@style/ButtonAction"
             android:id="@+id/editpost_button_submit"
             app:cornerRadius="12dp"
