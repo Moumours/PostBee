@@ -106,19 +106,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("ID", posts.get(position).getId());
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            String rawStringDate = posts.get(position).getDate();
-            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
-            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
-            Log.d("HomeActivity","Conversion de la date : "+date.toString());
-            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
-            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
-            homeActivityIntent.putExtra("DATE", date.format(formatter2).toString());
-        }
-        else {
-            homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        }
+        homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         homeActivityIntent.putExtra("STATUS", mPostStatus);
         startActivity(homeActivityIntent);
     }
@@ -143,6 +131,19 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     String endUrl = "posts/?amount=" + amount + "&start=" + posts.size();
                     final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
+                    // Changement des dates
+                    for (ItemPost itemPost : receivedPosts){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            String rawStringDate = itemPost.getDate();
+                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                            itemPost.setDate(date.format(formatter2).toString());
+                        }
+                    }
 
                     runOnUiThread(new Runnable() {
                         @Override

@@ -256,12 +256,16 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                     for(Document doc : mViewPost.getAttachments()){
                                         try {
                                             if (doc.getType().equals("image")) {
-                                                retreivePicture(doc.getUrl());
+                                                Thread t = retreivePicture(doc.getUrl());
+                                                t.start();
+                                                t.join();
                                             }
                                         } catch (Exception e) {
                                         }
                                     }
-
+                                    if (drawables.size()>0) {
+                                        mPicture.setImageDrawable(drawables.get(drawables.size() - 1));
+                                    }
                                     mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
@@ -275,8 +279,8 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         }).start();
     }
 
-    public void retreivePicture(String url){
-        new Thread(new Runnable() {
+    public Thread retreivePicture(String url) throws InterruptedException {
+        return new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -290,7 +294,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                     Log.d("ViewPostActivity","Erreur : "+e);
                 }
             }
-        }).start();
+        });
     }
 
     @Override
