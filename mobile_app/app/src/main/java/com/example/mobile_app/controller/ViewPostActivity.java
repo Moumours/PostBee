@@ -220,11 +220,11 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
 
                     try {
 
-                        File imgFile = new File(new URI("content://com.android.providers.media.documents/document/image%3A31"));
+                        File imgFile = new File("/storage/emulated/0/Pictures/IMG_20230614_152524.jpg");
 
                         if (imgFile.exists()) {
 
-                            Drawable d = Drawable.createFromPath(imgFile.getAbsolutePath());
+                            Drawable d = Drawable.createFromPath("/storage/emulated/0/Pictures/IMG_20230614_152524.jpg");
                             mPicture.setImageDrawable(d);
 
                         }

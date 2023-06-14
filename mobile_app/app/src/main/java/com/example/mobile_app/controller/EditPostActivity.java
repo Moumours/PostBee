@@ -44,6 +44,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class EditPostActivity extends AppCompatActivity {
 
@@ -53,15 +55,12 @@ public class EditPostActivity extends AppCompatActivity {
 
     private Button mButtonMedia;
 
-    private Uri[] mImageUris;
-    private String mTokenAccess;
-
     private byte mCurrentImageIndex = 0;
-
-    private ImageView mMediaView;
     private LinearLayout mMediaContainer;
     private Uri[] mMediaUris;
     private int mCurrentMediaIndex = 0;
+
+    public List<String> listpath = new LinkedList<>();
 
 
     @Override
@@ -89,7 +88,7 @@ public class EditPostActivity extends AppCompatActivity {
                         ResponseData response = null;
                         try {
                             Log.d("EditPostActivity","Attempt to post...");
-                            response = publishPostExample(mEditTextTitle.getText().toString(), mEditTextContent.getText().toString(), null);
+                            response = publishPostExample(mEditTextTitle.getText().toString(), mEditTextContent.getText().toString());
 
 
                         } catch (Exception e) {
@@ -121,7 +120,7 @@ public class EditPostActivity extends AppCompatActivity {
         });
     }
 
-    public ResponseData publishPostExample(String rawtitle, String rawtext, URI document) {
+    public ResponseData publishPostExample(String rawtitle, String rawtext) {
         String url = "http://postbee.alwaysdata.net/publish";
         String text = rawtext;
         String title = rawtitle;
@@ -156,12 +155,13 @@ public class EditPostActivity extends AppCompatActivity {
             request.write( text.getBytes("UTF-8"));
             request.writeBytes("\r\n");
 
-            if (document != null) {
-                File imageFile = new File(document);
+            for (String path : listpath) {
+                Log.d("EditPostActivity","path : "+path);
+                File imageFile = new File(path);
 
                 // Write the image field
                 request.writeBytes("--" + boundary + "\r\n");
-                request.writeBytes("Content-Disposition: form-data; name=\"images\"; filename=\"" + imageFile.getName() +
+                request.writeBytes("Content-Disposition: form-data; name=\"attachments\"; filename=\"" + imageFile.getName() +
                         "\"\r\n");
                 request.writeBytes("Content-Type: image/jpeg\r\n\r\n");
 
@@ -212,7 +212,8 @@ public class EditPostActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == GestionMedias.REQUEST_MEDIA_PICK) {
-            GestionMedias.handleActivityResult(this, requestCode, resultCode, data, mMediaContainer, mMediaUris, mCurrentMediaIndex);
+            String path = GestionMedias.handleActivityResult(this, requestCode, resultCode, data, mMediaContainer, mMediaUris, mCurrentMediaIndex,EditPostActivity.this);
+            listpath.add(path);
 
         }
     }
@@ -272,7 +273,7 @@ public class EditPostActivity extends AppCompatActivity {
         }
     }
 
-    */
+    /*
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -282,7 +283,7 @@ public class EditPostActivity extends AppCompatActivity {
             //String filename = content_describer.getLastPathSegment();
         }
     }
-    /*
+
 
     public void PublishPostExample() {
         //String url = "http://10.39.251.162:8000/publish";
