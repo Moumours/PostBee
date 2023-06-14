@@ -313,7 +313,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                     if (drawables.size()>0) {
                                         mPicture.setImageDrawable(drawables.get(drawables.size() - 1));
                                     }
-                                    mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
+                                    mMediaRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
                             else{
