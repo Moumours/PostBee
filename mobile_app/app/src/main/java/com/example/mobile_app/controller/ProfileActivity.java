@@ -88,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
             }
         });
 
-        /*
+
         Author me = new Author("Jean", "Sériens");
         posts.add(new ItemPost(0,"Mon 1er article", me, "01/01/2000"));
         posts.add(new ItemPost(4,"Titre d'article 2", me, "02/02/2002"));
@@ -97,7 +97,6 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
-         */
         //receiveprofilePage();
 
         //Affectation des valeurs
