@@ -11,10 +11,13 @@
     <string name="ui_warning">Attention !</string>
     <string name="ui_delete">Supprimer</string>
     <string name="ui_cancel">Annuler</string>
+    <string name="ui_addPicture">Ajouter une image</string>
+    <string name="ui_addVideo">Ajouter une vidéo</string>
     <string name="ui_sendPost">Publier le post</string>
 
     <string name="ui_deleteAccountWarning">Êtes-vous sûr de vouloir supprimer votre compte ?\nVos posts seront concervés mais anonymisés.</string>
     <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
+    <string name="ui_addModoConfirmation">Êtes-vous sûr de vouloir ajouter cet utilisateur comme modérateur ?</string>
 
     <string name="ui_welcome">Bienvenue à PostBee !</string>
     <string name="ui_resetPassword">Réinitialiser le mot de passe</string>

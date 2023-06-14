@@ -116,15 +116,12 @@ public class Token implements Serializable {
     public static Object connectToServer(String endURL, String requestMethod, String token, Object objToSend, Class classToSend, Class classToReceive, Type typeToReceive){;
         Object objToReceive = null;
         try {
-            //URL url = new URL("http://10.39.251.162:8000/"+endURL);
             URL url = new URL("http://postbee.alwaysdata.net/"+endURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod(requestMethod);
             conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             conn.setRequestProperty("Accept","application/json");
-            Log.d("ViewPostActivity","TOKENNN in con : " + token);
             if(token != null){
-
                 Log.d("connectToServer", "Token used : "+ token);
                 conn.setRequestProperty("Authorization", "Bearer " + token);
             }

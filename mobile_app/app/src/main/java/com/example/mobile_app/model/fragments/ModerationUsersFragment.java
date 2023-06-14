@@ -1,34 +1,25 @@
 package com.example.mobile_app.model.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
-import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_user.ItemUser;
 import com.example.mobile_app.model.item_user.ItemUserAdapter;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -101,10 +92,6 @@ public class ModerationUsersFragment extends Fragment implements RecyclerViewInt
                     Type type = new TypeToken<List<ItemUser>>(){}.getType();
                     String endUrl = "users/?type=moderate&amount=" + amount + "&start=" + users.size();
                     final List<ItemUser> receivedUsers = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
-
-                    for (ItemUser user : receivedUsers) {
-                        Log.d("ModerationUsersFragment","Voici l'id : " + user.getId());
-                    }
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

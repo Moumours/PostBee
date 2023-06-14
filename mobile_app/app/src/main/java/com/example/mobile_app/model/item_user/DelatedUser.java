@@ -1,10 +1,10 @@
 package com.example.mobile_app.model.item_user;
 
 public class DelatedUser {
-    private int id;
+    private String email;
 
-    public DelatedUser(int id) {
-        this.id = id;
+    public DelatedUser(String email) {
+        this.email = email;
     }
 
 

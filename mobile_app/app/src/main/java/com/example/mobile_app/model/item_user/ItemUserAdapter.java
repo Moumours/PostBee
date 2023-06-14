@@ -55,12 +55,28 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
 
         String roleText;
         switch (users.get(position).getRole()) {
-            case 0: roleText = mContext.getString(R.string.status_student); break;
-            case 1: roleText = mContext.getString(R.string.status_teacher); break;
-            case 2: roleText = mContext.getString(R.string.status_other); break;
+            case 0: roleText = mContext.getString(R.string.status_student);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
+            case 1: roleText = mContext.getString(R.string.status_teacher);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
+            case 2: roleText = mContext.getString(R.string.status_other);
+                Log.d("ItemUserAdapter", "Voici le role : " + roleText);
+                break;
             default: roleText = ""; break;
         }
         holder.text_role.setText(roleText);
+
+        String staffText;
+        if (users.get(position).getIs_staff().equals("true")) {
+            staffText = "Modérateur";
+        } else {
+            staffText = "Utilisateur";
+        }
+        holder.text_is_staff.setText(staffText);
+
+
 
         holder.button_remove.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -71,8 +87,9 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
                     int position = holder.getAdapterPosition();
 
                     if (position != RecyclerView.NO_POSITION) {
-                        int userId = users.get(position).getId();
-                        DelatedUser user = new DelatedUser(userId);
+                        String userEmail = users.get(position).getEmail();
+                        DelatedUser user = new DelatedUser(userEmail);
+                        Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
                         deleteUser(user);
                         Toast.makeText(mContext, "Account Deleted", Toast.LENGTH_SHORT).show();
                     }
@@ -81,6 +98,31 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             builder.setNegativeButton(R.string.ui_no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User cancelled the dialog
+                }
+            });
+            builder.create();
+            builder.show();
+        });
+
+        holder.button_addModo.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setMessage(mActivity.getString(R.string.ui_addModoConfirmation) +
+                    String.format(" %s ?", holder.text_fullname.getText()));
+            builder.setPositiveButton(R.string.ui_yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    int position = holder.getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        String userEmail = users.get(position).getEmail();
+                        DelatedUser user = new DelatedUser(userEmail);
+                        Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
+                        addModo(user);
+                        Toast.makeText(mContext, "User Added", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.ui_no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
                 }
             });
             builder.create();
@@ -105,5 +147,19 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             }
         }).start();
     }
+
+    public void addModo (DelatedUser user) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    String endUrl = "add_modo";
+                    Token.connectToServer(endUrl,"POST", UserStatic.getAccess(),user, DelatedUser.class,null, null);
+                } catch (Exception e) {
+                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
+                }
+            }
+        }).start();
+    }
+
 
 }
