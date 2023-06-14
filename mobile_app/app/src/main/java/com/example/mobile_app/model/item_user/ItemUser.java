@@ -7,6 +7,8 @@ public class ItemUser {
     private String email;
     private int ensisaGroup;
 
+    private String is_staff;
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
@@ -21,6 +23,14 @@ public class ItemUser {
 
     public int getRole() { return ensisaGroup; }
     public void setRole(int role) { this.ensisaGroup = role; }
+
+    public String getIs_staff() {
+        return is_staff;
+    }
+
+    public void setIs_staff(String is_staff) {
+        this.is_staff = is_staff;
+    }
 
     public ItemUser(int id, String name, String firstname, String email, int role) {
         this.id = id;

@@ -19,7 +19,7 @@ import com.example.mobile_app.model.RecyclerViewInterface;
 import java.util.zip.Inflater;
 
 public class ItemUserViewHolder extends RecyclerView.ViewHolder {
-    TextView text_fullname, text_email, text_role;
+    TextView text_fullname, text_email, text_role, text_is_staff;
     ImageButton button_addModo, button_remove;
 
 
@@ -28,6 +28,7 @@ public class ItemUserViewHolder extends RecyclerView.ViewHolder {
         text_fullname = itemView.findViewById(R.id.itemuser_textview_fullname);
         text_email = itemView.findViewById(R.id.itemuser_textview_email);
         text_role = itemView.findViewById(R.id.itemuser_textview_role);
+        text_is_staff = itemView.findViewById(R.id.itemuser_textview_staff);
         button_addModo = itemView.findViewById(R.id.itemuser_button_addModo);
         button_remove = itemView.findViewById(R.id.itemuser_button_remove);
 

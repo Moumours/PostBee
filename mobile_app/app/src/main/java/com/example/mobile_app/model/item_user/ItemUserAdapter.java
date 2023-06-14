@@ -68,6 +68,16 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
         }
         holder.text_role.setText(roleText);
 
+        String staffText;
+        if (users.get(position).getIs_staff().equals("true")) {
+            staffText = "Modérateur";
+        } else {
+            staffText = "Utilisateur";
+        }
+        holder.text_is_staff.setText(staffText);
+
+
+
         holder.button_remove.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
             builder.setMessage(mActivity.getString(R.string.ui_deleteUserWarning) +
