@@ -1,34 +1,22 @@
 package com.example.mobile_app.controller;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.example.mobile_app.R;
-import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.RecyclerViewInterface;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,7 +35,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private Button mModerationButton;
     private Button mSettingsButton;
     private String mTokenAccess = UserStatic.access;
-    private int amount = 5;
+    private int amount = 7;
     private boolean isLoading = false;
 
     @Override
@@ -79,18 +67,14 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mAddPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, EditPostActivity.class);
-                i.putExtra("TOKEN_ACCESS",mTokenAccess);
-                startActivity(i);
+                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
             }
         });
 
         mProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(HomeActivity.this, ProfileActivity.class);
-                i.putExtra("TOKEN_ACCESS",mTokenAccess);
-                startActivity(i);
+                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
             }
         });
 
@@ -136,26 +120,23 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
             homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         }
         homeActivityIntent.putExtra("STATUS", mPostStatus);
-
         startActivity(homeActivityIntent);
     }
+
     public static List<ItemPost> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemPost> list = new ArrayList<>();
-            if (obj.getClass().isArray()) {
+            if (obj.getClass().isArray())
                 list = Arrays.asList((ItemPost[]) obj);
-            } else if (obj instanceof Collection) {
+            else if (obj instanceof Collection)
                 list = new ArrayList<>((Collection<ItemPost>) obj);
-            }
             return list;
-        }
-        else {
+        }else
             return null;
-        }
     }
+
     public void receiveHomePage(int amount) {
         isLoading = true;
-
         new Thread(new Runnable() {
             public void run() {
                 try {
@@ -179,10 +160,8 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
-                    isLoading = false;
+                    });isLoading = false;
                 }
-
             }
         }).start();
     }

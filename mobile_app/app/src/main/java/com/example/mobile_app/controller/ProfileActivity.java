@@ -53,7 +53,6 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("ProfileActivity", "TOKEN ProfileActivity : " + UserStatic.access);
         setContentView(R.layout.activity_profile);
 
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
@@ -71,7 +70,6 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
         ProfilePictureManager.setProfilePicture(this, mImageView, 8);
-
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,16 +112,13 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
     public static List<ItemPost> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemPost> list = new ArrayList<>();
-            if (obj.getClass().isArray()) {
+            if (obj.getClass().isArray())
                 list = Arrays.asList((ItemPost[]) obj);
-            } else if (obj instanceof Collection) {
+            else if (obj instanceof Collection)
                 list = new ArrayList<>((Collection<ItemPost>) obj);
-            }
             return list;
-        }
-        else {
+        }else
             return null;
-        }
     }
     public void receiveprofilePage(int amount) {
         isLoading = true;
@@ -150,8 +145,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                         public void run() {
                             //mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
-                    isLoading = false;
+                    });isLoading = false;
                 }
             }
         }).start();

@@ -1,6 +1,5 @@
 package com.example.mobile_app.model.fragments;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -16,25 +15,15 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.mobile_app.R;
-import com.example.mobile_app.controller.HomeActivity;
-import com.example.mobile_app.controller.ModerationActivity;
 import com.example.mobile_app.controller.ViewPostActivity;
-import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
-import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.example.mobile_app.model.item_post.ItemPostValidationAdapter;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +34,7 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private String mTokenAccess = UserStatic.access;
-    private int amount = 5;
+    private int amount = 7;
     private boolean isLoading = false;
 
     @Override
@@ -61,9 +50,8 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (!recyclerView.canScrollVertically(1) && !isLoading) {
+                if (!recyclerView.canScrollVertically(1) && !isLoading)
                     receiveModaratePage(amount);
-                }
             }
         });
 
@@ -75,25 +63,20 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                 receiveModaratePage(amount);
             }
         });
-
         receiveModaratePage(amount);
-
         return rootView;
     }
 
     public static List<ItemPost> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemPost> list = new ArrayList<>();
-            if (obj.getClass().isArray()) {
+            if (obj.getClass().isArray())
                 list = Arrays.asList((ItemPost[]) obj);
-            } else if (obj instanceof Collection) {
+            else if (obj instanceof Collection)
                 list = new ArrayList<>((Collection<ItemPost>) obj);
-            }
             return list;
-        }
-        else {
+        }else
             return null;
-        }
     }
 
     @Override
@@ -132,10 +115,8 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                         public void run() {
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
-                    });
-                    isLoading = false;
+                    });isLoading = false;
                 }
-
             }
         }).start();
     }

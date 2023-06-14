@@ -2,9 +2,7 @@ package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
-
 import android.os.Bundle;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.ModerationViewPagerAdapter;
 import com.google.android.material.tabs.TabLayout;
@@ -30,12 +28,9 @@ public class ModerationActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 mViewPager2.setCurrentItem(tab.getPosition());
             }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
 

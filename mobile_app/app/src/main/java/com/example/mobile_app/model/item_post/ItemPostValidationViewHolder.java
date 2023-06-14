@@ -10,31 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mobile_app.R;
-import com.example.mobile_app.controller.Poste;
 import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
-import com.google.gson.Gson;
 import com.example.mobile_app.model.RecyclerViewInterface;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
 public class ItemPostValidationViewHolder extends RecyclerView.ViewHolder {
     TextView text_title, text_author, text_date;
     Button accept_button, deny_button;
     int postId;
-    private String mTokenAccess;
+    private String mTokenAccess = UserStatic.access;
     public ItemPostValidationViewHolder(@NonNull View itemView, RecyclerViewInterface recyclerViewInterface) {
         super(itemView);
-        mTokenAccess = UserStatic.access;
-        Log.d("HomeActivity", "TOKEN HOME : " + UserStatic.access);
 
         text_title = itemView.findViewById(R.id.itempost_textview_title);
         text_author = itemView.findViewById(R.id.itempost_textview_author);
