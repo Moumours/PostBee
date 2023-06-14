@@ -45,7 +45,7 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     private Button mProfileButton;
     private Button mModerationButton;
     private Button mSettingsButton;
-    private String mTokenAccess;
+    private String mTokenAccess = UserStatic.access;
     private int amount = 5;
     private boolean isLoading = false;
 
@@ -53,8 +53,6 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        mTokenAccess = getIntent().getStringExtra("TOKEN_ACCESS");
 
         mRecyclerView = findViewById(R.id.home_recyclerview_posts);
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -157,7 +155,6 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Log.d("HomeActivity", "Début de la méthode receiveHomePage");
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     String endUrl = "posts/?amount=" + amount + "&start=" + posts.size();
                     final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
@@ -165,22 +162,13 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(receivedPosts.size() == 0){
-                                Toast.makeText(getApplicationContext(),"Il reste plus de poste",Toast.LENGTH_SHORT).show();
-                            } else {
-                                posts.addAll(receivedPosts);
-                                mRecyclerView.getAdapter().notifyDataSetChanged();
-                            }
+                            posts.addAll(receivedPosts);
+                            mRecyclerView.getAdapter().notifyDataSetChanged();
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     });
-                    /*
-                    Log.d("HomeActivity", "Nombre de posts reçus : " + posts.size());
-
-                    django.disconnect();
-                    */
                 } catch (Exception e) {
-                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
+                    Log.e("HomeActivity", "Erreur dans HomeActivity", e);
                 } finally {
                     runOnUiThread(new Runnable() {
                         @Override

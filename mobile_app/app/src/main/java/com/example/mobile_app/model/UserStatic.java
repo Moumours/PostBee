@@ -1,6 +1,6 @@
 package com.example.mobile_app.model;
 public class UserStatic {
-    private static String access;
+    public static String access;
     private static String refresh;
     private static String first_name;
     private static String last_name;
