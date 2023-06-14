@@ -1,182 +1,109 @@
-package com.example.mobile_app.controller;
+package com.example.mobile_app.model.item_user;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.mobile_app.R;
-import com.example.mobile_app.model.Author;
-import com.example.mobile_app.model.RecyclerViewInterface;
-import com.example.mobile_app.model.ResponseData;
-import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.UserStatic;
-import com.example.mobile_app.model.item_post.ItemPost;
-import com.example.mobile_app.model.item_post.ItemPostAdapter;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import com.example.mobile_app.R;
+import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.User;
+import com.example.mobile_app.model.UserStatic;
+import com.example.mobile_app.model.item_post.PostDecision;
+import com.google.gson.Gson;
+
 import java.util.List;
 
-public class ProfileActivity extends AppCompatActivity implements RecyclerViewInterface {
+public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
+    private final RecyclerViewInterface recyclerViewInterface;
 
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-
-    private ImageView mImageView;
-    private RecyclerView mRecyclerView;
-    private List<ItemPost> posts = new ArrayList<ItemPost>();
+    Activity mActivity;
+    Context mContext;
+    List<ItemUser> users;
 
     private String mTokenAccess = UserStatic.access;
-    private int amount = 5;
-    private boolean isLoading = false;
 
+    public ItemUserAdapter(List<ItemUser> users, Activity activity, RecyclerViewInterface recyclerViewInterface) {
+        this.users = users;
+        this.mActivity = activity;
+        this.mContext = activity.getApplicationContext();
+        this.recyclerViewInterface = recyclerViewInterface;
+    }
+
+    @NonNull
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d("ProfileActivity", "TOKEN ProfileActivity : " + UserStatic.access);
-        setContentView(R.layout.activity_profile);
-
-        mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemPostAdapter adapter = new ItemPostAdapter(posts, this, this);
-        mRecyclerView.setAdapter(adapter);
-
-
-        final EditText oldPasswordEditText = findViewById(R.id.profile_edittext_oldPassword);
-        final EditText newPasswordEditText = findViewById(R.id.profile_edittext_newPassword);
-        final EditText confirmPasswordEditText = findViewById(R.id.profile_edittext_passwordConfirm);
-        final Button changePasswordButton = findViewById(R.id.profile_button_changePassword);
-
-        mImageView = findViewById(R.id.profile_imageview_pfp);
-        mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
-
-        ProfilePictureManager.setProfilePicture(this, mImageView, 8);
-
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String oldPassword = oldPasswordEditText.getText().toString();
-                String newPassword = newPasswordEditText.getText().toString();
-                String confirmPassword = confirmPasswordEditText.getText().toString();
-                if (newPassword.equals(confirmPassword)) {
-                    askToResetPassword(oldPassword, newPassword);
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (!recyclerView.canScrollVertically(1) && !isLoading) {
-                    receiveprofilePage(amount);
-                }
-            }
-        });
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.profile_swipe_refresh_layout);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                posts.clear();
-                mRecyclerView.getAdapter().notifyDataSetChanged();
-                receiveprofilePage(amount);
-            }
-        });
-
-        receiveprofilePage(amount);
+    public ItemUserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ItemUserViewHolder(
+                LayoutInflater.from(mContext).inflate(R.layout.item_user, parent, false),
+                recyclerViewInterface
+        );
     }
 
     @Override
-    public void onItemClick(int position) {
-        Intent homeActivityIntent = new Intent(ProfileActivity.this, ViewPostActivity.class);
-        homeActivityIntent.putExtra("ID", posts.get(position).getId());
-        homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
-        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
-        homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
-        startActivity(homeActivityIntent);
+    public void onBindViewHolder(@NonNull ItemUserViewHolder holder, int position) {
+        holder.text_fullname.setText(users.get(position).getName() + " " + users.get(position).getFirstname());
+        holder.text_email.setText(users.get(position).getEmail());
+
+        String roleText;
+        switch (users.get(position).getRole()) {
+            case 0: roleText = mContext.getString(R.string.status_student); break;
+            case 1: roleText = mContext.getString(R.string.status_teacher); break;
+            case 2: roleText = mContext.getString(R.string.status_other); break;
+            default: roleText = ""; break;
+        }
+        holder.text_role.setText(roleText);
+
+        holder.button_remove.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setMessage(mActivity.getString(R.string.ui_deleteUserWarning) +
+                    String.format(" %s ?", holder.text_fullname.getText()));
+            builder.setPositiveButton(R.string.ui_yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    int position = holder.getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        String userEmail = users.get(position).getEmail();
+                        DelatedUser user = new DelatedUser(userEmail);
+                        deleteUser(user);
+                        Toast.makeText(mContext, "Account Deleted", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            builder.setNegativeButton(R.string.ui_no, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
+                }
+            });
+            builder.create();
+            builder.show();
+        });
     }
 
-    public static List<ItemPost> convertObjectToList(Object obj) {
-        if (obj != null) {
-            List<ItemPost> list = new ArrayList<>();
-            if (obj.getClass().isArray()) {
-                list = Arrays.asList((ItemPost[]) obj);
-            } else if (obj instanceof Collection) {
-                list = new ArrayList<>((Collection<ItemPost>) obj);
-            }
-            return list;
-        }
-        else {
-            return null;
-        }
-    }
-    public void receiveprofilePage(int amount) {
-        isLoading = true;
+    @Override
+    public int getItemCount() { return users.size(); }
+
+
+    public void deleteUser(DelatedUser user) {
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    String endUrl = "posts/?type=own&amount=" + amount + "&start=" + posts.size();
-                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
+                    String endUrl = "delete_user";
+                    Token.connectToServer(endUrl,"POST", UserStatic.getAccess(),user, DelatedUser.class,null, null);
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            posts.addAll(receivedPosts);
-                            mRecyclerView.getAdapter().notifyDataSetChanged();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
                 } catch (Exception e) {
-                    Log.e("ProfileActivity", "Erreur dans ProfileActivity", e);
-                } finally {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    });
-                    isLoading = false;
+                    Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
                 }
-
             }
         }).start();
     }
 
-    public void askToResetPassword(String oldPassword, String newPassword) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    HashMap<String, String> params = new HashMap<String, String>();
-                    params.put("old_password", oldPassword);
-                    params.put("new_password", newPassword);
-                    ResponseData response = (ResponseData) Token.connectToServer("change_password", "POST", UserStatic.getAccess(),params, params.getClass(), ResponseData.class,null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
 }

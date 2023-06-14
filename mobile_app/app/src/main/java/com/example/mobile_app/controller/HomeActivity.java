@@ -28,10 +28,13 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity implements RecyclerViewInterface {
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -119,7 +122,16 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("ID", posts.get(position).getId());
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
-        homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            String rawStringDate = posts.get(position).getDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
+            LocalDate date = LocalDate.parse(rawStringDate, formatter);
+            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+            homeActivityIntent.putExtra("DATE", date.toString());
+        }
+        else {
+            homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
+        }
         homeActivityIntent.putExtra("STATUS", mPostStatus);
 
         startActivity(homeActivityIntent);

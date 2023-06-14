@@ -76,7 +76,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         Log.d("ViewPostActivity", "Voici l'id : " + postId);
 
         // Déclenche le chargement des données du post et des commentaires
-        loadPostAndComments("http://postbee.alwaysdata.net/post/?id=" + postId);
+        // loadPostAndComments("http://postbee.alwaysdata.net/post/?id=" + postId);
 
         // ViewPost a aussi les documents et les commentaires
         // ViewPost.getListdocument()
@@ -85,6 +85,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         // RIM
     }
 
+    /*
     private static class FetchPostTask extends AsyncTask<String, Void, Void> {
 
         private TextView mTextContent;
@@ -95,6 +96,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         public FetchPostTask(TextView textContent) {
             mTextContent = textContent;
         }
+
 
         @Override
         protected Void doInBackground(String... urls) {
@@ -174,6 +176,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         FetchPostTask task = new FetchPostTask(mTextContent);
         task.execute(apiUrl);
     }
+     */
 
 
     public void downloadViewPost(int postId) {
@@ -182,15 +185,19 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                 try {
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
                     mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET", UserStatic.getAccess(),null,null, ViewPost.class,null));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (mViewPost != null) {
                                 Log.d("ViewPostActivity", "Post content received successfully");
                                 mTextContent.setText(mViewPost.getText());
-                                if (mViewPost.getListcomment() != null) {
+                                if (mViewPost.getComments() != null) {
                                     comments.clear();
-                                    comments.addAll(mViewPost.getListcomment());
+                                    comments.addAll(mViewPost.getComments());
                                     mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
@@ -199,8 +206,6 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                             }
                         }
                     });
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
