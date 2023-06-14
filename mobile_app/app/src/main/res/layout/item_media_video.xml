@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center">
 
-    <ImageView
+    <VideoView
         android:layout_margin="@dimen/gap_item"
-        android:id="@+id/itemMediaImage_imageView"
+        android:id="@+id/itemMediaImage_videoView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true" />
