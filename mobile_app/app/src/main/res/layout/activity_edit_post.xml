@@ -19,12 +19,112 @@
             android:layout_height="wrap_content"
             android:text="@string/placeholder_username"/>
 
-        <EditText style="@style/TextAppearance.Material3.BodyLarge"
+        <EditText
             android:id="@+id/editpost_edittext_content"
+            style="@style/TextAppearance.Material3.BodyLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:hint="@string/hint_content"
-            android:layout_marginTop="20dp" />
+            android:minHeight="48dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_part">
+            <Button
+                android:id="@+id/editpost_button_picture"
+                style="@style/ButtonActionBorder"
+                android:background="@drawable/border_button"
+                app:backgroundTint="@null"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/baseline_image_24"
+                android:drawableTint="@color/ensisa_yellow"
+                android:text="@string/ui_addPicture"
+                app:cornerRadius="12dp" />
+
+                <Button
+                    android:id="@+id/editpost_button_video"
+                    android:drawableTop="@drawable/round_video_library_24"
+                    android:drawableTint="@color/ensisa_yellow"
+                    app:backgroundTint="@null"
+                    style="@style/ButtonActionBorder"
+                    android:background="@drawable/border_button"
+                    android:layout_marginStart="@dimen/gap_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/ui_addVideo"
+                    app:cornerRadius="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/image_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp"
+            android:gravity="center">
+
+            <LinearLayout
+                android:id="@+id/doc_image_1_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp">
+
+                <ImageView
+                    android:id="@+id/doc_image_1"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/default_profile_image" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/doc_image_2_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/doc_image_2"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal"
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/doc_image_3_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/doc_image_3"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <Button style="@style/ButtonAction"
+            android:id="@+id/edit_post_button_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="16dp"
+            android:text="Upload a photo" />
 
         <Button style="@style/ButtonAction"
             android:id="@+id/editpost_button_submit"

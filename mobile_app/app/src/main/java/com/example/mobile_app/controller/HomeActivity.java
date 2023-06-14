@@ -29,6 +29,7 @@ import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -123,10 +124,13 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFirstname());
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             String rawStringDate = posts.get(position).getDate();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
-            LocalDate date = LocalDate.parse(rawStringDate, formatter);
+            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
             Log.d("HomeActivity","Conversion de la date : "+date.toString());
-            homeActivityIntent.putExtra("DATE", date.toString());
+            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+            homeActivityIntent.putExtra("DATE", date.format(formatter2).toString());
         }
         else {
             homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
