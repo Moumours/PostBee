@@ -19,12 +19,44 @@
             android:layout_height="wrap_content"
             android:text="@string/placeholder_username"/>
 
-        <EditText style="@style/TextAppearance.Material3.BodyLarge"
+        <EditText
             android:id="@+id/editpost_edittext_content"
+            style="@style/TextAppearance.Material3.BodyLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:hint="@string/hint_content"
-            android:layout_marginTop="20dp" />
+            android:minHeight="48dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_part">
+            <Button
+                android:id="@+id/editpost_button_picture"
+                style="@style/ButtonActionBorder"
+                android:background="@drawable/border_button"
+                app:backgroundTint="@null"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:drawableTop="@drawable/baseline_image_24"
+                android:drawableTint="@color/ensisa_yellow"
+                android:text="@string/ui_addPicture"
+                app:cornerRadius="12dp" />
+
+                <Button
+                    android:id="@+id/editpost_button_video"
+                    android:drawableTop="@drawable/round_video_library_24"
+                    android:drawableTint="@color/ensisa_yellow"
+                    app:backgroundTint="@null"
+                    style="@style/ButtonActionBorder"
+                    android:background="@drawable/border_button"
+                    android:layout_marginStart="@dimen/gap_item"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="@string/ui_addVideo"
+                    app:cornerRadius="12dp" />
+        </LinearLayout>
 
         <Button style="@style/ButtonAction"
             android:id="@+id/editpost_button_submit"
