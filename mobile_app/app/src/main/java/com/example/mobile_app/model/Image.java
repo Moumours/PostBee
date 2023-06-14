@@ -11,6 +11,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class Image extends Document {
+    private String image;
     private int width;
     private int height;
 

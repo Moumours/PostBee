@@ -13,6 +13,7 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKey;
 
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
 import com.google.gson.Gson;
 
@@ -25,42 +26,42 @@ import java.util.HashMap;
 
 
 public class TokenActivity extends AppCompatActivity {
-    private Token mToken = new Token(null,null);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPreferences = Token.getEncryptedSharedPreferences(TokenActivity.this);
-        mToken.setAccess(sharedPreferences.getString("token_access", "null or does not exist"));
-        mToken.setRefresh(sharedPreferences.getString("token_refresh", "null or does not exist"));
-        Log.d("TokenActivity","Token access démarrage appli : "+mToken.getAccess());
-        Log.d("TokenActivity","Token refresh démarrage appli : "+mToken.getRefresh());
-        if (!(mToken.getAccess().equals("null or does not exist"))){
+        String token_refresh = (sharedPreferences.getString("token_refresh", "null or does not exist"));
+        if (!(token_refresh.equals("null or does not exist"))){
             Log.d("TokenActivity","Token found, updating token...");
             new Thread(new Runnable() {
                 public void run() {
+                    User user = null;
                     try {
-                        UserStatic.setAccess(mToken.getAccess());
-                        UserStatic.setRefresh(mToken.getRefresh());
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("refresh", mToken.getRefresh());
-                        mToken = (Token.class).cast(Token.connectToServer("refresh_token","POST",mToken.getAccess(),params,params.getClass(), Token.class,null));
-
-                        if (mToken != null){
-                            Log.d("TokenActivity","Token update successful");
-                            //Stocke les infos du token de manière sécurisée
-                            Token.storeToken(TokenActivity.this,mToken);
-
-                            // Token réactualisé --> on peut passer directement à homeactivity
-                            Intent i = new Intent(TokenActivity.this, HomeActivity.class);
-                            i.putExtra("TOKEN_ACCESS",mToken.getAccess());
-                            startActivity(i);
-                        }
-                        else {
-                            Log.d("TokenActivity","Token update failed ");
-                            startActivity(new Intent(TokenActivity.this, LoginActivity.class));
-                        }
+                        params.put("refresh", token_refresh);
+                        user = (User.class).cast(Token.connectToServer("refresh_token", "POST", null, params, params.getClass(), User.class, null));
                     } catch (Exception e) {
                         e.printStackTrace();
+                    } finally {
+                        if (user != null) {
+                            Log.d("LoginActivity", "Sauvegarde des tokens et mise à jour des variables statiques");
+                            Token.storeToken(TokenActivity.this, new Token(user.getAccess(), user.getRefresh()));
+                            UserStatic.setAccess(user.getAccess());
+                            UserStatic.setRefresh(user.getRefresh());
+                            UserStatic.setFirst_name(user.getFirst_name());
+                            UserStatic.setLast_name(user.getLast_name());
+                            UserStatic.setEmail(user.getEmail());
+                            UserStatic.setEnsisaGroup(user.getEnsisaGroup());
+                            UserStatic.setProfile_picture(user.getProfile_picture());
+                            UserStatic.setIs_staff(user.getIs_staff());
+                            Log.d("TokenActivity", "Token update successful");
+
+                            // Token réactualisé --> on peut passer directement à homeactivity
+                            startActivity(new Intent(TokenActivity.this, HomeActivity.class));
+                        } else {
+                            Log.d("TokenActivity", "Token update failed ");
+                            startActivity(new Intent(TokenActivity.this, LoginActivity.class));
+                        }
                     }
                 }
             }).start();
