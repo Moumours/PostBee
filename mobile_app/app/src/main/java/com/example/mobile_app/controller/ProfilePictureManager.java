@@ -1,12 +1,23 @@
 package com.example.mobile_app.controller;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.text.Layout;
 import android.widget.ImageView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.mobile_app.R;
+import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.item_pfp.ProfilePictureAdapter;
+import com.example.mobile_app.model.item_post.ItemPostAdapter;
 
 public class ProfilePictureManager {
+
+    public static final int PFP_AMOUNT = 15;
+
     public static void setProfilePicture(Context context, ImageView imageView, int pfpId) {
         int profilePicture;
         switch (pfpId) {

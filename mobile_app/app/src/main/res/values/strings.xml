@@ -71,4 +71,5 @@
     <string name="ui_deleteCommentWarning">Êtes-vous sûr de vouloir supprimer ce commentaire ?</string>
     <string name="ui_writeComment">Ecrire un commentaire</string>
     <string name="ui_postComment">Publier un commentaire</string>
+    <string name="ui_changePfp">Changer d\'image de profil</string>
 </resources>

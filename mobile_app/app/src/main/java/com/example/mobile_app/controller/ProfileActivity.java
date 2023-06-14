@@ -1,10 +1,13 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +22,7 @@ import com.example.mobile_app.model.Author;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.item_pfp.ProfilePictureAdapter;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.google.gson.Gson;
@@ -60,18 +64,23 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
 
         Intent i = getIntent();
         mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
+        mImageView.setOnClickListener(v -> {
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_pfp);
+            RecyclerView recyclerView = dialog.findViewById(R.id.pfpdialog_recyclerView);
+            recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+            recyclerView.setAdapter(new ProfilePictureAdapter(this, this, dialog));
+            dialog.show();
+        });
 
-        changePasswordButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String oldPassword = oldPasswordEditText.getText().toString();
-                String newPassword = newPasswordEditText.getText().toString();
-                String confirmPassword = confirmPasswordEditText.getText().toString();
-                if (newPassword.equals(confirmPassword)) {
-                    askToResetPassword(oldPassword, newPassword);
-                } else {
-                    Toast.makeText(ProfileActivity.this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
-                }
+        changePasswordButton.setOnClickListener(v -> {
+            String oldPassword = oldPasswordEditText.getText().toString();
+            String newPassword = newPasswordEditText.getText().toString();
+            String confirmPassword = confirmPasswordEditText.getText().toString();
+            if (newPassword.equals(confirmPassword)) {
+                askToResetPassword(oldPassword, newPassword);
+            } else {
+                Toast.makeText(ProfileActivity.this, "Les mots de passe ne correspondent pas", Toast.LENGTH_SHORT).show();
             }
         });
 
