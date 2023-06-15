@@ -16,8 +16,7 @@
 | Plateforme     | Version minimale |
 | -------------- | ---------------- |
 | Android        | 7 et supérieur   |
-| Django         | 4.2.2            |![logo]()
-
+| Django         | 4.2.2            |
 | Rest_Framework | 3.14.0           |
 
 ## Fonctionnalités
