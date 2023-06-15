@@ -10,10 +10,10 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
@@ -21,7 +21,6 @@ from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework.parsers import MultiPartParser
 from django.utils.html import strip_tags
-from django.conf.urls.static import static
 from django.contrib.staticfiles import finders
 from email.mime.image import MIMEImage
 from django.urls import reverse
@@ -38,16 +37,14 @@ import requests as req
 
 class IndexView(APIView):
     def get(self, request, format=None):
-        return Response({'message': 'Hello, world!'}, status=status.HTTP_200_OK)
+        return redirect('https://github.com/Marc-Proux/PostBee')
 
 class LoginView(APIView):
     serializer_class = UserSerializer
     def post(self, request, format=None):
-        # print("Data :"+str(request.data))
+
         email = request.data.get('email')
         password = request.data.get('password')
-        # print("Email :"+str(email))
-        # print("Password :"+str(password))
 
         user = authenticate(request, email=email, password=password)
         if user is not None:
@@ -78,10 +75,7 @@ class CustumTokenRefreshView(APIView):
             return Response({'error': 'Invalid refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
 
         token = dict(token.data)
-        # print('token: ', token)
         access_token = token['access']
-        # print(access_token)
-        # récupération des données de l'utilisateur en tuilisant le token et GetProfileView
 
         reverse_url = reverse('get_user')
         url = ('https' if request.is_secure() else 'http')+'://' + get_current_site(request).domain + reverse_url
@@ -101,8 +95,6 @@ class RegisterView(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
             print("Data :"+str(request.data))
-            # json_data = json.loads(request.body)
-            # print(json_data)
             oldAccount = Account.objects.filter(email=request.data.get('email')).first()
             if oldAccount and oldAccount.is_active==False:
                 oldAccount.delete()
@@ -118,10 +110,10 @@ class RegisterView(APIView):
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
-                errors = {field: errors[0] for field, errors in form.errors.items()}
+                errors = json.loads(form.errors.as_json())
                 response_data = {
                     'success': 'False',
-                    'message': 'Formulaire invalide'
+                    'errors': errors[list(errors.keys())[0]][0]['message']
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
         else:
@@ -167,14 +159,11 @@ class ActivateAccount(APIView):
             user = None
 
         if user is not None and account_activation_token.check_token(user, token):
-            # print("I will activate the user account: " + user.username)
             user.is_active = True
             user.save()
 
-            # print("Thank you for your email confirmation. Now you can login to your account.")
             return render(request, 'api_postBee/registerComplete.html')
         else:
-            # print("Activation link is invalid!")
             return Response({'message': 'Activation link is invalid!'}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -190,10 +179,7 @@ class PostList(ReadOnlyModelViewSet):
         amount = int(self.request.query_params.get('amount', 5)) + int(start)
         
 
-        # queryset get the amount of post from the start
-        # User is staff status and filter moderate is true
         if type == 'moderate' and self.request.user.is_staff:
-            # print('Moderate is true and user is staff')
             queryset = queryset.filter(status='0').order_by('-date')[int(start):int(amount)]
 
         elif type == 'own':
@@ -218,9 +204,7 @@ class PostDetail(ReadOnlyModelViewSet):
         if id is None:
             return Response({'error': 'Post ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         queryset = get_object_or_404(Post.objects.all(), id=id)
-        # print("Post status : " + queryset.status)
         if not queryset.status == '1' and (not self.request.user.is_staff or queryset.author != self.request.user):
-            # print('Post not found')
             return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
         return queryset
     
@@ -231,24 +215,19 @@ class PostDetail(ReadOnlyModelViewSet):
         
 class PublishPost(APIView):
     permission_classes = [IsAuthenticated]
-    # print("Publishing")
     parser_classes = [MultiPartParser]
 
     def post(self, request, format=None):
-        # print("Publishing")
         if request.method == 'POST':
             serializer = PostPublishSerializer(data=request.data)
             if serializer.is_valid():
-                # print("serializer : " + str(serializer))
                 serializer.save(author = request.user)
-                # serializer.save(author = Account.objects.get(email="marc.proux@uha.fr"))
                 response_data = {
                     'success': 'True',
                     'message': 'Post publié avec succès'
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
-                # print("Serializer not valid")
                 response_data = {
                     'success': 'False',
                     'errors': 'Erreur de publication'
@@ -272,9 +251,7 @@ class PublishComment(APIView):
             if serializer.is_valid():
                 content = serializer.validated_data['text']
                 post_id = serializer.validated_data['post'].id
-                # print('id = ' + str(post_id))
-                user = request.user  # Assuming authentication is configured and user is available in the request
-                # user = Account.objects.get(email="marc.proux@uha.fr")
+                user = request.user
                 post = Post.objects.get(id=post_id)
                 if post is None or post.status == '0' or post.status == '2':
                     return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
@@ -304,7 +281,6 @@ class ApprovePost(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            # print("request.data : " + str(request.data))
             serializer = ApprovePostSerializer(data=request.data)
             if not self.request.user.is_staff:
                 return Response({'error': 'You are not authorized to perform this action.'}, status=403)
@@ -316,8 +292,8 @@ class ApprovePost(APIView):
                 post = get_object_or_404(Post, id=id, status='0')
 
                 if approve_status == 'true':
-                    post.status = '1'  # Approve the post
-                    post.date = timezone.now()  # Set the date to now
+                    post.status = '1'
+                    post.date = timezone.now()  
                     post.save()
                     return Response({'success': 'True', 'message': 'Post approuvé avec succès'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
                 else:
@@ -406,7 +382,6 @@ class DeleteComment(APIView):
             if not self.request.user.is_staff:
                 return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             if serializers.is_valid():
-                # print(request.data)
                 id = request.data.get('id')
                 if id is None:
                     return Response({'error': 'Comment ID is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -458,7 +433,7 @@ class LogoutView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 @require_GET
-@cache_control(max_age=60 * 60 * 24, immutable=True, public=True)  # one day
+@cache_control(max_age=60 * 60 * 24, immutable=True, public=True)
 def favicon(request: HttpRequest) -> HttpResponse:
     file = (settings.BASE_DIR / "static" / "favicon.png").open("rb")
     return FileResponse(file)
@@ -527,7 +502,6 @@ class ResetPasswordConfirm(APIView):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
-            # print("user = " + str(user))
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         
@@ -555,7 +529,6 @@ class UsersLists(ReadOnlyModelViewSet):
         return queryset.order_by(F('last_name').asc(nulls_last=True))[int(start):int(amount)]
     
     def list(self, request, *args, **kwargs):
-        # print("list")
         if not self.request.user.is_staff:
             return Response({'success': 'False', 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         queryset = self.filter_queryset(self.get_queryset())
@@ -567,7 +540,6 @@ class ChangePassword(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            # print("Changement de mdp pour " + str(request.user.email))
             serializer = ChangePasswordSerializer(data=request.data)
             if serializer.is_valid():
                 user = self.request.user

@@ -14,9 +14,6 @@ class AttachmentInline(admin.TabularInline):
     model = Attachment
     extra = 0
 
-
-
-# Customizing the admin page for Account and display in it the Post that the user has created
 class AccountAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'ensisaGroup', "_posts")
 
