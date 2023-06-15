@@ -15,7 +15,6 @@ import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UserStatic;
-
 import java.util.List;
 
 public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
@@ -26,8 +25,6 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
     List<ItemUser> users;
 
     private String mTokenAccess = UserStatic.access;
-
-    private int position;
 
     public ItemUserAdapter(List<ItemUser> users, Activity activity, RecyclerViewInterface recyclerViewInterface) {
         this.users = users;
@@ -87,30 +84,25 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
                     String.format(" %s ?", holder.text_fullname.getText()));
             builder.setPositiveButton(R.string.ui_yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    int currentPosition = holder.getAdapterPosition();
+                    int position = holder.getAdapterPosition();
 
-                    if (currentPosition != RecyclerView.NO_POSITION) {
-                        String userEmail = users.get(currentPosition).getEmail();
+                    if (position != RecyclerView.NO_POSITION) {
+                        String userEmail = users.get(position).getEmail();
                         DelatedUser user = new DelatedUser(userEmail);
                         Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
                         deleteUser(user);
-                        Toast.makeText(mContext, "Compte supprimé", Toast.LENGTH_SHORT).show();
-
-                        // Supprimer l'utilisateur de la liste
-                        users.remove(currentPosition);
-                        notifyItemRemoved(currentPosition);
-                        notifyItemRangeChanged(currentPosition, getItemCount());
+                        Toast.makeText(mContext, "Account Deleted", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
             builder.setNegativeButton(R.string.ui_no, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
+                    // User cancelled the dialog
                 }
             });
             builder.create();
             builder.show();
         });
-
 
         holder.button_addModo.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -118,17 +110,14 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
                     String.format(" %s ?", holder.text_fullname.getText()));
             builder.setPositiveButton(R.string.ui_yes, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
-                    int currentPosition = holder.getAdapterPosition();
+                    int position = holder.getAdapterPosition();
 
-                    if (currentPosition != RecyclerView.NO_POSITION) {
-                        String userEmail = users.get(currentPosition).getEmail();
+                    if (position != RecyclerView.NO_POSITION) {
+                        String userEmail = users.get(position).getEmail();
                         DelatedUser user = new DelatedUser(userEmail);
                         Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
                         addModo(user);
                         Toast.makeText(mContext, "Modérateur ajouté", Toast.LENGTH_SHORT).show();
-
-                        users.get(currentPosition).setIs_staff("true");
-                        notifyItemChanged(currentPosition);
                     }
                 }
             });
@@ -139,7 +128,6 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
             builder.create();
             builder.show();
         });
-
     }
 
     @Override
@@ -160,14 +148,12 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
         }).start();
     }
 
-    public void addModo(DelatedUser user) {
+    public void addModo (DelatedUser user) {
         new Thread(new Runnable() {
             public void run() {
                 try {
                     String endUrl = "add_modo";
                     Token.connectToServer(endUrl,"POST", UserStatic.getAccess(),user, DelatedUser.class,null, null);
-                    users.get(position).setIs_staff("true");
-                    updateUsersList(users);
                 } catch (Exception e) {
                     Log.e("HomeActivity", "Erreur dans receiveHomePage", e);
                 }
@@ -175,9 +161,5 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
         }).start();
     }
 
-    public void updateUsersList(List<ItemUser> updatedUsers) {
-        users = updatedUsers;
-        notifyDataSetChanged();
-    }
 
 }
