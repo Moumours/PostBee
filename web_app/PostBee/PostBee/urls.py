@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework import routers
 from api_postBee import views as core_views
 from django.conf import settings
@@ -31,7 +30,6 @@ postRouter.register('profile_picture', ProfilPictureView, basename='userDetail')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh_token', CustumTokenRefreshView.as_view(), name='token_refresh'),
     path('login', LoginView.as_view(), name='login'),
     path('register', RegisterView.as_view(), name='register'),
