@@ -21,7 +21,7 @@ import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.exifinterface.media.ExifInterface;
+//import androidx.exifinterface.media.ExifInterface;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
