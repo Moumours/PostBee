@@ -15,7 +15,6 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework_simplejwt.views import (TokenObtainPairView, TokenRefreshView)
 from rest_framework import routers
 from api_postBee import views as core_views
 from django.conf import settings
@@ -27,10 +26,10 @@ postRouter = routers.SimpleRouter()
 postRouter.register('posts', PostList, basename='post')
 postRouter.register('post', PostDetail, basename='postDetail')
 postRouter.register('users', UsersLists, basename='usersLists')
+postRouter.register('profile_picture', ProfilPictureView, basename='userDetail')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('refresh_token', CustumTokenRefreshView.as_view(), name='token_refresh'),
     path('login', LoginView.as_view(), name='login'),
     path('register', RegisterView.as_view(), name='register'),
@@ -49,4 +48,5 @@ urlpatterns = [
     path('reset_password', ResetPassword.as_view(), name='reset_password'),
     path('reset_password/confirm/<uidb64>/<token>', ResetPasswordConfirm.as_view(), name='reset_password_confirm'),
     path('change_password', ChangePassword.as_view(), name='change_password'),
+    path('delete_post', DeletePostView.as_view(), name='delete_post'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

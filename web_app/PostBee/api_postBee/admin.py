@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Account, Post, Comment, Image, Video
+from .models import Account, Post, Comment, Attachment
 
 class ProfileInline(admin.TabularInline):
     model = Post
@@ -10,17 +10,10 @@ class CommentInline(admin.TabularInline):
     model = Comment
     extra = 0
 
-class ImageInline(admin.TabularInline):
-    model = Image
+class AttachmentInline(admin.TabularInline):
+    model = Attachment
     extra = 0
 
-class VideoInline(admin.TabularInline):
-    model = Video
-    extra = 0
-
-
-
-# Customizing the admin page for Account and display in it the Post that the user has created
 class AccountAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'ensisaGroup', "_posts")
 
@@ -54,14 +47,13 @@ class PostAdmin(admin.ModelAdmin):
     )
 
     inlines = [
-        ImageInline,
-        VideoInline,
+
         CommentInline,
+        AttachmentInline,
     ]
 
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment)
-admin.site.register(Image)
-admin.site.register(Video)
+admin.site.register(Attachment)

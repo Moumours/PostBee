@@ -29,7 +29,8 @@ public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostVali
     public ItemPostValidationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new ItemPostValidationViewHolder(
                 LayoutInflater.from(mContext).inflate(R.layout.item_post_validation, parent, false),
-                recyclerViewInterface
+                recyclerViewInterface,
+                this // Pass the adapter
         );
     }
 
@@ -45,5 +46,11 @@ public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostVali
     @Override
     public int getItemCount() {
         return posts.size();
+    }
+
+    public void removeItem(int position) {
+        posts.remove(position);
+        notifyItemRemoved(position);
+        notifyDataSetChanged(); // Notify RecyclerView about the change in data
     }
 }

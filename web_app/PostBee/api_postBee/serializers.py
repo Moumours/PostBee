@@ -23,6 +23,7 @@ class AuthorSerializer(ModelSerializer):
 
 class PostListSerializer(ModelSerializer):
     author = AuthorSerializer()
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
 
     class Meta:
         model = Post
@@ -37,52 +38,38 @@ class PostListSerializer(ModelSerializer):
 
 class CommentSerializer(ModelSerializer):
     author = AuthorSerializer()
+    date = serializers.DateTimeField(format="%Y-%m-%dT%H:%M:%S%z")
 
     class Meta:
         model = Comment
         fields = ['text', 'author', 'date']
 
-class ImageSerializer(ModelSerializer):
+class AttachmentSerializer(ModelSerializer):
 
+    def get_type(self, obj):
+        type = obj.url.name.split('.')[-1]
+        if type in ['jpg', 'jpeg', 'png']:
+            return 'image'
+        elif type in ['mp4', 'avi', 'mov']:
+            return 'video'
+        elif type in ['gif']:
+            return 'gif'
+
+    type = SerializerMethodField()
     class Meta:
-        model = Image
-        fields = ['image']
-
-    # def to_representation(self, instance):
-    #     image_data = open(instance.image.path, "rb").read()
-    #     encoded_image = base64.b64encode(image_data).decode('utf-8')
-    #     image_extension = instance.image.name.split('.')[-1]
-    #     return {
-    #         'data': encoded_image,
-    #         'extension': image_extension
-    #     }
-
-class VideoSerializer(ModelSerializer):
-
-    class Meta:
-        model = Video
-        fields = ['video']
-
-    # def to_representation(self, instance):
-    #     video_data = open(instance.video.path, "rb").read()
-    #     encoded_video = base64.b64encode(video_data).decode('utf-8')
-    #     video_extension = instance.video.name.split('.')[-1]
-    #     return {
-    #         'data': encoded_video,
-    #         'extension': video_extension
-    #     }
+        model = Attachment
+        fields = ['url', 'type']
 
 class PostDetailSerializer(ModelSerializer):
     comments = SerializerMethodField()
-    images = ImageSerializer(many=True)
-    videos = VideoSerializer(many=True)
+    attachments = AttachmentSerializer(many=True)
 
     class Meta:
         model = Post
-        fields = ['text', 'comments', 'images', 'videos']
+        fields = ['text', 'comments', 'attachments']
 
     def get_comments(self, obj):
-        comments = obj.comments.order_by('-date')  # Sort comments by date in descending order
+        comments = obj.comments.order_by('-date')
         serializer = CommentSerializer(comments, many=True)
         return serializer.data
 
@@ -195,31 +182,19 @@ class FileExtensionValidator:
         if extension not in self.allowed_extensions:
             raise ValidationError(f"Only {', '.join(self.allowed_extensions)} file extensions are allowed.")
 
+
 class PostPublishSerializer(serializers.Serializer):
 
-    def validate_images(self, images):
-        image_extensions = ['jpeg', 'jpg', 'png']  # Example list of allowed image extensions
-        validate_extension = FileExtensionValidator(allowed_extensions=image_extensions)
+    def validate_attachments(self, attachments):
+        attachments_extensions = ['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mov', 'gif']
+        validate_extension = FileExtensionValidator(allowed_extensions=attachments_extensions)
 
-        for image in images:
-            validate_extension(image)
+        for attachment in attachments:
+            validate_extension(attachment)
 
-        return images
+        return attachments
 
-    def validate_videos(self, videos):
-        video_extensions = ['mp4', 'avi']  # Example list of allowed video extensions
-        validate_extension = FileExtensionValidator(allowed_extensions=video_extensions)
-
-        for video in videos:
-            validate_extension(video)
-
-        return videos
-
-    images = serializers.ListField(
-        child=serializers.ImageField(allow_empty_file=False, use_url=False),
-        write_only=True, required=False, allow_null=True
-    )
-    videos = serializers.ListField(
+    attachments = serializers.ListField(
         child=serializers.FileField(allow_empty_file=False, use_url=False),
         write_only=True, required=False, allow_null=True
     )
@@ -228,48 +203,14 @@ class PostPublishSerializer(serializers.Serializer):
 
     class Meta:
         model = Post
-        fields = ['title', 'text', 'images', 'videos']
+        fields = ['title', 'text', 'attachments']
 
     def create(self, validated_data):
-        images_data = validated_data.pop('images', [])
-        videos_data = validated_data.pop('videos', [])
+        attachments_data = validated_data.pop('attachments', [])
 
         post = Post.objects.create(**validated_data)
 
-        for image_data in images_data:
-            Image.objects.create(post=post, image=image_data)
-
-        for video_data in videos_data:
-            Video.objects.create(post=post, video=video_data)
+        for attachment_data in attachments_data:
+            Attachment.objects.create(post=post, url=attachment_data)
             
         return post
-
-# class PostPublishSerializer(serializers.Serializer):
-#     images = serializers.ListField(
-#         child=serializers.ImageField(allow_empty_file=False, use_url=False),
-#         write_only=True, required=False, allow_null=True
-#     )
-#     videos = serializers.ListField(
-#         child=serializers.FileField(allow_empty_file=False, use_url=False),
-#         write_only=True, required=False, allow_null=True
-#     )
-#     title = serializers.CharField(max_length=100)
-#     text = serializers.CharField()
-
-#     class Meta:
-#         model = Post
-#         fields = ['title', 'text', 'images', 'videos']
-
-#     def create(self, validated_data):
-#         images_data = validated_data.pop('images', [])
-#         videos_data = validated_data.pop('videos', [])
-
-#         post = Post.objects.create(**validated_data)
-
-#         for image_data in images_data:
-#             Image.objects.create(post=post, image=image_data)
-
-#         for video_data in videos_data:
-#             Video.objects.create(post=post, video=video_data)
-            
-#         return post

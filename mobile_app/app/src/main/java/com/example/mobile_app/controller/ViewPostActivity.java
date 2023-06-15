@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,14 +24,27 @@ import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.Document;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.Video;
 import com.example.mobile_app.model.ViewPost;
+import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
 import com.example.mobile_app.model.item_media.ImageAdapter;
 import com.example.mobile_app.model.item_media.VideoAdapter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -117,6 +132,8 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                         } catch (Exception e) {
                             Log.d("ViewPostActivity","Erreur lors de l'upload d'un commentaire");
                             Log.d("ViewPostActivity","Erreur : "+e);
+                        }finally {
+                            downloadViewPost(postId);
                         }
                     }
                 }).start();

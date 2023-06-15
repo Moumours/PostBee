@@ -24,10 +24,13 @@ import com.example.mobile_app.model.item_post.ItemPostValidationAdapter;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 public class ModerationPostsValidationFragment extends Fragment implements RecyclerViewInterface {
     private List<ItemPost> posts = new ArrayList<ItemPost>();
@@ -98,6 +101,18 @@ public class ModerationPostsValidationFragment extends Fragment implements Recyc
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     String endUrl = "posts/?type=moderate&amount=" + amount + "&start=" + posts.size();
                     final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET", UserStatic.getAccess(),null,null,null,type));
+                    for (ItemPost itemPost : receivedPosts){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            String rawStringDate = itemPost.getDate();
+                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                            itemPost.setDate(date.format(formatter2).toString());
+                        }
+                    }
 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
