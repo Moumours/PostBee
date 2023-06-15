@@ -42,10 +42,6 @@
         android:gravity="start"
         android:text="@string/ui_settings" />
 
-    <Button style="@style/DefaultListItemButton"
-        android:id="@+id/settings_button_changeTheme"
-        android:text="@string/setting_changeTheme"/>
-
     <View style="@style/Divider"/>
 
     <Button style="@style/DefaultListItemButton"
