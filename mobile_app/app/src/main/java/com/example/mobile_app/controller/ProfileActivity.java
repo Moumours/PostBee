@@ -1,11 +1,13 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobile_app.R;
@@ -21,6 +24,7 @@ import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.ResponseData;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.UserStatic;
+import com.example.mobile_app.model.item_pfp.ProfilePictureAdapter;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostAdapter;
 import com.google.gson.Gson;
@@ -53,10 +57,22 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
     private int amount = 5;
     private boolean isLoading = false;
 
+    private TextView mLastName;
+    private TextView mFirstName;
+    private TextView mEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mLastName = findViewById(R.id.profile_textview_name);
+        mFirstName = findViewById(R.id.profile_textview_firstname);
+        mEmail = findViewById(R.id.profile_textview_email);
+        mLastName.setText(UserStatic.getLast_name());
+        mFirstName.setText(UserStatic.getFirst_name());
+        mEmail.setText(UserStatic.getEmail());
+
 
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
@@ -72,7 +88,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
-        ProfilePictureManager.setProfilePicture(ProfileActivity.this, mImageView, 8);
+        ProfilePictureManager.setProfilePicture(ProfileActivity.this, mImageView, UserStatic.getProfile_picture());
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,5 +194,15 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                 }
             }
         }).start();
+    }
+
+    public void clickImage(View view) {
+        Log.d("ProfileActivity","Image cliquée");
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.dialog_pfp);
+        RecyclerView recyclerView = dialog.findViewById(R.id.pfpdialog_recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 3));
+        recyclerView.setAdapter(new ProfilePictureAdapter(this, this, dialog));
+        dialog.show();
     }
 }
