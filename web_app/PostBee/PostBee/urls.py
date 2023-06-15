@@ -27,6 +27,7 @@ postRouter = routers.SimpleRouter()
 postRouter.register('posts', PostList, basename='post')
 postRouter.register('post', PostDetail, basename='postDetail')
 postRouter.register('users', UsersLists, basename='usersLists')
+postRouter.register('profile_picture', ProfilPictureView, basename='userDetail')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -49,4 +50,5 @@ urlpatterns = [
     path('reset_password', ResetPassword.as_view(), name='reset_password'),
     path('reset_password/confirm/<uidb64>/<token>', ResetPasswordConfirm.as_view(), name='reset_password_confirm'),
     path('change_password', ChangePassword.as_view(), name='change_password'),
+    path('delete_post', DeletePostView.as_view(), name='delete_post'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

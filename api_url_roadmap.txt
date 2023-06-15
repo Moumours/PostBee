@@ -58,6 +58,7 @@ Register :
 
 
 Liste des postes :
+	token requis
 	postbee.alwaysdata.net/posts/?amount=x&type={moderate, own}&start=x
 
 	amount correspond aux nombres de postes demandé
@@ -70,10 +71,12 @@ Liste des postes :
 
 
 Détail d'un poste :
+	token requis
 	postbee.alwaysdata.net/post/?id=x
 	id correspond à l'id du poste à afficher
 
 Publier un post :
+	token requis
 	postbee.alwaysdata.net/publish
 	json requis :
 	{
@@ -82,6 +85,7 @@ Publier un post :
 	}
 
 Publier un commentaire :
+	token requis
 	postbee.alwaysdata.net/comment
 	json requis :
 	{
@@ -90,6 +94,7 @@ Publier un commentaire :
 	}
 
 Approuver un post :
+	token requis
 	postbee.alwaysdata.net/approve
 	json requis :
 	{
@@ -98,13 +103,15 @@ Approuver un post :
 	}
 
 Supprimer un utilisateur :
+	token requis
 	postbee.alwaysdata.net/delete_user
 	json requis :
 	{
-		"id": "int"
+		"email": 'string'
 	}
 
 Faire d'un utilisateur un modérateur :
+	token requis
 	postbee.alwaysdata.net/add_modo
 	json requis :
 	{
@@ -112,6 +119,7 @@ Faire d'un utilisateur un modérateur :
 	}
 
 Supprimer un commentaire :
+	token requis
 	postbee.alwaysdata.net/delete_comment
 	json requis :
 	{
@@ -119,10 +127,12 @@ Supprimer un commentaire :
 	}
 
 Obtenir les informations d'un utilisateur :
+	token requis
 	postbee.alwaysdata.net/user_info
 
 
 Déconnextion :
+	token requis
 	postbee.alwaysdata.net/logout
 
 Mot de passe oublié :
@@ -133,6 +143,7 @@ Mot de passe oublié :
 	}
 
 Changer de mot de passe :
+	token requis
 	postbee.alwaysdata.net/change_password
 	json requis :
 	{
@@ -155,7 +166,24 @@ Changer de mot de passe :
 		}
 
 Liste des utilisateurs :
+	token requis
 	postbee.alwaysdata.net/users/?amount=x&start=x
 
 	amount correspond aux nombres d'utilisateurs demandé
 	start correspond à l'index de début de recherche
+
+Changer la photo de profil :
+	token requis
+	postbee.alwaysdata.net/change_profile_picture
+	json requis :
+	{
+		"id(celui de la photo)": "int"
+	}
+
+	Retour :
+		Succès :
+		{
+			"success": true,
+			"message": "string"
+			HTTP 200
+		}
