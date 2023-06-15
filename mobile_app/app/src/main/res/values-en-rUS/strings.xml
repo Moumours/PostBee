@@ -9,6 +9,8 @@
     <string name="ui_warning">Warning!</string>
     <string name="ui_delete">Delete</string>
     <string name="ui_cancel">Cancel</string>
+    <string name="ui_addPicture">Add a picture</string>
+    <string name="ui_addVideo">Add a video</string>
     <string name="ui_sendPost">Publish post</string>
     <string name="ui_deleteAccountWarning">"Are you sure you want to delete your account?\nYour posts will remain but they will be anonymized. "</string>
     <string name="ui_deleteUserWarning">Are you sure you want to delete the user</string>
@@ -46,4 +48,7 @@
     <string name="ui_deleteCommentWarning">Are you sure you want to delete this comment?</string>
     <string name="ui_writeComment">Write a comment</string>
     <string name="ui_postComment">Post comment</string>
+    <string name="ui_changePfp">Change profile picture</string>
+    <string name="ui_addModoConfirmation">Are you sure you want to add this user as a moderator ?</string>
+    <string name="ui_addMedia">Add media</string>
 </resources>

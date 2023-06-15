@@ -15,24 +15,30 @@ import java.util.List;
 
 public class ViewPost {
     private String text;
-    private List<Document> listdocument;
-    private List<com.example.mobile_app.model.Comment> listcomment;
-
-    public ViewPost(String text, List<Document> listdocument, List<Comment> listcomment) {
-        this.text = text;
-        this.listdocument = listdocument;
-        this.listcomment = listcomment;
-    }
+    private List<com.example.mobile_app.model.Comment> comments;
+    private List<Document> attachments;
 
     public String getText() {
         return text;
     }
 
-    public List<Document> getListdocument() {
-        return listdocument;
+    public void setText(String text) {
+        this.text = text;
     }
 
-    public List<Comment> getListcomment() {
-        return listcomment;
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<Document> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<Document> attachments) {
+        this.attachments = attachments;
     }
 }

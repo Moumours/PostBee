@@ -24,40 +24,58 @@
             android:layout_marginBottom="4dp"
             android:text="@string/placeholder_username" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
+            android:id="@+id/itemuser_textview_email"
+            android:textStyle="italic"
+            android:textColor="@color/white"
+            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_email"/>
 
-            <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
-                android:id="@+id/itemuser_textview_email"
-                android:textStyle="italic"
-                android:textColor="@color/white"
-                android:layout_gravity="start"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/placeholder_email"/>
+        <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
+            android:id="@+id/itemuser_textview_role"
+            android:textStyle="italic"
+            android:gravity="end"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_role"/>
 
-            <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
-                android:id="@+id/itemuser_textview_role"
-                android:textStyle="italic"
-                android:gravity="end"
-                android:textColor="@color/white"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="@string/placeholder_role"/>
-        </LinearLayout>
+        <TextView style="@style/TextAppearance.Material3.ActionBar.Subtitle"
+            android:id="@+id/itemuser_textview_staff"
+            android:textStyle="italic"
+            android:gravity="end"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text='@{itemUser.is_staff ? "Modérateur" : "Utilisateur"}' />
 
     </LinearLayout>
-    <ImageButton style="@style/ButtonActionBorder"
-        android:id="@+id/itemuser_button_remove"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginStart="@dimen/gap_item"
-        android:background="@drawable/border_button"
-        app:backgroundTint="@null"
-        android:src="@drawable/round_delete_24"
-        app:tint="@color/ensisa_yellow"
-        />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ImageButton style="@style/ButtonActionBorder"
+            android:id="@+id/itemuser_button_addModo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/border_button"
+            app:backgroundTint="@null"
+            android:src="@drawable/round_person_add_alt_1_24"
+            android:foregroundTint="@color/ensisa_yellow"
+            app:tint="@color/ensisa_yellow" />
+        <ImageButton style="@style/ButtonActionBorder"
+            android:id="@+id/itemuser_button_remove"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/gap_item"
+            android:background="@drawable/border_button"
+            app:backgroundTint="@null"
+            android:src="@drawable/round_delete_24"
+            android:foregroundTint="@color/ensisa_yellow"
+            app:tint="@color/ensisa_yellow" />
+    </LinearLayout>
 </LinearLayout>

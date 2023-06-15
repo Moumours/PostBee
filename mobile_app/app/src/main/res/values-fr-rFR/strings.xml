@@ -9,6 +9,8 @@
     <string name="ui_warning">Attention !</string>
     <string name="ui_delete">Supprimer</string>
     <string name="ui_cancel">Annuler</string>
+    <string name="ui_addPicture">Ajouter une image</string>
+    <string name="ui_addVideo">Ajouter une vidéo</string>
     <string name="ui_sendPost">Publier le post</string>
     <string name="ui_deleteAccountWarning">Êtes-vous sûr de vouloir supprimer votre compte ?\nVos posts seront concervés mais anonymisés.</string>
     <string name="ui_deleteUserWarning">Êtes-vous sûr de vouloir supprimer l\'utilisateur</string>
@@ -46,4 +48,7 @@
     <string name="ui_deleteCommentWarning">Êtes-vous sûr de vouloir supprimer ce commentaire ?</string>
     <string name="ui_writeComment">Ecrire un commentaire</string>
     <string name="ui_postComment">Publier un commentaire</string>
+    <string name="ui_changePfp">Changer d\'image de profil</string>
+    <string name="ui_addModoConfirmation">Êtes-vous sûr de vouloir ajouter cet utilisateur comme modérateur ?</string>
+    <string name="ui_addMedia">Ajouter un média</string>
 </resources>

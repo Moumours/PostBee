@@ -3,18 +3,13 @@ package com.example.mobile_app.controller;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import com.example.mobile_app.R;
-import com.google.gson.Gson;
-
-import android.util.Log;
+import com.example.mobile_app.model.ResponseData;
+import com.example.mobile_app.model.Token;
+import com.example.mobile_app.model.UserStatic;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.content.Intent;
-
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 
 public class MdpActivity extends AppCompatActivity {
@@ -35,8 +30,7 @@ public class MdpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String email = editTextEmail.getText().toString();
                 askToRestPassword(email);
-
-                Toast.makeText(MdpActivity.this, "Le mot de passe a été réinitialisé.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MdpActivity.this, "Un email de réinitialisation de mot de passe vous a été envoyé", Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -46,34 +40,13 @@ public class MdpActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
                 try {
-
-                    URL url = new URL("http://postbee.alwaysdata.net/reset_password");
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-
-                    Gson gson = new Gson();
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("email", email);
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    os.writeBytes(gson.toJson(params));
-
-                    Log.d("ResetPassword", "Email JSON sent to the server: " + gson.toJson(params)); // Add this line
-
-                    os.flush();
-                    os.close();
-
-                    Log.d("ResetPassword", "HTTP response code: " + conn.getResponseCode()); // Add this line
-
-                    conn.disconnect();
+                    ResponseData response = (ResponseData) Token.connectToServer("reset_password", "POST", UserStatic.getAccess(),params, params.getClass(), null,null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-
 }

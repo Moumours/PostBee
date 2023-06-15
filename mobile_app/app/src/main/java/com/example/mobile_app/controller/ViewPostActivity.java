@@ -1,25 +1,36 @@
 package com.example.mobile_app.controller;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.Comment;
+import com.example.mobile_app.model.Document;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
+import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.ViewPost;
 import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
+import com.example.mobile_app.model.item_media.MediaAdapter;
+import com.example.mobile_app.model.item_post.ItemPost;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -30,23 +41,33 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ViewPostActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-    TextView mTextTitle;
-    TextView mTextContent;
-    TextView mTextAuthor;
-    TextView mTextDate;
-    ViewPost mViewPost;
+    private TextView mTextTitle, mTextContent, mTextAuthor, mTextDate;
+    private ViewPost mViewPost;
 
-    String mTokenAccess;
+    private String mTokenAccess;
     private List<Comment> comments = new ArrayList<>();
-    RecyclerView mCommentsRecyclerView;
+    private RecyclerView mCommentsRecyclerView;
+
+    private List<Drawable> drawables = new ArrayList<>();
+    private RecyclerView mMediaRecyclerView;
+
+    Button mButtonComment;
+    EditText mTextComment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,34 +78,65 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mTextAuthor = findViewById(R.id.viewpost_textview_author);
         mTextDate = findViewById(R.id.viewpost_textview_date);
         mTextContent = findViewById(R.id.viewpost_textview_content);
-
+        //Commentaires
+        mButtonComment = findViewById(R.id.viewpost_button_postcomment);
+        mTextComment = findViewById(R.id.viewpost_edittext_writecomment);
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
+
+        mMediaRecyclerView = findViewById(R.id.viewpost_recyclerview_media);
+        mMediaRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mMediaRecyclerView.setAdapter(new MediaAdapter(drawables));
+
 
         Intent i = getIntent();
         int postId = i.getIntExtra("ID", 0);
         downloadViewPost(postId);
 
-        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, getApplicationContext(), this));
+        mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(ViewPostActivity.this));
+        mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, ViewPostActivity.this, this));
 
         mTextTitle.setText(i.getStringExtra("TITLE"));
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
-        mTextDate.setText(i.getStringExtra("DATE") + " " + getIntent().getIntExtra("ID", 0));
+        mTextDate.setText(i.getStringExtra("DATE"));
 
         mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
 
         Log.d("ViewPostActivity", "Voici l'id : " + postId);
 
         // Déclenche le chargement des données du post et des commentaires
-        loadPostAndComments("http://postbee.alwaysdata.net/post/?id=" + postId);
+        // loadPostAndComments("http://postbee.alwaysdata.net/post/?id=" + postId);
 
         // ViewPost a aussi les documents et les commentaires
         // ViewPost.getListdocument()
         // ViewPost.getListcomment()
 
         // RIM
+        mButtonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            String commentText = mTextComment.getText().toString();
+                            HashMap<String, String> params = new HashMap<String, String>();
+                            params.put("text", commentText);
+                            params.put("post", Integer.toString(postId));
+                            Token.connectToServer("comment", "POST", UserStatic.getAccess(), params, params.getClass(), null, null);
+                        } catch (Exception e) {
+                            Log.d("ViewPostActivity","Erreur lors de l'upload d'un commentaire");
+                            Log.d("ViewPostActivity","Erreur : "+e);
+                        }finally {
+                            downloadViewPost(postId);
+                        }
+                    }
+                }).start();
+
+            }
+        });
     }
 
+    /*
     private static class FetchPostTask extends AsyncTask<String, Void, Void> {
 
         private TextView mTextContent;
@@ -95,6 +147,7 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         public FetchPostTask(TextView textContent) {
             mTextContent = textContent;
         }
+
 
         @Override
         protected Void doInBackground(String... urls) {
@@ -174,24 +227,90 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         FetchPostTask task = new FetchPostTask(mTextContent);
         task.execute(apiUrl);
     }
+     */
 
 
     public void downloadViewPost(int postId) {
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    /*
+                    try {
+                        Log.d("ViewPostActivity","Tentative de récupération d'image");
+                        InputStream is = (InputStream) new URL("http://postbee.alwaysdata.net/media/images/halo.jpeg").getContent();
+                        Drawable d = Drawable.createFromStream(is, "src name");
+                        Log.d("ViewPostActivity","Image reçue on la set sur le post");
+                        mPicture.setImageDrawable(d);
+                        Log.d("ViewPostActivity","Image set");
+                    } catch (Exception e) {
+                        Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                        Log.d("ViewPostActivity","Erreur : "+e);
+                    }
+                     */
+                    /*
+                    try {
+
+                        File imgFile = new File("/storage/emulated/0/Pictures/IMG_20230614_152524.jpg");
+
+                        if (imgFile.exists()) {
+
+                            Drawable d = Drawable.createFromPath("/storage/emulated/0/Pictures/IMG_20230614_152524.jpg");
+                            mPicture.setImageDrawable(d);
+
+                        }
+                    }
+                    catch (Exception e){
+                        Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                        Log.d("ViewPostActivity","Erreur : "+e);
+                    }
+                    */
+
                     URL url = new URL("http://postbee.alwaysdata.net/post/?id=" + postId);
                     mViewPost = (ViewPost.class).cast(Token.connectToServer("post/?id=" + postId,"GET", UserStatic.getAccess(),null,null, ViewPost.class,null));
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             if (mViewPost != null) {
                                 Log.d("ViewPostActivity", "Post content received successfully");
                                 mTextContent.setText(mViewPost.getText());
-                                if (mViewPost.getListcomment() != null) {
+                                if (mViewPost.getComments() != null) {
+                                    for (Comment comment : mViewPost.getComments()){
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                            String rawStringDate = comment.getDate();
+                                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                                            comment.setDate(date.format(formatter2).toString());
+                                        }
+                                    }
+                                    //Ajout des commentaires
                                     comments.clear();
-                                    comments.addAll(mViewPost.getListcomment());
+                                    comments.addAll(mViewPost.getComments());
                                     mCommentsRecyclerView.getAdapter().notifyDataSetChanged();
+                                    //Ajout des medias
+                                }
+                                if (mViewPost.getAttachments() != null){
+                                    Log.d("ViewPostActivity", "Liste d'images reçue");
+                                    drawables.clear();
+                                    for(Document doc : mViewPost.getAttachments()){
+                                        try {
+                                            //if (doc.getType().equals("image")) {
+                                            if (true) {
+                                                Thread t = retreivePicture(doc.getUrl());
+                                                t.start();
+                                                t.join();
+                                            }
+                                        } catch (Exception e) {
+                                        }
+                                    }
+                                    mMediaRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
                             else{
@@ -199,11 +318,27 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                             }
                         }
                     });
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
+    }
+
+    public Thread retreivePicture(String url) throws InterruptedException {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.d("ViewPostActivity","Tentative de récupération d'image Url : "+url);
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    Drawable d = Drawable.createFromStream(is, "src name");
+                    Log.d("ViewPostActivity","Image reçue");
+                    drawables.add(d);
+                } catch (Exception e) {
+                    Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                    Log.d("ViewPostActivity","Erreur : "+e);
+                }
+            }
+        });
     }
 
     @Override

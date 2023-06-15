@@ -1,83 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:background="@drawable/border_list_item"
     android:padding="12dp"
     android:layout_marginTop="@dimen/gap_item"
     android:layout_marginHorizontal="@dimen/gap_part" >
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_weight="1"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_weight="1">
 
-        <TextView style="@style/TextAppearance.Material3.ActionBar.Title"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/profile_0" />
+
+        <TextView
             android:id="@+id/itemcomment_textview_username"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:text="@string/placeholder_username" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView style="@style/TextAppearance.Material3.BodyMedium"
-                android:id="@+id/itemcomment_textview_role"
-                android:textStyle="bold|italic"
-                android:textColor="@color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/placeholder_role" />
-
-            <TextView style="@style/TextAppearance.Material3.BodyMedium"
-                android:id="@+id/itemcomment_textview_date"
-                android:textStyle="bold|italic"
-                android:textColor="@color/white"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="right"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:text="@string/placeholder_date" />
-        </LinearLayout>
-
-        <TextView style="@style/TextAppearance.Material3.BodyLarge"
-            android:id="@+id/itemcomment_textview_content"
-            android:textColor="@color/white"
+            style="@style/TextAppearance.Material3.ActionBar.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/placeholder_comment"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical">
-
-        <ImageButton style="@style/ButtonActionBorder"
-            android:id="@+id/itemcomment_button_edit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/round_edit_24"
-            app:tint="@color/ensisa_yellow"
-            android:textSize="20sp"
+            android:text="@string/placeholder_username"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
             android:layout_marginStart="@dimen/gap_item"
-            android:background="@android:color/transparent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageButton
-            android:id="@+id/itemcomment_button_remove"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/round_delete_24"
-            app:tint="@color/ensisa_yellow"
-            android:background="@android:color/transparent"/>
-    </LinearLayout>
+
+        <TextView
+            android:id="@+id/itemcomment_textview_date"
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/placeholder_role"
+            android:textColor="@color/white"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            android:layout_marginStart="@dimen/gap_item"/>
+
+        <TextView
+            android:id="@+id/itemcomment_textview_role"
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="@string/placeholder_date"
+            android:textColor="@color/white"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageButton
+                android:id="@+id/itemcomment_button_edit"
+                style="@style/ButtonActionBorder"
+                android:layout_width="40dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="@dimen/gap_item"
+                android:background="@android:color/transparent"
+                android:src="@drawable/round_edit_24"
+                android:textSize="20sp"
+                app:tint="@color/ensisa_yellow"
+                android:visibility="gone"
+                />
+
+            <ImageButton
+                android:id="@+id/itemcomment_button_remove"
+                android:layout_width="40dp"
+                android:layout_height="28dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/round_delete_24"
+                app:tint="@color/ensisa_yellow" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/itemcomment_textview_content"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_item"
+        android:text="Ceci est un test pour voir comment est-ce qu'un commentaire plus long s'afficherait."
+        android:textColor="@color/white" />
 </LinearLayout>

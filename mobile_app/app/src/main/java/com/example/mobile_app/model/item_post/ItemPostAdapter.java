@@ -36,7 +36,7 @@ public class ItemPostAdapter extends RecyclerView.Adapter<ItemPostViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ItemPostViewHolder holder, int position) {
         holder.text_title.setText(posts.get(position).getTitle());
-        holder.text_author.setText(posts.get(position).getAuthor().getFirstname());
+        holder.text_author.setText(posts.get(position).getAuthor().getFull_name());
         holder.text_date.setText(posts.get(position).getDate());
     }
 

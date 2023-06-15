@@ -41,17 +41,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/gap_part" />
         </LinearLayout>
+
+        <!-- Images et vidéos -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_media"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <TextView style="@style/TextAppearance.Material3.TitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/gap_part"
             android:text="@string/ui_comments"
             android:textStyle="bold"/>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/viewpost_recyclerview_comments"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/gap_item"/>
 
         <EditText style="@style/DefaultTextField"
             android:id="@+id/viewpost_edittext_writecomment"
@@ -65,6 +67,13 @@
             android:layout_marginHorizontal="@dimen/gap_part"
             android:text="@string/ui_postComment"
             android:layout_marginTop="@dimen/gap_item" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_comments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/gap_item"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

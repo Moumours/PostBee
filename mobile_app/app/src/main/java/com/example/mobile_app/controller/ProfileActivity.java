@@ -3,6 +3,7 @@ package com.example.mobile_app.controller;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -31,23 +32,37 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity implements RecyclerViewInterface {
+
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ImageView mImageView;
     private RecyclerView mRecyclerView;
     private List<ItemPost> posts = new ArrayList<ItemPost>();
 
-    private String type = "self";
-    String mTokenAccess;
+    private String mTokenAccess = UserStatic.access;
+    private int amount = 5;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+        ItemPostAdapter adapter = new ItemPostAdapter(posts, ProfileActivity.this, this);
+        mRecyclerView.setAdapter(adapter);
+
 
         final EditText oldPasswordEditText = findViewById(R.id.profile_edittext_oldPassword);
         final EditText newPasswordEditText = findViewById(R.id.profile_edittext_newPassword);
@@ -57,11 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
-        ProfilePictureManager.setProfilePicture(this, mImageView, 8);
-
-        Intent i = getIntent();
-        mTokenAccess = i.getStringExtra("TOKEN_ACCESS");
-
+        ProfilePictureManager.setProfilePicture(ProfileActivity.this, mImageView, 8);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,17 +87,19 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
             }
         });
 
-        /*
-        Author me = new Author("Jean", "Sériens");
-        posts.add(new ItemPost(0,"Mon 1er article", me, "01/01/2000"));
-        posts.add(new ItemPost(4,"Titre d'article 2", me, "02/02/2002"));
-        posts.add(new ItemPost(7,"Titre d'article 3", me, "03/03/2003"));
-        posts.add(new ItemPost(9,"Titre d'article 4", me, "12/10/2015"));
+        /*mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.profile_swipe_refresh_layout);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                posts.clear();
+                mRecyclerView.getAdapter().notifyDataSetChanged();
+                receiveprofilePage(amount);
+            }
+        });*/
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
-         */
-        //receiveprofilePage();
+        receiveprofilePage(amount);
     }
 
     @Override
@@ -94,54 +107,59 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         Intent homeActivityIntent = new Intent(ProfileActivity.this, ViewPostActivity.class);
         homeActivityIntent.putExtra("ID", posts.get(position).getId());
         homeActivityIntent.putExtra("TITLE", posts.get(position).getTitle());
-        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFullname());
+        homeActivityIntent.putExtra("AUTHOR", posts.get(position).getAuthor().getFull_name());
         homeActivityIntent.putExtra("DATE", posts.get(position).getDate());
         startActivity(homeActivityIntent);
     }
 
-    public void receiveprofilePage() {
+    public static List<ItemPost> convertObjectToList(Object obj) {
+        if (obj != null) {
+            List<ItemPost> list = new ArrayList<>();
+            if (obj.getClass().isArray())
+                list = Arrays.asList((ItemPost[]) obj);
+            else if (obj instanceof Collection)
+                list = new ArrayList<>((Collection<ItemPost>) obj);
+            return list;
+        }else
+            return null;
+    }
+    public void receiveprofilePage(int amount) {
+        isLoading = true;
         new Thread(new Runnable() {
             public void run() {
                 try {
-                    Log.d("ProfileActivity", "Début de la méthode receiveprofilePage");
-
-                    URL url = new URL("http://postbee.alwaysdata.net/posts/?type=" + type);
-                    HttpURLConnection django = (HttpURLConnection) url.openConnection();
-
-                    django.setRequestMethod("GET");
-                    django.setRequestProperty("Accept","application/json");
-
-                    BufferedReader in = new BufferedReader(new InputStreamReader(django.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-
-                    String rawPostData = response.toString();
-                    Log.d("ProfileActivity", "Données brutes reçues : " + rawPostData);
-
-                    Gson gson = new Gson();
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
-                    final List<ItemPost> receivedPosts = gson.fromJson(rawPostData, type);
-
+                    String endUrl = "posts/?type=own&amount=" + amount + "&start=" + posts.size();
+                    final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
+                    for (ItemPost itemPost : receivedPosts){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            String rawStringDate = itemPost.getDate();
+                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                            itemPost.setDate(date.format(formatter2).toString());
+                        }
+                    }
                     runOnUiThread(new Runnable() {
-                        @SuppressLint("NotifyDataSetChanged")
                         @Override
                         public void run() {
-                            posts.clear();
                             posts.addAll(receivedPosts);
                             mRecyclerView.getAdapter().notifyDataSetChanged();
+                            //mSwipeRefreshLayout.setRefreshing(false);
                         }
                     });
-
-                    Log.d("ProfileActivity", "Nombre de posts reçus : " + posts.size());
-
-                    django.disconnect();
                 } catch (Exception e) {
-                    Log.e("ProfileActivity", "Erreur dans receiveHomePage", e);
+                    Log.e("ProfileActivity", "Erreur dans ProfileActivity", e);
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    });isLoading = false;
                 }
             }
         }).start();
@@ -154,8 +172,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                     HashMap<String, String> params = new HashMap<String, String>();
                     params.put("old_password", oldPassword);
                     params.put("new_password", newPassword);
-                    ResponseData response;
-                    response = (ResponseData) Token.connectToServer("change_password", "POST", UserStatic.getAccess(),params, params.getClass(), ResponseData.class,null);
+                    ResponseData response = (ResponseData) Token.connectToServer("change_password", "POST", UserStatic.getAccess(),params, params.getClass(), ResponseData.class,null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

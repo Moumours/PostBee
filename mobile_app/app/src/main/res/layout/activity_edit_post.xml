@@ -19,12 +19,36 @@
             android:layout_height="wrap_content"
             android:text="@string/placeholder_username"/>
 
-        <EditText style="@style/TextAppearance.Material3.BodyLarge"
+        <EditText
             android:id="@+id/editpost_edittext_content"
+            style="@style/TextAppearance.Material3.BodyLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:hint="@string/hint_content"
-            android:layout_marginTop="20dp" />
+            android:minHeight="48dp" />
+
+        <Button
+            android:id="@+id/editpost_button_addMedia"
+            style="@style/ButtonActionBorder"
+            android:background="@drawable/border_button"
+            app:backgroundTint="@null"
+            android:layout_marginTop="@dimen/gap_part"
+            android:layout_width="match_parent"
+            android:drawableTop="@drawable/icon_media"
+            android:drawableTint="@color/ensisa_yellow"
+            android:text="@string/ui_addMedia"
+            app:cornerRadius="12dp" />
+
+        <LinearLayout
+            android:id="@+id/media_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Add TextViews here to display selected media URIs -->
+
+        </LinearLayout>
 
         <Button style="@style/ButtonAction"
             android:id="@+id/editpost_button_submit"
