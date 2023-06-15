@@ -21,6 +21,15 @@ import android.widget.VideoView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.exifinterface.media.ExifInterface;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /*
 import com.bumptech.glide.Glide;
@@ -28,6 +37,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.mobile_app.controller.EditPostActivity;
  */
 
+import java.io.File;
 import java.io.IOException;
 
 public class GestionMedias {
@@ -77,6 +87,35 @@ public class GestionMedias {
             e.printStackTrace();
             Toast.makeText(activity, "Échec du chargement de l'image", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static void jpegConverter(String inputImagePath, String outputImagePath) {
+        try {
+            // Charger l'image d'entrée
+            Bitmap inputBitmap = BitmapFactory.decodeFile(inputImagePath);
+
+            // Créer une nouvelle image en utilisant le type de format Bitmap ARGB_8888
+            Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap.getWidth(), inputBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+
+            // Copier l'image d'entrée vers l'image de sortie en utilisant un Canvas
+            Canvas canvas = new Canvas(outputBitmap);
+            canvas.drawBitmap(inputBitmap, 0, 0, null);
+
+            // Enregistrer l'image de sortie en format JPEG
+            File outputFile = new File(outputImagePath);
+            FileOutputStream outputStream = new FileOutputStream(outputFile);
+            outputBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        } catch (IOException ex) {
+            System.out.println("Erreur lors de la conversion de l'image : " + ex.getMessage());
+        }
+    }
+
+    public static String getConvertedImagePath(File imageFile) {
+        String outputImagePath = imageFile.getAbsolutePath() + "_converted.jpeg";
+        jpegConverter(imageFile.getAbsolutePath(), outputImagePath);
+        return outputImagePath;
     }
 
     private static void displayVideo(AppCompatActivity activity, Uri videoUri, ImageView videoView) {
