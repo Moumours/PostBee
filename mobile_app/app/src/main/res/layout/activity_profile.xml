@@ -18,6 +18,7 @@
         android:focusableInTouchMode="true">
 
         <ImageView
+            android:contentDescription="Logos de l'Ensisa et de postbee"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -44,6 +45,7 @@
             android:layout_height="match_parent">
 
             <ImageView
+                android:contentDescription="Image de profil"
                 android:id="@+id/profile_imageview_pfp"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
@@ -54,8 +56,9 @@
                 app:layout_constraintDimensionRatio="H,1:1"
                 tools:srcCompat="@tools:sample/avatars"
                 android:clickable="true"
-                android:onClick="clickImage"
-                />
+                android:focusable="true"
+                android:onClick="clickImage" />
+
 
             <TextView style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:id="@+id/profile_textview_name"
