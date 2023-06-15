@@ -51,4 +51,5 @@
     <string name="ui_changePfp">Changer d\'image de profil</string>
     <string name="ui_addModoConfirmation">Êtes-vous sûr de vouloir ajouter cet utilisateur comme modérateur ?</string>
     <string name="ui_addMedia">Ajouter un média</string>
+    <string name="ui_about">À propos</string>
 </resources>

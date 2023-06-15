@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/LayoutDefault"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".controller.AboutActivity"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:layout_width="250dp"
+        android:layout_height="200dp"
+        android:src="@drawable/logo_line"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView style="@style/TextAppearance.Material3.TitleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="Projet de fin de S6 à l'ENSISA\nUne application android de blog développée en 10 jours" />
+
+    <TextView style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_partBig"
+        android:gravity="center"
+        android:text=
+            "AIT BOUSERHANE Maria\nALBERTINI Pierre\nBENCHAHBOUN Rim\nDALBERTO Isaac\nCAUX Alexandre\nDURUKAN Ayhan\nPROUX Marc" />
+
+    <TextView style="@style/TextAppearance.Material3.BodyMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_partBig"
+        android:gravity="center"
+        android:text='Accéder au GitHub :' />
+
+    <TextView style="@style/TextAppearance.Material3.BodyMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text='https://github.com/Marc-Proux/PostBee' />
+
+</LinearLayout>

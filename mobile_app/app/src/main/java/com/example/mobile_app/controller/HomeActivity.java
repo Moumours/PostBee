@@ -64,33 +64,11 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
 
-        mAddPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, EditPostActivity.class));
-            }
-        });
+        mAddPostButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, EditPostActivity.class)));
+        mProfileButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ProfileActivity.class)));
+        mModerationButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, ModerationActivity.class)));
+        mSettingsButton.setOnClickListener(v -> startActivity(new Intent(HomeActivity.this, SettingsActivity.class)));
 
-        mProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, ProfileActivity.class));
-            }
-        });
-
-        mModerationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, ModerationActivity.class));
-            }
-        });
-
-        mSettingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeActivity.this, SettingsActivity.class));
-            }
-        });
         receiveHomePage(amount);
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {

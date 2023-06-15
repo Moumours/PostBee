@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.mobile_app.R;
@@ -16,7 +17,7 @@ import com.example.mobile_app.model.item_user.ItemUserAdapter;
 public class SettingsActivity extends AppCompatActivity {
 
     private Context mContext;
-    private Button mLogoutButton, mAccountDeleteButton;
+    private Button mAboutButton, mLogoutButton, mAccountDeleteButton;
     private String mTokenAccess = UserStatic.access;
 
     @Override
@@ -25,9 +26,11 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         mContext = getApplicationContext();
+        mAboutButton = findViewById(R.id.settings_button_about);
         mLogoutButton = findViewById(R.id.settings_button_logout);
         mAccountDeleteButton = findViewById(R.id.settings_button_accountDelete);
 
+        mAboutButton.setOnClickListener(v -> startActivity(new Intent(SettingsActivity.this, AboutActivity.class)));
         mLogoutButton.setOnClickListener(v -> logout());
 
         mAccountDeleteButton.setOnClickListener(v -> {
