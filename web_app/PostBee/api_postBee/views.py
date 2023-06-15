@@ -19,7 +19,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
-from rest_framework.parsers import MultiPartParser
+from rest_framework.parsers import MultiPartParser, JSONParser
 from django.utils.html import strip_tags
 from django.contrib.staticfiles import finders
 from email.mime.image import MIMEImage
@@ -244,21 +244,18 @@ class PublishPost(APIView):
 
 class PublishComment(APIView):
     permission_classes = [IsAuthenticated]
+    # post comment with emoji so UTF-8
+    parser_classes = [JSONParser]
 
     def post(self, request, format=None):
         if request.method == 'POST':
+            print("content-type : "+str(request.content_type))
             serializer = CommentPublishSerializer(data=request.data)
             if serializer.is_valid():
-                content = serializer.validated_data['text']
-                post_id = serializer.validated_data['post'].id
-                user = request.user
-                post = Post.objects.get(id=post_id)
-                if post is None or post.status == '0' or post.status == '2':
-                    return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
-                comment = Comment.objects.create(post=post, author=user, text=content)
+                serializer.save(author = request.user)
                 response_data = {
                     'success': 'True',
-                    'message': 'Commentaire publié avec succès',
+                    'message': 'Commentaire publié avec succès'
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
@@ -267,7 +264,7 @@ class PublishComment(APIView):
                     'errors': 'Erreur de publication'
                 }
                 return Response(response_data, status=status.HTTP_202_ACCEPTED)
-        
+            
         else:
             response_data = {
                 'success': 'False',

@@ -186,7 +186,7 @@ class FileExtensionValidator:
 class PostPublishSerializer(serializers.Serializer):
 
     def validate_attachments(self, attachments):
-        attachments_extensions = ['jpg', 'jpeg', 'png', 'mp4', 'avi', 'mov', 'gif']
+        attachments_extensions = ['jpg', 'jpeg', 'png', 'mp4', 'avi', 'gif']
         validate_extension = FileExtensionValidator(allowed_extensions=attachments_extensions)
 
         for attachment in attachments:
