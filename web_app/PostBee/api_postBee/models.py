@@ -78,22 +78,35 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
     
-class Image(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='images/')
+# class Image(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')
+#     image = models.ImageField(upload_to='images/')
+
+#     def __str__(self):
+#         return self.image.name
+
+# class Video(models.Model):
+#     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='videos')
+#     video = models.FileField(upload_to='videos/')
+
+#     def __str__(self):
+#         return self.video.name
+
+# @receiver(models.signals.post_delete, sender=Image)
+# def post_save_image(sender, instance, *args, **kwargs):
+#     if instance.image:
+#         if os.path.isfile(instance.image.path):
+#             os.remove(instance.image.path)
+
+class Attachment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='attachments')
+    url = models.FileField(upload_to='attachments/')
 
     def __str__(self):
-        return self.image.name
+        return self.url.name
 
-class Video(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='videos')
-    video = models.FileField(upload_to='videos/')
-
-    def __str__(self):
-        return self.video.name
-
-@receiver(models.signals.post_delete, sender=Image)
-def post_save_image(sender, instance, *args, **kwargs):
-    if instance.image:
-        if os.path.isfile(instance.image.path):
-            os.remove(instance.image.path)
+@receiver(models.signals.post_delete, sender=Attachment)
+def post_save_attachment(sender, instance, *args, **kwargs):
+    if instance.url:
+        if os.path.isfile(instance.url.path):
+            os.remove(instance.url.path)

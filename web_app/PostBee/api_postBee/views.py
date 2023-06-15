@@ -16,7 +16,7 @@ from rest_framework import status
 from django.contrib.auth import authenticate, login, logout
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
 from rest_framework.parsers import MultiPartParser
@@ -24,6 +24,7 @@ from django.utils.html import strip_tags
 from django.conf.urls.static import static
 from django.contrib.staticfiles import finders
 from email.mime.image import MIMEImage
+from django.urls import reverse
 
 from api_postBee.forms import RegisterForm
 from api_postBee.tokens import account_activation_token, password_reset_token
@@ -32,6 +33,7 @@ from api_postBee.serializers import *
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from django.db.models import F
+import requests as req
 
 
 class IndexView(APIView):
@@ -53,8 +55,8 @@ class LoginView(APIView):
             token = LoginView.get_tokens_for_user(user)
             for data in UserSerializer(user).data:
                 token[data] = UserSerializer(request.user).data[data]
-                token['success'] = 'True'
-                token['message'] = 'User logged in successfully'
+            token['success'] = 'True'
+            token['message'] = 'User logged in successfully'
             return Response(token, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Identifiant et mot de passe invalide'}, status=status.HTTP_202_ACCEPTED)
@@ -68,7 +70,6 @@ class LoginView(APIView):
         }
 
 class CustumTokenRefreshView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def post(self, request, format=None):
         token = TokenRefreshView.as_view()(request._request)
@@ -77,9 +78,21 @@ class CustumTokenRefreshView(APIView):
             return Response({'error': 'Invalid refresh token'}, status=status.HTTP_401_UNAUTHORIZED)
 
         token = dict(token.data)
+        # print('token: ', token)
+        access_token = token['access']
+        # print(access_token)
+        # récupération des données de l'utilisateur en tuilisant le token et GetProfileView
 
-        for data in UserSerializer(request.user).data:
-            token[data] = UserSerializer(request.user).data[data]
+        reverse_url = reverse('get_user')
+        url = ('https' if request.is_secure() else 'http')+'://' + get_current_site(request).domain + reverse_url
+        response = req.get(url,
+        headers={'Authorization': f'Bearer {access_token}'})
+
+        if response.status_code == 200:
+            for data in response.json():
+                token[data] = response.json()[data]
+            token['success'] = 'True'
+            token['message'] = 'User logged in successfully'
 
         return Response(token, status=status.HTTP_200_OK)
 
@@ -100,20 +113,20 @@ class RegisterView(APIView):
                 user.save()
                 self.activate_email(request, user)
                 response_data = {
-                    'success': True,
+                    'success': 'True',
                     'message': 'User registration successful.'
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
             else:
                 errors = {field: errors[0] for field, errors in form.errors.items()}
                 response_data = {
-                    'success': False,
+                    'success': 'False',
                     'message': 'Formulaire invalide'
                 }
-                return Response(response_data, status=status.HTTP_202_ACCEPTED)
+                return Response(response_data, status=status.HTTP_200_OK)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -180,7 +193,7 @@ class PostList(ReadOnlyModelViewSet):
         # queryset get the amount of post from the start
         # User is staff status and filter moderate is true
         if type == 'moderate' and self.request.user.is_staff:
-            print('Moderate is true and user is staff')
+            # print('Moderate is true and user is staff')
             queryset = queryset.filter(status='0').order_by('-date')[int(start):int(amount)]
 
         elif type == 'own':
@@ -205,9 +218,9 @@ class PostDetail(ReadOnlyModelViewSet):
         if id is None:
             return Response({'error': 'Post ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         queryset = get_object_or_404(Post.objects.all(), id=id)
-        print("Post status : " + queryset.status)
+        # print("Post status : " + queryset.status)
         if not queryset.status == '1' and (not self.request.user.is_staff or queryset.author != self.request.user):
-            print('Post not found')
+            # print('Post not found')
             return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
         return queryset
     
@@ -218,32 +231,33 @@ class PostDetail(ReadOnlyModelViewSet):
         
 class PublishPost(APIView):
     permission_classes = [IsAuthenticated]
-    print("Publishing")
+    # print("Publishing")
     parser_classes = [MultiPartParser]
 
     def post(self, request, format=None):
-        print("Publishing")
+        # print("Publishing")
         if request.method == 'POST':
             serializer = PostPublishSerializer(data=request.data)
             if serializer.is_valid():
-                print("serializer : " + str(serializer))
+                # print("serializer : " + str(serializer))
                 serializer.save(author = request.user)
                 # serializer.save(author = Account.objects.get(email="marc.proux@uha.fr"))
                 response_data = {
-                    'success': True,
-                }
-                return Response(response_data, status=status.HTTP_201_CREATED)
-            else:
-                print("Serializer not valid")
-                response_data = {
-                    'success': False,
-                    'errors': serializer.errors
+                    'success': 'True',
+                    'message': 'Post publié avec succès'
                 }
                 return Response(response_data, status=status.HTTP_200_OK)
+            else:
+                # print("Serializer not valid")
+                response_data = {
+                    'success': 'False',
+                    'errors': 'Erreur de publication'
+                }
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
             
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)  
@@ -266,20 +280,20 @@ class PublishComment(APIView):
                     return Response({'error': 'Post not found'}, status=status.HTTP_404_NOT_FOUND)
                 comment = Comment.objects.create(post=post, author=user, text=content)
                 response_data = {
-                    'success': True,
-                    'message': 'Comment created successfully.',
+                    'success': 'True',
+                    'message': 'Commentaire publié avec succès',
                 }
-                return Response(response_data, status=status.HTTP_201_CREATED)
+                return Response(response_data, status=status.HTTP_200_OK)
             else:
                 response_data = {
-                    'success': False,
-                    'errors': serializer.errors
+                    'success': 'False',
+                    'errors': 'Erreur de publication'
                 }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
         
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -290,7 +304,7 @@ class ApprovePost(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            print("request.data : " + str(request.data))
+            # print("request.data : " + str(request.data))
             serializer = ApprovePostSerializer(data=request.data)
             if not self.request.user.is_staff:
                 return Response({'error': 'You are not authorized to perform this action.'}, status=403)
@@ -305,20 +319,20 @@ class ApprovePost(APIView):
                     post.status = '1'  # Approve the post
                     post.date = timezone.now()  # Set the date to now
                     post.save()
-                    return Response({'success': True, 'message': 'Post approved successfully.'}, status=200)
+                    return Response({'success': 'True', 'message': 'Post approuvé avec succès'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
                 else:
                     post.status = '2'
                     post.save()
-                    return Response({'success': True, 'message': 'Post rejected successfully.'}, status=200)
+                    return Response({'success': 'True', 'message': 'Post arrchivé avec succès.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
             else:
                 response_data = {
-                    'success': False,
-                    'errors': serializer.errors
+                    'success': 'False',
+                    'errors': 'Erreur de modération'
                 }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -329,25 +343,25 @@ class DeleteUser(APIView):
     def post(self, request, format=None):
         if request.method == 'POST':
             serializers = DeleteAndModoUserSerializer(data=request.data)
-            if not self.request.user.is_staff:
-                return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             
             if serializers.is_valid():
-                id = request.data.get('userId')
-                if id is None:
-                    return Response({'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-                user = get_object_or_404(Account, id=id)
+                email = request.data.get('email')
+                if email is None:
+                    return Response({'error': 'User email is required'}, status=status.HTTP_400_BAD_REQUEST)
+                user = get_object_or_404(Account, email=email)
+                if not user == request.user and user.is_staff:
+                    return Response({'error': 'You are not authorized to perform this action.'}, status=403)
                 user.delete()
-                return Response({'success': True, 'message': 'User deleted successfully.'}, status=200)
+                return Response({'success': 'True', 'message': 'Utilisateur supprimé avec succès'}, status=status.HTTP_200_OK)
             else:
                 response_data = {
-                    'success': False,
-                    'errors': serializers.errors
+                    'success': 'False',
+                    'errors': 'Erreur de suppression'
                 }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -362,24 +376,23 @@ class AddModo(APIView):
                 return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             
             if serializers.is_valid():
-                print(request.data)
-                id = request.data.get('userId')
-                print("id = " + str(id))
+                # print(request.data)
+                email = request.data.get('email')
                 if id is None:
                     return Response({'error': 'User ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-                user = get_object_or_404(Account, id=id)
+                user = get_object_or_404(Account, email=email)
                 user.is_staff = True
                 user.save()
-                return Response({'success': True, 'message': 'User added as moderator successfully.'}, status=200)
+                return Response({'success': 'True', 'message': 'Modérateur ajouté avec succès'}, status=status.HTTP_200_OK)
             else:
                 response_data = {
-                    'success': False,
-                    'errors': serializers.errors
+                    'success': 'False',
+                    'errors': 'Erreur lors de l\'ajout du modérateur'
                 }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -393,19 +406,19 @@ class DeleteComment(APIView):
             if not self.request.user.is_staff:
                 return Response({'error': 'You are not authorized to perform this action.'}, status=403)
             if serializers.is_valid():
-                print(request.data)
+                # print(request.data)
                 id = request.data.get('id')
                 if id is None:
                     return Response({'error': 'Comment ID is required'}, status=status.HTTP_400_BAD_REQUEST)
                 comment = get_object_or_404(Comment, id=id)
                 comment.delete()
-                return Response({'success': True, 'message': 'Comment deleted successfully.'}, status=200)
+                return Response({'success': 'True', 'message': 'Commentaire supprimé avec succès.'}, status=status.HTTP_200_OK)
             else:
                 response_data = {
-                    'success': False,
-                    'errors': serializers.errors
+                    'success': 'False',
+                    'errors': 'Erreur lors de la suppression du commentaire'
                 }
-                return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response_data, status=status.HTTP_202_ACCEPTED)
 
 class UserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -417,7 +430,7 @@ class UserView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
@@ -430,11 +443,19 @@ class LogoutView(APIView):
             token = RefreshToken.for_user(request.user)
             for token in OutstandingToken.objects.filter(user=request.user):
                 _, _ = BlacklistedToken.objects.get_or_create(token=token)
-            return Response({"status": "OK, goodbye, all refresh tokens blacklisted"})
+                response_data = {
+                    'success': 'True',
+                    'message': 'Déconnexion réussie'
+                }
+            return Response(response_data, status=status.HTTP_200_OK)
         refresh_token = self.request.data.get('refresh_token')
         token = RefreshToken(token=refresh_token)
         token.blacklist()
-        return Response({"status": "OK, goodbye"})
+        response_data = {
+            'success': 'True',
+            'message': 'Déconnexion réussie'
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
 @require_GET
 @cache_control(max_age=60 * 60 * 24, immutable=True, public=True)  # one day
@@ -471,13 +492,17 @@ class ResetPassword(APIView):
                         email.attach(image)
 
                     if email.send():
-                        return Response({'success': True, 'message': 'Reset email sent.'}, status=status.HTTP_200_OK)
+                        response_data = {
+                            'success': 'True',
+                            'message': 'Email envoyé.'
+                        }
+                        return Response(response_data, status=status.HTTP_200_OK)
                     else:
                         return Response({'message': 'Reset email not sent.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                 else:
-                    return Response({'success': False, 'errors': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'success': 'False', 'errors': 'User with this email does not exist.'}, status=status.HTTP_400_BAD_REQUEST)
             else:
-                return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'success': 'False', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ResetPasswordConfirm(APIView):
@@ -495,14 +520,14 @@ class ResetPasswordConfirm(APIView):
                 'token': token
             })
         else:
-            return Response({'success': False, 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'success': 'False', 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
     
     def post(self, request, uidb64, token):
         User = Account
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = User.objects.get(pk=uid)
-            print("user = " + str(user))
+            # print("user = " + str(user))
         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
             user = None
         
@@ -514,9 +539,9 @@ class ResetPasswordConfirm(APIView):
                 user.save()
                 return render(request, 'api_postBee/resetComplete.html')
             else:
-                return Response({'success': False, 'errors': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'success': 'False', 'errors': 'Passwords do not match.'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'success': False, 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'success': 'False', 'errors': 'Credentials are invalid'}, status=status.HTTP_400_BAD_REQUEST)
             
 
 class UsersLists(ReadOnlyModelViewSet):
@@ -530,9 +555,9 @@ class UsersLists(ReadOnlyModelViewSet):
         return queryset.order_by(F('last_name').asc(nulls_last=True))[int(start):int(amount)]
     
     def list(self, request, *args, **kwargs):
-        print("list")
+        # print("list")
         if not self.request.user.is_staff:
-            return Response({'success': False, 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response({'success': 'False', 'errors': 'You do not have permission to perform this action.'}, status=status.HTTP_403_FORBIDDEN)
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -542,21 +567,61 @@ class ChangePassword(APIView):
 
     def post(self, request, format=None):
         if request.method == 'POST':
-            print("Changement de mdp pour " + str(request.user.email))
+            # print("Changement de mdp pour " + str(request.user.email))
             serializer = ChangePasswordSerializer(data=request.data)
             if serializer.is_valid():
                 user = self.request.user
                 if user.check_password(serializer.data.get('old_password')):
                     user.set_password(serializer.data.get('new_password'))
                     user.save()
-                    return Response({'success': True, 'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+                    response_data = {
+                        'success': 'True',
+                        'message': 'Mot de passe modifié.'
+                    }
+                    return Response(response_data, status=status.HTTP_200_OK)
                 else:
-                    return Response({'success': False, 'errors': 'Old password is incorrect.'}, status=status.HTTP_202_ACCEPTED)
+                    return Response({'success': 'False', 'errors': 'Mot de passe incorrect.'}, status=status.HTTP_202_ACCEPTED)
             else:
-                return Response({'success': False, 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'success': 'False', 'errors': 'Erreur de mot de passe'}, status=status.HTTP_202_ACCEPTED)
         else:
             response_data = {
-                'success': False,
+                'success': 'False',
+                'errors': 'Invalid request method.'
+            }
+            return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+
+
+class ProfilPictureView(ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        ppID = self.request.query_params.get('id', 0)
+        return ppID
+    
+    def list(self, request, *args, **kwargs):
+        print("Change profil picture")
+        user = self.request.user
+        user.profile_picture = self.get_queryset()
+        user.save()
+        return Response({'success': 'True', 'message': 'Profile picture changed successfully.'}, status=status.HTTP_200_OK)
+        
+
+class DeletePostView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, format=None):
+        if request.method == 'POST':
+            postID = request.data.get('id')
+            post = get_object_or_404(Post, id=postID)
+            if post.author == request.user:
+                post.delete()
+                return Response({'success': 'True', 'message': 'Post supprimé.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'success': 'False', 'errors': 'Impossible de supprimer le post.'}, status=status.HTTP_202_ACCEPTED)
+        else:
+            response_data = {
+                'success': 'False',
                 'errors': 'Invalid request method.'
             }
             return Response(response_data, status=status.HTTP_405_METHOD_NOT_ALLOWED)

@@ -7,7 +7,7 @@ import time
 import io
 from PIL import Image as img
 
-from api_postBee.models import Account, Post, Comment, Image
+from api_postBee.models import Account, Post, Comment
 
 # class LoginViewTest(TestCase):
 #     def setUp(self):
