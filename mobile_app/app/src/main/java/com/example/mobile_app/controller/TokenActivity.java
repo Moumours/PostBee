@@ -40,6 +40,7 @@ public class TokenActivity extends AppCompatActivity {
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("refresh", token_refresh);
                         user = (User.class).cast(Token.connectToServer("refresh_token", "POST", null, params, params.getClass(), User.class, null));
+                        if (user != null) {Log.d("LogInActivity","user : "+ user.getFirst_name() + user.getEmail() + user.getIs_staff() + user.getLast_name());}
                     } catch (Exception e) {
                         e.printStackTrace();
                     } finally {
@@ -53,7 +54,7 @@ public class TokenActivity extends AppCompatActivity {
                             UserStatic.setEmail(user.getEmail());
                             UserStatic.setEnsisaGroup(user.getEnsisaGroup());
                             UserStatic.setProfile_picture(user.getProfile_picture());
-                            UserStatic.setIs_staff(user.getIs_staff());
+                            UserStatic.setIs_staff(user.getIs_staff().toString());
                             Log.d("TokenActivity", "Token update successful");
 
                             // Token réactualisé --> on peut passer directement à homeactivity

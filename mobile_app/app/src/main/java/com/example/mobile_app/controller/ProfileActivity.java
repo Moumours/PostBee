@@ -32,11 +32,14 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class ProfileActivity extends AppCompatActivity implements RecyclerViewInterface {
 
@@ -56,8 +59,8 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         setContentView(R.layout.activity_profile);
 
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ItemPostAdapter adapter = new ItemPostAdapter(posts, this, this);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
+        ItemPostAdapter adapter = new ItemPostAdapter(posts, ProfileActivity.this, this);
         mRecyclerView.setAdapter(adapter);
 
 
@@ -69,7 +72,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
         mImageView = findViewById(R.id.profile_imageview_pfp);
         mRecyclerView = findViewById(R.id.profile_recyclerview_posts);
 
-        ProfilePictureManager.setProfilePicture(this, mImageView, 8);
+        ProfilePictureManager.setProfilePicture(ProfileActivity.this, mImageView, 8);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,7 +97,7 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
             }
         });*/
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(ProfileActivity.this));
         mRecyclerView.setAdapter(new ItemPostAdapter(posts, getApplicationContext(), this));
         receiveprofilePage(amount);
     }
@@ -128,7 +131,18 @@ public class ProfileActivity extends AppCompatActivity implements RecyclerViewIn
                     Type type = new TypeToken<List<ItemPost>>(){}.getType();
                     String endUrl = "posts/?type=own&amount=" + amount + "&start=" + posts.size();
                     final List<ItemPost> receivedPosts = convertObjectToList(Token.connectToServer(endUrl,"GET",mTokenAccess,null,null,null,type));
-
+                    for (ItemPost itemPost : receivedPosts){
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            String rawStringDate = itemPost.getDate();
+                            Log.d("HomeActivity","rawStringDate : "+rawStringDate);
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ", Locale.ENGLISH);
+                            LocalDateTime date = LocalDateTime.parse(rawStringDate, formatter);
+                            Log.d("HomeActivity","Conversion de la date : "+date.toString());
+                            DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm", Locale.FRENCH);
+                            Log.d("HomeActivity","Conversion de la date : "+date.format(formatter2).toString());
+                            itemPost.setDate(date.format(formatter2).toString());
+                        }
+                    }
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
