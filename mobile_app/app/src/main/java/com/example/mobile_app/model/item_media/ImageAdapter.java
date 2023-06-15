@@ -14,20 +14,20 @@ import com.example.mobile_app.R;
 
 import java.util.List;
 
-public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHolder> {
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
 
     private List<Drawable> mDrawables;
 
     //Données de l'adapter
-    public MediaAdapter(List<Drawable> drawables) {
+    public ImageAdapter(List<Drawable> drawables) {
         mDrawables = drawables;
     }
 
     // Référence le type de view que l'on va utiliser
-    public static class MediaViewHolder extends RecyclerView.ViewHolder {
+    public static class ImageViewHolder extends RecyclerView.ViewHolder {
         private final ImageView imageView;
 
-        public MediaViewHolder(@NonNull View itemView) {
+        public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             // Define click listener for the ViewHolder's View
             imageView = itemView.findViewById(R.id.itemMediaImage_imageView);
@@ -41,9 +41,9 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
     // Create new views (invoked by the layout manager)
     @NonNull
     @Override
-    public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // Create a new view, which defines the UI of the list item
-        return new MediaViewHolder(LayoutInflater.from(parent.getContext()).inflate(
+        return new ImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.item_media_image,
                 parent,
                 false));
@@ -51,7 +51,7 @@ public class MediaAdapter extends RecyclerView.Adapter<MediaAdapter.MediaViewHol
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
         holder.getImageView().setImageDrawable(mDrawables.get(position));

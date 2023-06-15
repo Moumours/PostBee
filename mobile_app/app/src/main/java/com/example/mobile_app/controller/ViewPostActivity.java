@@ -6,16 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,27 +22,14 @@ import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.Document;
 import com.example.mobile_app.model.Token;
 import com.example.mobile_app.model.RecyclerViewInterface;
-import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
+import com.example.mobile_app.model.Video;
 import com.example.mobile_app.model.ViewPost;
-import com.example.mobile_app.model.Comment;
 import com.example.mobile_app.model.item_comment.ItemCommentAdapter;
-import com.example.mobile_app.model.item_media.MediaAdapter;
-import com.example.mobile_app.model.item_post.ItemPost;
-import com.google.gson.Gson;
+import com.example.mobile_app.model.item_media.ImageAdapter;
+import com.example.mobile_app.model.item_media.VideoAdapter;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -62,8 +47,10 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
     private List<Comment> comments = new ArrayList<>();
     private RecyclerView mCommentsRecyclerView;
 
-    private List<Drawable> drawables = new ArrayList<>();
-    private RecyclerView mMediaRecyclerView;
+    private List<Drawable> drawablePictures = new ArrayList<>();
+    private List<Uri> uriVideos = new ArrayList<>();
+    private List<Document> documents = new ArrayList<>();
+    private RecyclerView mPicturesRecyclerView, mVideosRecyclerView, mDocumentsRecyclerView;
 
     Button mButtonComment;
     EditText mTextComment;
@@ -82,11 +69,9 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
         mButtonComment = findViewById(R.id.viewpost_button_postcomment);
         mTextComment = findViewById(R.id.viewpost_edittext_writecomment);
         mCommentsRecyclerView = findViewById(R.id.viewpost_recyclerview_comments);
-
-        mMediaRecyclerView = findViewById(R.id.viewpost_recyclerview_media);
-        mMediaRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mMediaRecyclerView.setAdapter(new MediaAdapter(drawables));
-
+        mPicturesRecyclerView = findViewById(R.id.viewpost_recyclerview_pictures);
+        mVideosRecyclerView = findViewById(R.id.viewpost_recyclerview_videos);
+        mDocumentsRecyclerView = findViewById(R.id.viewpost_recyclerview_documents);
 
         Intent i = getIntent();
         int postId = i.getIntExtra("ID", 0);
@@ -94,6 +79,12 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
 
         mCommentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mCommentsRecyclerView.setAdapter(new ItemCommentAdapter(comments, getApplicationContext(), this));
+        mPicturesRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mPicturesRecyclerView.setAdapter(new ImageAdapter(drawablePictures));
+        mVideosRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mVideosRecyclerView.setAdapter(new VideoAdapter(uriVideos));
+        //mDocumentsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //mDocumentsRecyclerView.setAdapter(new (documents));
 
         mTextTitle.setText(i.getStringExtra("TITLE"));
         mTextAuthor.setText(i.getStringExtra("AUTHOR"));
@@ -296,19 +287,23 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                                 }
                                 if (mViewPost.getAttachments() != null){
                                     Log.d("ViewPostActivity", "Liste d'images reçue");
-                                    drawables.clear();
+                                    drawablePictures.clear();
+                                    uriVideos.clear();
                                     for(Document doc : mViewPost.getAttachments()){
                                         try {
-                                            //if (doc.getType().equals("image")) {
-                                            if (true) {
-                                                Thread t = retreivePicture(doc.getUrl());
-                                                t.start();
-                                                t.join();
+                                            Thread t;
+                                            switch (doc.getType()) {
+                                                case "image": t = retreivePicture(doc.getUrl()); break;
+                                                case "video": t = retreiveVideo(doc.getUrl()); break;
+                                                default: t = retreiveDocument(doc); break;
                                             }
+                                            t.start();
+                                            t.join();
                                         } catch (Exception e) {
                                         }
                                     }
-                                    mMediaRecyclerView.getAdapter().notifyDataSetChanged();
+                                    mPicturesRecyclerView.getAdapter().notifyDataSetChanged();
+                                    mVideosRecyclerView.getAdapter().notifyDataSetChanged();
                                 }
                             }
                             else{
@@ -330,11 +325,47 @@ public class ViewPostActivity extends AppCompatActivity implements RecyclerViewI
                     InputStream is = (InputStream) new URL(url).getContent();
                     Drawable d = Drawable.createFromStream(is, "src name");
                     Log.d("ViewPostActivity","Image reçue");
-                    drawables.add(d);
+                    drawablePictures.add(d);
                 } catch (Exception e) {
                     Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
                     Log.d("ViewPostActivity","Erreur : "+e);
                 }
+            }
+        });
+    }
+
+    public Thread retreiveVideo(String url) throws InterruptedException {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Log.d("ViewPostActivity","Tentative de récupération de vidéo Url : "+url);
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    Uri uri = Uri.parse(url);
+                    Log.d("ViewPostActivity","Vidéo reçue");
+                    uriVideos.add(uri);
+                } catch (Exception e) {
+                    Log.d("ViewPostActivity","Erreur lors du téléchargement de la vidéo");
+                    Log.d("ViewPostActivity","Erreur : "+e);
+                }
+            }
+        });
+    }
+
+    public Thread retreiveDocument(Document document) throws InterruptedException {
+        return new Thread(new Runnable() {
+            @Override
+            public void run() {
+                /*try {
+                    Log.d("ViewPostActivity","Tentative de récupération d'image Url : "+url);
+                    InputStream is = (InputStream) new URL(url).getContent();
+                    Drawable d = Drawable.createFromStream(is, "src name");
+                    Log.d("ViewPostActivity","Image reçue");
+                    drawablePictures.add(d);
+                } catch (Exception e) {
+                    Log.d("ViewPostActivity","Erreur lors du téléchargement de l'image");
+                    Log.d("ViewPostActivity","Erreur : "+e);
+                }*/
             }
         });
     }
