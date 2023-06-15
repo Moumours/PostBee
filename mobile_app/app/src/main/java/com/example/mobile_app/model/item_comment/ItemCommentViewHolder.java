@@ -23,6 +23,7 @@ public class ItemCommentViewHolder extends RecyclerView.ViewHolder {
         text_content = itemView.findViewById(R.id.itemcomment_textview_content);
         text_role = itemView.findViewById(R.id.itemcomment_textview_role);
         text_date = itemView.findViewById(R.id.itemcomment_textview_date);
+        image_pfp = itemView.findViewById(R.id.itemcomment_imageview_pfp);
         button_edit = itemView.findViewById(R.id.itemcomment_button_edit);
         button_remove = itemView.findViewById(R.id.itemcomment_button_remove);
 

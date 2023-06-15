@@ -45,7 +45,7 @@ public class ItemCommentAdapter extends RecyclerView.Adapter<ItemCommentViewHold
         holder.text_username.setText(comments.get(position).getAuthor().getFull_name());
         holder.text_content.setText(comments.get(position).getText());
         holder.text_date.setText(comments.get(position).getDate());
-        //ProfilePictureManager.setProfilePicture(mContext, holder.image_pfp, comments.get(position).getProfilePicture());
+        ProfilePictureManager.setProfilePicture(mContext, holder.image_pfp, Integer.parseInt(comments.get(position).getAuthor().getProfile_picture()));
 
         //button_edit.setVisibility(UserStatic.getIs_staff().equals("true") ? View.VISIBLE : View.GONE);
         holder.button_remove.setVisibility(UserStatic.getIs_staff().equals("true") ? View.VISIBLE : View.GONE);
