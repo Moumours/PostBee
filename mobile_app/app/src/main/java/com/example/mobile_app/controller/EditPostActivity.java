@@ -159,15 +159,20 @@ public class EditPostActivity extends AppCompatActivity {
                 Log.d("EditPostActivity","path : "+path);
                 File imageFile = new File(path);
 
+                //Convert to jpeg
+                String convertedImagePath = GestionMedias.getConvertedImagePath(imageFile);
+                File convertedImageFile = new File(convertedImagePath);
+
+
                 // Write the image field
                 request.writeBytes("--" + boundary + "\r\n");
-                request.writeBytes("Content-Disposition: form-data; name=\"attachments\"; filename=\"" + imageFile.getName() +
+                request.writeBytes("Content-Disposition: form-data; name=\"attachments\"; filename=\"" + convertedImageFile.getName() +
                         "\"\r\n");
                 request.writeBytes("Content-Type: image/jpeg\r\n\r\n");
 
 
                 // Write the image file data
-                FileInputStream imageStream = new FileInputStream(imageFile);
+                FileInputStream imageStream = new FileInputStream(convertedImageFile);
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 while ((bytesRead = imageStream.read(buffer)) != -1) {

@@ -39,12 +39,23 @@
                 android:id="@+id/viewpost_textview_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/gap_part" />
+                android:layout_marginTop="@dimen/gap_part"
+                android:text="@string/ui_loading" />
         </LinearLayout>
 
         <!-- Images et vidéos -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/viewpost_recyclerview_media"
+            android:id="@+id/viewpost_recyclerview_pictures"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_videos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/viewpost_recyclerview_documents"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

@@ -95,7 +95,12 @@ public class RegisterActivity extends AppCompatActivity {
                                     startActivity(i);
                                 }
                                 else {
-                                    Toast.makeText(RegisterActivity.this, "Erreur : "+ finalResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                    if (finalResponse.getMessage() != null) {
+                                        Toast.makeText(RegisterActivity.this, "Erreur : " + finalResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                    else {
+                                        Toast.makeText(RegisterActivity.this, "Erreur : le compte n'existe pas" , Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             }
                             else{

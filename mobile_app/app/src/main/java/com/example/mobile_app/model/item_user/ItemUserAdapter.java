@@ -9,18 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
 import com.example.mobile_app.model.Token;
-import com.example.mobile_app.model.User;
 import com.example.mobile_app.model.UserStatic;
-import com.example.mobile_app.model.item_post.PostDecision;
-import com.google.gson.Gson;
-
 import java.util.List;
 
 public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
@@ -52,6 +46,14 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
     public void onBindViewHolder(@NonNull ItemUserViewHolder holder, int position) {
         holder.text_fullname.setText(users.get(position).getName() + " " + users.get(position).getFirstname());
         holder.text_email.setText(users.get(position).getEmail());
+        ItemUser currentUser = users.get(position);
+
+        if (currentUser.getIs_staff().equals("true")) {
+            holder.button_addModo.setVisibility(View.GONE);
+        } else {
+            holder.button_addModo.setVisibility(View.VISIBLE);
+        }
+
 
         String roleText;
         switch (users.get(position).getRole()) {
@@ -115,7 +117,7 @@ public class ItemUserAdapter extends RecyclerView.Adapter<ItemUserViewHolder> {
                         DelatedUser user = new DelatedUser(userEmail);
                         Log.d("ItemUserAdapter", "Voici l'email : " + userEmail);
                         addModo(user);
-                        Toast.makeText(mContext, "User Added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "Modérateur ajouté", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

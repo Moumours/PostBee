@@ -111,6 +111,10 @@ public class HomeActivity extends AppCompatActivity implements RecyclerViewInter
         startActivity(homeActivityIntent);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     public static List<ItemPost> convertObjectToList(Object obj) {
         if (obj != null) {
             List<ItemPost> list = new ArrayList<>();
