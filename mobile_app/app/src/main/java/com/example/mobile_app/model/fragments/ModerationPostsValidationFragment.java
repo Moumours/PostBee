@@ -2,18 +2,14 @@ package com.example.mobile_app.model.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.controller.ViewPostActivity;
 import com.example.mobile_app.model.RecyclerViewInterface;
@@ -22,7 +18,6 @@ import com.example.mobile_app.model.UserStatic;
 import com.example.mobile_app.model.item_post.ItemPost;
 import com.example.mobile_app.model.item_post.ItemPostValidationAdapter;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

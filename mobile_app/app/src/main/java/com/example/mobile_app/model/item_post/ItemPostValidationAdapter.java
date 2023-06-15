@@ -3,10 +3,8 @@ package com.example.mobile_app.model.item_post;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.mobile_app.R;
 import com.example.mobile_app.model.RecyclerViewInterface;
 
@@ -30,7 +28,7 @@ public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostVali
         return new ItemPostValidationViewHolder(
                 LayoutInflater.from(mContext).inflate(R.layout.item_post_validation, parent, false),
                 recyclerViewInterface,
-                this // Pass the adapter
+                this
         );
     }
 
@@ -51,6 +49,6 @@ public class ItemPostValidationAdapter extends RecyclerView.Adapter<ItemPostVali
     public void removeItem(int position) {
         posts.remove(position);
         notifyItemRemoved(position);
-        notifyDataSetChanged(); // Notify RecyclerView about the change in data
+        notifyDataSetChanged();
     }
 }
