@@ -7,7 +7,7 @@
 
 <p align="center">
     PostBee est un projet de fin de première année d'Ingénieur en Informatique et Réseaux. <br/>
-    C'est une application android développée en java, accompagnée d'une API développée sous Django servant de blog interne pour notre école, l'<a href="http://https://www.ensisa.uha.fr/">ENSISA</a>
+    Il s'agit d'une application android développée en java, accompagnée d'une API développée sous Django, qui a été développé avec l'objectif d'être le blog interne de notre école, l'<a href="http://https://www.ensisa.uha.fr/">ENSISA</a>
 </p>
 <hr />
 
